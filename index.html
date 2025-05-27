@@ -6,27 +6,32 @@
   <title>AgroKart BD - Home</title>
   <link rel="stylesheet" href="style/style.css" />
   <link rel="icon" type="image/x-icon" href="images/AGrO.png">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <header class="navbar">
     <div class="logo">AgroKart BD</div>
     <div class="search-bar">
       <input type="text" placeholder="Search for vegetables, fruits, crops..." />
+      <button type="submit" class="search-button">
+        <i class="fas fa-search"></i>
+      </button>
     </div>
     <nav class="nav-links">
       <a href="#">Home</a>
       <div class="dropdown">
-        <button class="dropbtn">Category</button>
+        <button class="dropbtn">
+          Category <i class="fas fa-chevron-down"></i>
+        </button>
         <div class="dropdown-content">
-          <a href="#">Vegetables</a>
-          <a href="#">Fruits</a>
-          <a href="#">Crops</a>
+          <a href="#"><i class="fas fa-carrot"></i> Vegetables</a>
+          <a href="#"><i class="fas fa-apple-whole"></i> Fruits</a>
+          <a href="#"><i class="fas fa-wheat-awn"></i> Crops</a>
         </div>
       </div>
       <a href="#">About Us</a>
-      <a href="#">🛒</a>
-      <a href="#">👤</a>
+      <a href="#" class="nav-icon cart-icon"><i class="fas fa-shopping-basket"></i></a>
+      <a href="#" class="nav-icon"><i class="far fa-user"></i></a>
     </nav>
   </header>
 
