@@ -1,0 +1,297 @@
+body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #4CAF50;
+      padding: 10px 40px;
+      color: white;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .search-bar input {
+      padding: 8px;
+      width: 250px;
+      border-radius: 20px;
+      border: none;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .nav-links a:last-child {
+      font-size: 22px;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropbtn {
+      background: none;
+      color: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      color: black;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+    .dropdown-content a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: black;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Updated Banner */
+    .banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #e8f5e9;
+      padding: 40px;
+      margin: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .banner-text {
+      max-width: 50%;
+    }
+    .banner-text h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .banner-text p {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .banner-text span {
+      font-weight: bold;
+      color: #d32f2f;
+      font-size: 20px;
+    }
+    .banner img {
+      width: 45%;
+      border-radius: 10px;
+    }
+
+    /* Product Cards */
+    .product-section {
+      padding: 20px 40px;
+    }
+    .product-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .product-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .product-card {
+      position: relative;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      width: 18%;
+      box-sizing: border-box;
+      text-align: left;
+    }
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .product-card .discount {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff3d00;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .product-card p {
+      margin: 5px 0;
+    }
+    .product-card .price {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    .product-card .old-price {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 14px;
+    }
+    .product-card .rating {
+      color: #ff9800;
+      font-size: 14px;
+    }
+    .see-more {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .see-more button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Features Section */
+    .features {
+      background-color: #ffffff;
+      padding: 40px;
+      margin: 30px 40px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      text-align: center;
+      border-radius: 10px;
+    }
+    .features h2 {
+      margin-bottom: 20px;
+    }
+    .feature-boxes {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .feature-box {
+      background-color: #e8f5e9;
+      padding: 20px;
+      border-radius: 10px;
+      width: 30%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .feature-box h3 {
+      margin-bottom: 10px;
+      color: #4CAF50;
+    }
+    .feature-box p {
+      color: #555;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #110d0f;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      padding: 30px 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-left {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .footer-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    .company, .follow {
+      min-width: 120px;
+    }
+
+    .company h4, .follow h4 {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .footer a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .footer-right {
+      flex: 1;
+      max-width: 280px;
+    }
+
+    .footer-right h4 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .footer-right form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    form input, 
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    form textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 120px;
+    }
+
+    form button {
+      width: 100%;
+      padding: 8px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 5px;
+    }
