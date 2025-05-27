@@ -14,9 +14,25 @@ body {
       flex-wrap: wrap;
     }
     .logo {
-      font-size: 26px;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+    .logo-img {
+      height: 45px;  /* Increased to match text height */
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .logo span {
+      font-family: 'Poppins', sans-serif;  /* Modern, clean font */
+      font-size: 28px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+
     .search-bar {
       display: flex;
       align-items: center;
