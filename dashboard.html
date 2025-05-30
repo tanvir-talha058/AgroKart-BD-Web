@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Dashboard</title>
+  <link rel="stylesheet" href="style/dashboard.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">KrishiBazaar</div>
+    <ul class="nav-links">
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#inventory">Inventory</a></li>
+      <li><a href="#orders">Orders</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="dashboard">
+    <!-- Header Section -->
+    <section class="header">
+      <h1>Welcome Back, Seller!</h1>
+      <p>Track and manage your crops, fruits, and vegetables efficiently.</p>
+    </section>
+
+    <!-- Summary Cards -->
+    <section class="summary-section">
+      <div class="summary-card">
+        <h3>Total Orders</h3>
+        <p class="value">745</p>
+        <p class="change positive">▲ 12%</p>
+      </div>
+      <div class="summary-card">
+        <h3>Pending Orders</h3>
+        <p class="value">58</p>
+        <p class="change negative">▼ 4%</p>
+      </div>
+      <div class="summary-card">
+        <h3>Delivered</h3>
+        <p class="value">650</p>
+        <p class="change positive">▲ 18%</p>
+      </div>
+      <div class="summary-card">
+        <h3>Earnings (৳)</h3>
+        <p class="value">৳74,500</p>
+        <p class="change positive">▲ 6%</p>
+      </div>
+    </section>
+
+    <!-- Graph & Review -->
+    <section class="charts-reviews">
+      <div class="payment-summary">
+        <h2>Payment Summary</h2>
+        <div class="graph-container">
+          <div class="amount-scale">
+            <span>₹6,000</span>
+            <span>₹5,000</span>
+            <span>₹4,000</span>
+            <span>₹3,000</span>
+            <span>₹2,000</span>
+          </div>
+          <div class="graph-box">
+            <div class="bar-chart">
+              <div class="bar" style="height: 85%"></div>
+              <div class="bar" style="height: 75%"></div>
+              <div class="bar" style="height: 65%"></div>
+              <div class="bar" style="height: 45%"></div>
+              <div class="bar" style="height: 55%"></div>
+            </div>
+            <div class="months">
+              <span>Jan</span>
+              <span>Feb</span>
+              <span>Mar</span>
+              <span>Apr</span>
+              <span>May</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="review-summary">
+        <h2>Customer Reviews</h2>
+        <p class="rating">⭐ 4.5/5</p>
+        <p class="reviews-count">Based on 122 reviews</p>
+      </div>
+    </section>
+
+    <!-- Recent Orders Table -->
+    <section class="recent-orders">
+      <h2>Recent Orders</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#1234</td>
+            <td>Tomato</td>
+            <td>20kg</td>
+            <td>Pending</td>
+            <td>2025-05-29</td>
+          </tr>
+          <tr>
+            <td>#1233</td>
+            <td>Mango</td>
+            <td>10kg</td>
+            <td>Delivered</td>
+            <td>2025-05-28</td>
+          </tr>
+          <tr>
+            <td>#1232</td>
+            <td>Rice</td>
+            <td>50kg</td>
+            <td>Delivered</td>
+            <td>2025-05-27</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 KrishiBazaar. All rights reserved. | Designed for Bangladeshi Farmers and Sellers</p>
+  </footer>
+</body>
+</html>

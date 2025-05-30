@@ -1,0 +1,275 @@
+/* dashboard.css */
+
+/* Reset and base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7fdf6;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #388e3c;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+.navbar .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+.navbar .nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.header {
+  padding: 2rem;
+  background-color: #e8f5e9;
+  text-align: center;
+}
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.header p {
+  color: #555;
+}
+
+/* Summary Cards */
+.summary-section {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.summary-card {
+  background-color: white;
+  border-left: 6px solid #4caf50;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  padding: 1rem;
+  width: 220px;
+  border-radius: 8px;
+  text-align: center;
+}
+.summary-card .value {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.summary-card .change {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+.positive {
+  color: green;
+}
+.negative {
+  color: red;
+}
+
+/* Chart & Reviews */
+
+/* Bar Graph Design */
+.graph-box {
+  padding: 2rem 1rem;
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-chart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 200px;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.bar-chart .bar {
+  width: 30px;
+  background: #9155fd;
+  border-radius: 4px 4px 0 0;
+  text-align: center;
+  color: #666;
+  font-size: 0.75rem;
+  position: relative;
+}
+
+.bar-chart .bar::before {
+  content: attr(title);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.months {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+}
+
+.months span {
+  font-size: 0.85rem;
+  color: #666;
+  width: 30px;
+  text-align: center;
+}
+
+.charts-reviews {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.payment-summary, .review-summary {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  width: 45%;
+  min-width: 300px;
+}
+.payment-summary {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 48%;
+  min-width: 400px;
+}
+.payment-summary h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.2rem;
+}
+.payment-summary .graph-container {
+  position: relative;
+  padding-top: 2rem;
+  margin-top: 1rem;
+  background: linear-gradient(
+    to bottom,
+    #e0e0e0 1px,
+    transparent 1px
+  );
+  background-size: 100% 50px;  /* Adjust this value to match your scale */
+}
+.amount-scale {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.85rem;
+  padding-right: 1rem;
+  z-index: 1;
+}
+.graph-box {
+  height: 250px;
+  background-color: transparent;
+  border: none;
+  padding: 0 2rem;
+  margin-left: 3rem;
+  position: relative;
+}
+.bar-chart {
+  height: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+.bar-chart .bar {
+  width: 40px;
+  background: #388e3c;
+  border-radius: 4px 4px 0 0;
+  transition: transform 0.2s;
+}
+.bar-chart .bar:hover {
+  transform: scale(1.05);
+}
+.months {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0;
+}
+.months span {
+  width: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+}
+.review-summary .rating {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  color: #fbc02d;
+}
+.review-summary .reviews-count {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Recent Orders Table */
+.recent-orders {
+  padding: 2rem;
+}
+.recent-orders h2 {
+  margin-bottom: 1rem;
+}
+.recent-orders table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.recent-orders th, .recent-orders td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.recent-orders tr:hover {
+  background-color: #f1f8e9;
+}
+
+/* Footer */
+.footer {
+  background-color: #388e3c;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
