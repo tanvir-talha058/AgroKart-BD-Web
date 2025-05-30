@@ -19,14 +19,14 @@ body {
       gap: 12px;
     }
     .logo-img {
-      height: 45px;  /* Increased to match text height */
+      height: 45px;  
       width: auto;
       object-fit: contain;
       transition: transform 0.3s ease;
     }
 
     .logo span {
-      font-family: 'Poppins', sans-serif;  /* Modern, clean font */
+      font-family: 'Poppins', sans-serif;  
       font-size: 28px;
       font-weight: 600;
       color: white;
@@ -160,8 +160,7 @@ body {
       visibility: visible;
       transform: translateY(0);
     }
-
-    /* Updated Banner */
+ 
     .banner {
       display: flex;
       align-items: center;
@@ -192,8 +191,7 @@ body {
       width: 45%;
       border-radius: 10px;
     }
-
-    /* Product Cards */
+   
     .product-section {
       padding: 20px 40px;
     }
@@ -263,7 +261,7 @@ body {
       cursor: pointer;
     }
 
-    /* Features Section */
+ 
     .features {
       background-color: #ffffff;
       padding: 40px;
@@ -393,7 +391,7 @@ body {
       margin-top: 5px;
     }
 
-    /* Update the nav-links hover styles */
+    
 .nav-links a, .dropbtn {
     position: relative;
     padding: 8px 12px;
@@ -410,7 +408,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* Enhanced dropdown styles */
 .dropdown-content {
     min-width: 200px;
     top: 100%;
@@ -436,7 +433,6 @@ body {
     padding-left: 25px;
 }
 
-/* Enhanced cart and profile icon hover effects */
 .nav-links a:nth-last-child(1),
 .nav-links a:nth-last-child(2) {
     padding: 8px;
@@ -452,7 +448,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Enhanced dropdown animation */
+
 .dropdown:hover .dropdown-content {
     display: block;
     animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -471,7 +467,7 @@ body {
     }
 }
 
-/* Nav Icons Styling */
+
 .nav-icon {
     display: flex;
     align-items: center;
@@ -492,7 +488,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Cart Icon Badge */
+
 .nav-icon.cart-icon {
     position: relative;
 }
