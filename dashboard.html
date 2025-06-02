@@ -204,7 +204,207 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Add New Product Modal -->
+            <div id="addProductModal" class="modal">
+              <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Add New Product</h2>
+                <form class="add-product-form">
+                  <label>Product Name</label>
+                  <input type="text" placeholder="Enter product name" required />
+
+                  <label>Category</label>
+                  <select required>
+                    <option value="">Select category</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="crops">Crops</option>
+                  </select>
+
+                  <label>Price (৳)</label>
+                  <input type="number" placeholder="Enter price" min="0" required />
+
+                  <label>Discount (%)</label>
+                  <input type="number" placeholder="Enter discount" min="0" max="100" />
+
+                  <label>Stock Quantity</label>
+                  <input type="number" placeholder="Enter stock quantity" min="0" required />
+
+                  <label>Product Image</label>
+                  <input type="file" accept="image/*" required />
+
+                  <label>Description</label>
+                  <textarea placeholder="Enter product description" rows="3" required></textarea>
+
+                  <button type="submit" class="submit-btn">Add Product</button>
+                </form>
+              </div>
+            </div>
         </main>
     </div>
+
+    <style>
+        /* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 32px 28px 24px 28px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+  position: absolute;
+  top: 18px; right: 22px;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-modal:hover { color: #4CAF50; }
+
+.add-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-product-form label {
+  font-weight: 500;
+  margin-bottom: 2px;
+  color: #333;
+}
+
+.add-product-form input[type="text"],
+.add-product-form input[type="number"],
+.add-product-form input[type="file"],
+.add-product-form select,
+.add-product-form textarea {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 15px;
+  background: #fafafa;
+  transition: border 0.2s;
+}
+
+.add-product-form input:focus,
+.add-product-form select:focus,
+.add-product-form textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+.add-product-form textarea {
+  resize: vertical;
+}
+
+.submit-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 10px 0;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.submit-btn:hover {
+  background: #388e3c;
+}
+
+/* Responsive Modal */
+@media (max-width: 600px) {
+  .modal-content {
+    max-width: 95vw;
+    padding: 18px 8px 16px 8px;
+  }
+  .add-product-form input[type="text"],
+  .add-product-form input[type="number"],
+  .add-product-form input[type="file"],
+  .add-product-form select,
+  .add-product-form textarea {
+    font-size: 14px;
+    padding: 7px 6px;
+  }
+  .submit-btn {
+    font-size: 15px;
+    padding: 9px 0;
+  }
+}
+
+/* Make dashboard main content responsive */
+@media (max-width: 900px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .main-content {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 4px;
+  }
+  .stats-container,
+  .dashboard-cards-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .stat-card,
+  .order-summary-card,
+  .payment-summary-card,
+  .review-orders-card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+    </style>
+
+    <script>
+  // Open modal
+  document.querySelector('.add-product').onclick = function() {
+    document.getElementById('addProductModal').style.display = 'flex';
+  };
+  // Close modal
+  document.querySelector('.close-modal').onclick = function() {
+    document.getElementById('addProductModal').style.display = 'none';
+  };
+  // Close modal when clicking outside content
+  window.onclick = function(e) {
+    const modal = document.getElementById('addProductModal');
+    if (e.target === modal) modal.style.display = 'none';
+  };
+</script>
 </body>
 </html>
