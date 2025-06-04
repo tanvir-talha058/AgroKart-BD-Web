@@ -23,7 +23,7 @@
                     <a href="#"><span class="icon"><i class="fas fa-box"></i></span>Orders</a>
                 </li>
                 <li>
-                    <a href="#" id="inboxMenu"><span class="icon"><i class="fas fa-envelope"></i></span>Inbox</a>
+                    <a href="#"><span class="icon"><i class="fas fa-envelope"></i></span>Inbox</a>
                 </li>
             </ul>
         </nav>
@@ -216,6 +216,43 @@
               <!-- All dashboard content except inbox -->
             </div>
 
+            <!-- Add New Product Modal -->
+            <div id="addProductModal" class="modal">
+              <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Add New Product</h2>
+                <form class="add-product-form">
+                  <label>Product Name</label>
+                  <input type="text" placeholder="Enter product name" required />
+
+                  <label>Category</label>
+                  <select required>
+                    <option value="">Select category</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="crops">Crops</option>
+                  </select>
+
+                  <label>Price (৳)</label>
+                  <input type="number" placeholder="Enter price" min="0" required />
+
+                  <label>Discount (%)</label>
+                  <input type="number" placeholder="Enter discount" min="0" max="100" />
+
+                  <label>Stock Quantity</label>
+                  <input type="number" placeholder="Enter stock quantity" min="0" required />
+
+                  <label>Product Image</label>
+                  <input type="file" accept="image/*" required />
+
+                  <label>Description</label>
+                  <textarea placeholder="Enter product description" rows="3" required></textarea>
+
+                  <button type="submit" class="submit-btn">Add Product</button>
+                </form>
+              </div>
+            </div>
+
             <!-- Inbox Section -->
             <section class="inbox-section" id="inboxSection" style="display:none;">
               <h2>Inbox</h2>
@@ -280,42 +317,53 @@
               </div>
             </section>
 
-            <!-- Add New Product Modal -->
-            <div id="addProductModal" class="modal">
-              <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Add New Product</h2>
-                <form class="add-product-form">
-                  <label>Product Name</label>
-                  <input type="text" placeholder="Enter product name" required />
+            <!-- Orders Section -->
+            <section class="orders-section" id="ordersSection" style="display:none;">
+              <h2>Orders</h2>
+              <div class="orders-list">
+                <!-- Order Item -->
+                <div class="order-item">
+                  <div class="order-date">01/04/2024</div>
+                  <div class="order-details">
+                    <div class="product-name">Fresh Mango (Himsagar)</div>
+                    <div class="order-id">M12345</div>
+                  </div>
+                  <div class="company-details">
+                    <div class="company-name">Rajshahi Fruit Hub</div>
+                    <div class="location">Rajshahi, Bangladesh</div>
+                  </div>
+                  <div class="status in-transit">In Transit</div>
+                </div>
 
-                  <label>Category</label>
-                  <select required>
-                    <option value="">Select category</option>
-                    <option value="vegetables">Vegetables</option>
-                    <option value="fruits">Fruits</option>
-                    <option value="crops">Crops</option>
-                  </select>
+                <!-- Order Item -->
+                <div class="order-item">
+                  <div class="order-date">02/04/2024</div>
+                  <div class="order-details">
+                    <div class="product-name">Premium Potatoes</div>
+                    <div class="order-id">V2345</div>
+                  </div>
+                  <div class="company-details">
+                    <div class="company-name">Rangpur Agro Farm</div>
+                    <div class="location">Rangpur, Bangladesh</div>
+                  </div>
+                  <div class="status pending">Pending</div>
+                </div>
 
-                  <label>Price (৳)</label>
-                  <input type="number" placeholder="Enter price" min="0" required />
-
-                  <label>Discount (%)</label>
-                  <input type="number" placeholder="Enter discount" min="0" max="100" />
-
-                  <label>Stock Quantity</label>
-                  <input type="number" placeholder="Enter stock quantity" min="0" required />
-
-                  <label>Product Image</label>
-                  <input type="file" accept="image/*" required />
-
-                  <label>Description</label>
-                  <textarea placeholder="Enter product description" rows="3" required></textarea>
-
-                  <button type="submit" class="submit-btn">Add Product</button>
-                </form>
+                <!-- Order Item -->
+                <div class="order-item">
+                  <div class="order-date">24/05/2024</div>
+                  <div class="order-details">
+                    <div class="product-name">Organic Guava</div>
+                    <div class="order-id">F6789</div>
+                  </div>
+                  <div class="company-details">
+                    <div class="company-name">Sylhet Green Foods</div>
+                    <div class="location">Sylhet, Bangladesh</div>
+                  </div>
+                  <div class="status delivered">Delivered</div>
+                </div>
               </div>
-            </div>
+            </section>
         </main>
     </div>
 
@@ -465,123 +513,6 @@
   }
 }
 
-/* Inbox Section Styles */
-.inbox-section {
-  background: #fff;
-  border-radius: 10px;
-  padding: 24px 20px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-}
-
-.inbox-section h2 {
-  margin-bottom: 18px;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.messages-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.message-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 14px 12px;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: background 0.2s;
-  border-left: 4px solid transparent;
-  cursor: pointer;
-}
-
-.message-item.unread {
-  background: #e8f5e9;
-  border-left: 4px solid #4CAF50;
-}
-
-.buyer-avatar img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #eee;
-}
-
-.message-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.buyer-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.buyer-name {
-  color: #222;
-}
-
-.order-id {
-  color: #888;
-  font-size: 0.95em;
-}
-
-.message-snippet {
-  color: #444;
-  font-size: 1em;
-  margin-top: 2px;
-}
-
-.message-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  min-width: 90px;
-}
-
-.message-time {
-  color: #888;
-  font-size: 0.95em;
-}
-
-.status-badge {
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.92em;
-  font-weight: 500;
-  color: #fff;
-  display: inline-block;
-}
-
-.status-badge.pending { background: #FFA500; }
-.status-badge.delivered { background: #4CAF50; }
-.status-badge.in-transit { background: #9155FD; }
-
-/* Responsive */
-@media (max-width: 600px) {
-  .inbox-section {
-    padding: 12px 4px;
-  }
-  .buyer-avatar img {
-    width: 38px;
-    height: 38px;
-  }
-  .message-item {
-    gap: 8px;
-    padding: 10px 6px;
-  }
-}
-
 /* Navigation Menu Icon Styles */
 .nav-menu .icon {
     display: inline-flex;
@@ -636,18 +567,29 @@
     if (e.target === modal) modal.style.display = 'none';
   };
 
-  // Show Inbox, Hide Dashboard
+  // Show Inbox, Hide Dashboard and Orders
   document.getElementById('inboxMenu').onclick = function(e) {
-  e.preventDefault();
-  document.getElementById('dashboardMain').style.display = 'none';
-  document.getElementById('inboxSection').style.display = 'block';
-};
+    e.preventDefault();
+    document.getElementById('dashboardMain').style.display = 'none';
+    document.getElementById('ordersSection').style.display = 'none';
+    document.getElementById('inboxSection').style.display = 'block';
+  };
 
-document.querySelector('.nav-menu li:first-child a').onclick = function(e) {
-  e.preventDefault();
-  document.getElementById('dashboardMain').style.display = 'block';
-  document.getElementById('inboxSection').style.display = 'none';
-};
+  // Show Orders, Hide Dashboard and Inbox
+  document.getElementById('ordersMenu').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('dashboardMain').style.display = 'none';
+    document.getElementById('inboxSection').style.display = 'none';
+    document.getElementById('ordersSection').style.display = 'block';
+  };
+
+  // Show Dashboard, Hide Inbox and Orders
+  document.querySelector('.nav-menu li:first-child a').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('dashboardMain').style.display = 'block';
+    document.getElementById('inboxSection').style.display = 'none';
+    document.getElementById('ordersSection').style.display = 'none';
+  };
 </script>
 </body>
 </html>
