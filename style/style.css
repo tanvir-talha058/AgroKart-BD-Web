@@ -170,12 +170,22 @@ body {
       margin: 20px 40px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      min-height: 340px;
+      background: linear-gradient(120deg, #e8f5e9 0%, #f1f8e9 100%);
     }
     .banner-text {
       max-width: 50%;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: bannerFadeInUp 1s cubic-bezier(0.4,0,0.2,1) forwards;
     }
     .banner-text h2 {
-      font-size: 32px;
+      font-size: 2.5rem;
+      color: #388e3c;
+      text-shadow: 0 2px 12px rgba(76,175,80,0.18);
+      animation: textGlow 2.5s infinite alternate;
       margin-bottom: 10px;
     }
     .banner-text p {
@@ -186,12 +196,46 @@ body {
       font-weight: bold;
       color: #d32f2f;
       font-size: 20px;
+      font-size: 1.3rem;
+      color: #43a047;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
     .banner img {
       width: 45%;
       border-radius: 10px;
+      opacity: 0;
+      transform: scale(1.05);
+      animation: bannerImgZoomIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards;
+      animation-delay: 0.7s;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(56,142,60,0.12);
+      max-width: 420px;
+      width: 100%;
+      margin-top: 18px;
+      z-index: 2;
+      position: relative;
     }
-   
+
+    @keyframes bannerFadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes textGlow {
+      from { text-shadow: 0 2px 12px rgba(76,175,80,0.18); }
+      to   { text-shadow: 0 4px 24px rgba(76,175,80,0.38); }
+    }
+
+    @keyframes bannerImgZoomIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
     .product-section {
       padding: 20px 40px;
     }
@@ -518,4 +562,142 @@ body {
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   margin: 0 auto;
   display: block;
+}
+
+/* Floating Leaves Animation */
+.leaf {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: url('../images/leaf.png') no-repeat center/contain;
+  opacity: 0.7;
+  animation: floatLeaf 8s linear infinite;
+}
+
+.leaf.leaf1 { top: 10%; left: 5%; animation-delay: 0s; }
+.leaf.leaf2 { top: 60%; left: 10%; animation-delay: 2s; }
+.leaf.leaf3 { top: 30%; left: 80%; animation-delay: 4s; }
+.leaf.leaf4 { top: 80%; left: 60%; animation-delay: 6s; }
+
+@keyframes floatLeaf {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50% { transform: translateY(-40px) rotate(20deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+
+/* Enhanced Banner Animation */
+.banner {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  background: linear-gradient(120deg, #e8f5e9 0%, #f1f8e9 100%);
+}
+
+.banner-text {
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  animation: bannerTextFadeIn 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+  animation-delay: 0.3s;
+  text-align: left;
+  z-index: 2;
+  position: relative;
+}
+
+.banner-text h2 {
+  font-size: 2.5rem;
+  color: #388e3c;
+  text-shadow: 0 2px 12px rgba(76,175,80,0.18);
+  animation: textGlow 2.5s infinite alternate;
+  margin-bottom: 10px;
+}
+.banner-text p {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+.banner-text span {
+  font-weight: bold;
+  color: #d32f2f;
+  font-size: 20px;
+  font-size: 1.3rem;
+  color: #43a047;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.banner img {
+  opacity: 0;
+  transform: scale(1.05);
+  animation: bannerImgZoomIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards;
+  animation-delay: 0.7s;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(56,142,60,0.12);
+  max-width: 420px;
+  width: 100%;
+  margin-top: 18px;
+  z-index: 2;
+  position: relative;
+}
+
+@keyframes bannerTextFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes textGlow {
+  from { text-shadow: 0 2px 12px rgba(76,175,80,0.18); }
+  to   { text-shadow: 0 4px 24px rgba(76,175,80,0.38); }
+}
+
+@keyframes bannerImgZoomIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Multiple Floating Leaves Animation */
+.leaf {
+  position: absolute;
+  background: url('../images/leaf.png') no-repeat center/contain;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.leaf.leaf1 { width: 48px; height: 48px; top: 12%; left: 6%; animation: floatLeaf1 9s linear infinite; }
+.leaf.leaf2 { width: 38px; height: 38px; top: 65%; left: 12%; animation: floatLeaf2 7s linear infinite; }
+.leaf.leaf3 { width: 54px; height: 54px; top: 28%; left: 82%; animation: floatLeaf3 11s linear infinite; }
+.leaf.leaf4 { width: 32px; height: 32px; top: 78%; left: 62%; animation: floatLeaf4 8s linear infinite; }
+.leaf.leaf5 { width: 42px; height: 42px; top: 45%; left: 45%; animation: floatLeaf5 10s linear infinite; }
+.leaf.leaf6 { width: 36px; height: 36px; top: 80%; left: 25%; animation: floatLeaf6 12s linear infinite; }
+
+@keyframes floatLeaf1 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-60px) rotate(30deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+@keyframes floatLeaf2 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-40px) rotate(-20deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+@keyframes floatLeaf3 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-80px) rotate(40deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+@keyframes floatLeaf4 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-30px) rotate(-30deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+@keyframes floatLeaf5 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-50px) rotate(20deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
+}
+@keyframes floatLeaf6 {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50%  { transform: translateY(-70px) rotate(-10deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(360deg); opacity: 0.7; }
 }
