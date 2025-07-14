@@ -1,0 +1,15 @@
+.cart-container, .checkout-container { max-width: 1200px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; }
+.cart-table { width: 100%; border-collapse: collapse; }
+.cart-table th, .cart-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+.product-info { display: flex; align-items: center; }
+.product-info img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; margin-right: 15px; }
+.update-form input { width: 60px; text-align: center; }
+.remove-btn { background: #d32f2f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.cart-summary { text-align: right; margin-top: 20px; }
+.cart-empty { text-align: center; padding: 50px; }
+.checkout-content { display: flex; gap: 40px; }
+.order-summary { flex: 1; }
+.checkout-form { flex: 2; }
+.summary-item, .summary-total { display: flex; justify-content: space-between; padding: 10px 0; }
+.payment-options { display: flex; flex-direction: column; gap: 10px; }
+.btn-block { width: 100%; padding: 15px; font-size: 1.2em; }
