@@ -3,26 +3,47 @@
 require_once '../includes/db_connect.php';
 
 // Fetch all products (no limit)
-$sql = "SELECT id, name, price, image_path, stock FROM products WHERE stock > 0 ORDER BY created_at DESC";
+$sql = "SELECT id, name, price, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo '<div class="product-card">';
-        echo '<a href="product_details.php?id=' . $row["id"] . '">';
-        echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '">';
-        echo '<h4>' . htmlspecialchars($row["name"]) . '</h4>';
-        echo '</a>';
-        echo '<p><span class="price">৳' . htmlspecialchars($row["price"]) . '</span></p>';
-        echo '<form action="php/cart_manager.php" method="POST">';
+        $category_class = strtolower($row["category"]);
+        echo '<div class="product-card" data-category="' . $category_class . '">';
+        echo '<div class="product-image-container">';
+        echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '" class="product-image">';
+        echo '<div class="product-overlay">';
+        echo '<div class="product-actions">';
+        echo '<a href="product_details.php?id=' . $row["id"] . '" class="action-btn view-btn"><i class="fas fa-eye"></i></a>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="category-badge ' . $category_class . '">' . htmlspecialchars($row["category"]) . '</div>';
+        if ($row["stock"] <= 5) {
+            echo '<div class="stock-badge limited-stock"><i class="fas fa-exclamation-triangle"></i> Limited Stock</div>';
+        }
+        echo '</div>';
+        echo '<div class="product-info">';
+        echo '<h4 class="product-title">' . htmlspecialchars($row["name"]) . '</h4>';
+        echo '<div class="product-meta">';
+        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '</span>';
+        echo '</div>';
+        echo '</div>';
+        echo '<form action="php/cart_manager.php" method="POST" class="product-form">';
         echo '<input type="hidden" name="product_id" value="' . $row["id"] . '">';
         echo '<input type="hidden" name="action" value="add">';
-        echo '<button type="submit" class="add-to-cart-btn">Add to Cart</button>';
+        echo '<button type="submit" class="add-to-cart-btn">';
+        echo '<i class="fas fa-shopping-cart"></i>';
+        echo '<span>Add to Cart</span>';
+        echo '</button>';
         echo '</form>';
         echo '</div>';
     }
 } else {
-    echo "<p>No products available at the moment.</p>";
+    echo '<div class="no-products">';
+    echo '<i class="fas fa-seedling"></i>';
+    echo '<h3>No products available</h3>';
+    echo '<p>Check back soon for fresh arrivals!</p>';
+    echo '</div>';
 }
 
 $conn->close();
