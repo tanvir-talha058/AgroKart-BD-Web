@@ -74,7 +74,7 @@ switch ($category) {
 
 <style>
     .category-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #2c5f2d 0%, #4CAF50 50%, #8BC34A 100%);
         color: white;
         padding: 60px 0;
         text-align: center;
