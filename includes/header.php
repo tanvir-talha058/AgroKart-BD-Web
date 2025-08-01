@@ -35,6 +35,14 @@ if (isset($_SESSION['cart'])) {
       <input type="text" name="q" placeholder="Search for vegetables, fruits, crops..." />
       <button type="submit"><i class="fas fa-search"></i></button>
     </form>
+    <div class="category-dropdown">
+      <select id="categorySelect" onchange="filterByCategory()">
+        <option value="">All Categories</option>
+        <option value="Vegetable">Vegetables</option>
+        <option value="Fruit">Fruits</option>
+        <option value="Spice">Spices</option>
+      </select>
+    </div>
     <nav class="nav-links">
       <a href="index.php">Home</a>
       <a href="my_orders.php">My Orders</a>
@@ -67,4 +75,38 @@ if (isset($_SESSION['cart'])) {
       margin-right: 8px;
       border: 2px solid white;
     }
+
+    .category-dropdown {
+      margin: 0 15px;
+    }
+
+    .category-dropdown select {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+      color: #333;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .category-dropdown select:hover {
+      background-color: #e9ecef;
+    }
+
+    .category-dropdown select:focus {
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
   </style>
+  <script>
+    function filterByCategory() {
+      const category = document.getElementById('categorySelect').value;
+      if (category) {
+        window.location.href = 'category.php?category=' + encodeURIComponent(category);
+      } else {
+        window.location.href = 'index.php';
+      }
+    }
+  </script>

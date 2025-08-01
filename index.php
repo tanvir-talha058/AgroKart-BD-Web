@@ -34,7 +34,7 @@ include 'includes/header.php';
 
 <section class="product-section">
   <h2>Our Products</h2>
-  <div class="product-row">
+  <div class="product-row" id="productContainer">
     <?php
     $sql = "SELECT id, name, price, image_path, stock FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
     $result = $conn->query($sql);
@@ -58,6 +58,19 @@ include 'includes/header.php';
     }
     ?>
   </div>
+
+  <?php
+  // Check if there are more than 10 products
+  $count_sql = "SELECT COUNT(*) as total FROM products WHERE stock > 0";
+  $count_result = $conn->query($count_sql);
+  $total_products = $count_result->fetch_assoc()['total'];
+
+  if ($total_products > 10) {
+    echo '<div class="show-more-container">';
+    echo '<button id="showMoreBtn" class="show-more-btn">Show More</button>';
+    echo '</div>';
+  }
+  ?>
 </section>
 
 <section class="why-choose-section">
@@ -77,6 +90,117 @@ include 'includes/header.php';
     </div>
   </div>
 </section>
+
+<style>
+  .show-more-container {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px 0;
+  }
+
+  .show-more-btn {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+  }
+
+  .show-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(135deg, #45a049 0%, #388e3c 100%);
+  }
+
+  .show-more-btn:active {
+    transform: translateY(0);
+  }
+
+  .show-more-btn.loading {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 1200px) {
+    .product-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 992px) {
+    .product-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .product-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Set category dropdown to "All Categories" when on main page
+  document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+      categorySelect.value = '';
+    }
+
+    // Show More functionality
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+      showMoreBtn.addEventListener('click', function() {
+        loadAllProducts();
+      });
+    }
+  });
+
+  function loadAllProducts() {
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    const productContainer = document.getElementById('productContainer');
+
+    // Show loading state
+    showMoreBtn.textContent = 'Loading...';
+    showMoreBtn.classList.add('loading');
+
+    // Make AJAX request to load all products
+    fetch('php/load_all_products.php')
+      .then(response => response.text())
+      .then(data => {
+        // Replace the product container content with all products
+        productContainer.innerHTML = data;
+
+        // Hide the show more button
+        showMoreBtn.style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error loading products:', error);
+        showMoreBtn.textContent = 'Show More';
+        showMoreBtn.classList.remove('loading');
+      });
+  }
+</script>
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
