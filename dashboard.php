@@ -7,6 +7,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_role'] !== 'Seller') {
     exit;
 }
 
+
 $seller_id = $_SESSION['user_id'];
 
 // --- Fetch All Dashboard Statistics ---
