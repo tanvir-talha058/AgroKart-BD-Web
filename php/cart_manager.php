@@ -5,10 +5,13 @@ require_once '../includes/db_connect.php';
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
     $product_id = $_POST['product_id'];
+    $is_ajax = isset($_POST['ajax']) && $_POST['ajax'] === '1';
 
     if (!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
     }
+
+    $response = ['success' => false, 'message' => '', 'cart_count' => 0];
 
     switch ($action) {
         case 'add':
@@ -16,6 +19,8 @@ if (isset($_POST['action'])) {
             // Check if product exists in cart
             if (isset($_SESSION['cart'][$product_id])) {
                 $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                $response['success'] = true;
+                $response['message'] = 'Product quantity updated in cart!';
             } else {
                 // Fetch product details from DB
                 $stmt = $conn->prepare("SELECT name, price, image_path, stock FROM products WHERE id = ?");
@@ -31,9 +36,14 @@ if (isset($_POST['action'])) {
                             'quantity' => $quantity,
                             'stock' => $product['stock']
                         ];
+                        $response['success'] = true;
+                        $response['message'] = 'Product added to cart successfully!';
                     } else {
-                         $_SESSION['error'] = "Cannot add more than available stock.";
+                        $response['message'] = 'Cannot add more than available stock.';
+                        $_SESSION['error'] = "Cannot add more than available stock.";
                     }
+                } else {
+                    $response['message'] = 'Product not found.';
                 }
                 $stmt->close();
             }
@@ -44,10 +54,15 @@ if (isset($_POST['action'])) {
             if (isset($_SESSION['cart'][$product_id])) {
                 if ($quantity > 0 && $quantity <= $_SESSION['cart'][$product_id]['stock']) {
                     $_SESSION['cart'][$product_id]['quantity'] = $quantity;
+                    $response['success'] = true;
+                    $response['message'] = 'Cart updated successfully!';
                 } elseif ($quantity > $_SESSION['cart'][$product_id]['stock']) {
+                    $response['message'] = 'Cannot add more than available stock.';
                     $_SESSION['error'] = "Cannot add more than available stock.";
                 } else {
                     unset($_SESSION['cart'][$product_id]);
+                    $response['success'] = true;
+                    $response['message'] = 'Product removed from cart!';
                 }
             }
             break;
@@ -55,10 +70,24 @@ if (isset($_POST['action'])) {
         case 'remove':
             if (isset($_SESSION['cart'][$product_id])) {
                 unset($_SESSION['cart'][$product_id]);
+                $response['success'] = true;
+                $response['message'] = 'Product removed from cart!';
             }
             break;
     }
+
+    // Calculate cart count
+    $response['cart_count'] = count($_SESSION['cart']);
+
+    // If it's an AJAX request, return JSON response
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
+    }
 }
+
+// Default redirect for non-AJAX requests
 header('Location: ../cart.php');
 exit();
 ?>

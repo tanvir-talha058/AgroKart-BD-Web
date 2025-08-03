@@ -916,6 +916,103 @@ include 'includes/header.php';
         showMoreBtn.classList.remove('loading');
       });
   }
+
+  // AJAX Cart functionality
+  document.addEventListener('DOMContentLoaded', function() {
+      // Handle Add to Cart with AJAX
+      const addToCartForms = document.querySelectorAll('.product-form');
+      addToCartForms.forEach(form => {
+          form.addEventListener('submit', function(e) {
+              e.preventDefault();
+              
+              const formData = new FormData(this);
+              formData.append('ajax', '1'); // Add AJAX flag
+              
+              const button = this.querySelector('.add-to-cart-btn');
+              const originalContent = button.innerHTML;
+              
+              // Show loading state
+              button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Adding...</span>';
+              button.disabled = true;
+              
+              fetch('php/cart_manager.php', {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      // Show success message
+                      showNotification(data.message, 'success');
+                      
+                      // Update cart count if you have a cart counter in header
+                      updateCartCount(data.cart_count);
+                      
+                      // Temporarily change button to show success
+                      button.innerHTML = '<i class="fas fa-check"></i><span>Added!</span>';
+                      button.style.background = '#28a745';
+                      
+                      setTimeout(() => {
+                          button.innerHTML = originalContent;
+                          button.style.background = '';
+                          button.disabled = false;
+                      }, 2000);
+                  } else {
+                      // Show error message
+                      showNotification(data.message, 'error');
+                      button.innerHTML = originalContent;
+                      button.disabled = false;
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  showNotification('An error occurred. Please try again.', 'error');
+                  button.innerHTML = originalContent;
+                  button.disabled = false;
+              });
+          });
+      });
+  });
+
+  // Notification function
+  function showNotification(message, type) {
+      // Remove existing notifications
+      const existingNotifications = document.querySelectorAll('.cart-notification');
+      existingNotifications.forEach(notification => notification.remove());
+      
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `cart-notification ${type}`;
+      notification.innerHTML = `
+          <div class="notification-content">
+              <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+              <span>${message}</span>
+          </div>
+      `;
+      
+      // Add to page
+      document.body.appendChild(notification);
+      
+      // Show notification
+      setTimeout(() => notification.classList.add('show'), 100);
+      
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => notification.remove(), 300);
+      }, 3000);
+  }
+
+  // Update cart count function (if you have a cart counter)
+  function updateCartCount(count) {
+      const cartCounters = document.querySelectorAll('.cart-count, .cart-counter');
+      cartCounters.forEach(counter => {
+          counter.textContent = count;
+          if (count > 0) {
+              counter.style.display = 'inline';
+          }
+      });
+  }
 </script>
 
 <!-- Bootstrap JS Bundle -->
