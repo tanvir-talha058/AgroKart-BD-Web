@@ -1,8 +1,15 @@
 <?php 
 // FILE: product_details.php
-include 'includes/header.php'; 
-if (!isset($_GET['id'])) { header('Location: index.php'); exit; }
+
+// Check if product ID is provided
+if (!isset($_GET['id'])) { 
+    header('Location: index.php'); 
+    exit; 
+}
 $product_id = $_GET['id'];
+
+// Include header after initial check
+include 'includes/header.php'; 
 
 // Fetch Product Details
 $stmt_prod = $conn->prepare("SELECT p.*, u.name as seller_name FROM products p JOIN users u ON p.seller_id = u.id WHERE p.id = ?");

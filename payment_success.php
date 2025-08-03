@@ -1,10 +1,19 @@
 <?php
 // FILE: payment_success.php
-include 'includes/header.php';
+
+// Start session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if order ID exists in session
 if (!isset($_SESSION['last_order_id'])) {
     header('Location: index.php');
     exit;
 }
+
+// Include header after checking for redirect
+include 'includes/header.php';
 $order_id = $_SESSION['last_order_id'];
 unset($_SESSION['last_order_id']); // Clear it after use
 ?>

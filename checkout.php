@@ -1,10 +1,19 @@
 <?php
 // FILE: checkout.php
-include 'includes/header.php';
+
+// Start session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if user is logged in and has items in cart
 if (!isset($_SESSION['loggedin']) || empty($_SESSION['cart'])) {
     header('Location: index.php');
     exit;
 }
+
+// Include header after checking for redirect
+include 'includes/header.php';
 $total = 0;
 foreach ($_SESSION['cart'] as $item) {
     $total += $item['price'] * $item['quantity'];

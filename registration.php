@@ -1,7 +1,19 @@
 <?php 
 // FILE: registration.php
-include 'includes/header.php'; 
-if (isset($_SESSION['loggedin'])) { header('Location: index.php'); exit; }
+
+// Start session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Redirect if already logged in
+if (isset($_SESSION['loggedin'])) { 
+    header('Location: index.php'); 
+    exit; 
+}
+
+// Include header after checking for redirect
+include 'includes/header.php';
 ?>
 <div class="form-container">
     <form action="php/register_process.php" method="post" enctype="multipart/form-data" onsubmit="return validateRegistrationForm()">

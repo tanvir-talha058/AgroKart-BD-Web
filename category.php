@@ -1,6 +1,5 @@
 <?php
 // FILE: category.php
-include 'includes/header.php';
 
 // Get the category from URL parameter
 $category = isset($_GET['category']) ? trim($_GET['category']) : '';
@@ -12,6 +11,9 @@ if (!in_array($category, $valid_categories)) {
     header('Location: index.php');
     exit;
 }
+
+// Include header after checking for redirect
+include 'includes/header.php';
 
 // Set display name for category
 switch ($category) {

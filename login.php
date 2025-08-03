@@ -1,8 +1,19 @@
 <?php 
 // FILE: login.php
-include 'includes/header.php'; 
+
+// Start session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Redirect if already logged in
-if (isset($_SESSION['loggedin'])) { header('Location: index.php'); exit; }
+if (isset($_SESSION['loggedin'])) { 
+    header('Location: index.php'); 
+    exit; 
+}
+
+// Include header after checking for redirect
+include 'includes/header.php';
 ?>
 <div class="form-container">
     <form action="php/login_process.php" method="post">

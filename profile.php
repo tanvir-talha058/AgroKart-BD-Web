@@ -1,10 +1,19 @@
 <?php
 // FILE: profile.php
-include 'includes/header.php';
+
+// Start session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if user is logged in
 if (!isset($_SESSION['loggedin'])) {
     header('Location: login.php');
     exit;
 }
+
+// Include header after checking for redirect
+include 'includes/header.php';
 // Fetch current user data for the form
 $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT name, email, phone, division, district, city FROM users WHERE id = ?");
