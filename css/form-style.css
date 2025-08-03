@@ -105,9 +105,9 @@
     color: #adb5bd;
 }
 
-.password-toggle {
+/* .password-toggle {
     position: absolute;
-    right: 48px;
+    right: 80px;
     top: 35%;
     transform: translateY(-50%);
     background: none;
@@ -117,7 +117,7 @@
     font-size: 16px;
     padding: 0;
     z-index: 2;
-}
+} */
 
 .password-toggle:hover {
     color: #4CAF50;
@@ -375,24 +375,25 @@
     }
 }
 /* Registration Page Styles */
-.registration-page {
+
+.registration-page, .login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 150px); /* Adjusted for typical header/footer height */
     padding: 40px 20px;
     position: relative;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     overflow: hidden;
 }
 
-.registration-container {
+.registration-container, .login-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 500px; /* Standardized max-width */
     z-index: 10;
 }
 
-.registration-card {
+.registration-card, .login-card {
     background: white;
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
@@ -400,40 +401,141 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.registration-card:hover {
+.registration-card:hover, .login-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.registration-header {
+.registration-header, .login-header {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.registration-logo {
+.registration-logo, .login-logo {
     margin-bottom: 20px;
 }
 
-.registration-header h2 {
+.registration-header h2, .login-header h2 {
     color: #2c3e50;
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 8px;
-    letter-spacing: -0.5px;
 }
 
-.registration-header p {
+.registration-header p, .login-header p {
     color: #6c757d;
     font-size: 16px;
     margin: 0;
 }
 
-.registration-form {
+.registration-form, .login-form {
     margin-top: 25px;
 }
 
-.form-row {
+.form-row, .form-group {
     margin-bottom: 20px;
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: #4CAF50;
+    font-size: 18px;
+    z-index: 1; /* Ensure icon is above input background */
+}
+
+/* Combined rule for inputs and selects for consistency */
+.input-icon-wrapper input,
+.input-icon-wrapper select {
+    padding-left: 45px; /* Makes space for the icon */
+    height: 50px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    width: 100%;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    color: #495057;
+    -webkit-appearance: none; /* Removes default system appearance */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.input-icon-wrapper input:focus,
+.input-icon-wrapper select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.input-icon-wrapper input::placeholder {
+    color: #adb5bd;
+}
+
+/* Custom dropdown arrow */
+.input-icon-wrapper select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%236c757d" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 35px;
+    top: 35%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #4CAF50;
+}
+
+
+.file-upload-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 2px dashed #e0e0e0;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    min-height: 50px;
+}
+
+.file-upload-wrapper:hover {
+    border-color: #4CAF50;
+    background: #f8fff8;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-label {
+    padding-left: 30px;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
 }
 
 .register-button {
@@ -458,70 +560,11 @@
 .register-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-    background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
 }
 
-.register-button:active {
-    transform: translateY(0);
-}
 
-.file-upload-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    border: 2px dashed #e0e0e0;
-    border-radius: 10px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    background: #fafafa;
-}
 
-.file-upload-wrapper:hover {
-    border-color: #4CAF50;
-    background: #f8fff8;
-}
-
-.file-upload-wrapper i {
-    position: absolute;
-    left: 15px;
-    color: #4CAF50;
-    font-size: 18px;
-    z-index: 1;
-}
-
-.file-upload-wrapper input[type="file"] {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.file-upload-label {
-    padding-left: 45px;
-    color: #6c757d;
-    cursor: pointer;
-    font-size: 14px;
-    width: 100%;
-}
-
-.file-upload-wrapper:hover .file-upload-label {
-    color: #4CAF50;
-}
-
-/* Select styling for registration form */
-.registration-form select {
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 15px center;
-    background-size: 12px;
-    padding-right: 45px;
-}
-
-/* Error message styling for registration */
-.registration-form .error-message {
+.error-message {
     background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
     color: #c62828;
     padding: 12px 15px;
@@ -534,44 +577,44 @@
     font-size: 14px;
 }
 
-.registration-form .error-text {
+.error-text {
     color: #d32f2f;
     font-size: 12px;
     margin-top: 5px;
     display: block;
+    min-height: 15px; /* Prevents layout shift */
 }
 
-/* Switch form link styling */
-.registration-form .switch-form {
+.switch-form {
     text-align: center;
     margin-top: 25px;
     color: #6c757d;
     font-size: 14px;
 }
 
-.registration-form .switch-form a {
+.switch-form a {
     color: #4CAF50;
     text-decoration: none;
     font-weight: 600;
-    transition: color 0.3s ease;
 }
 
-.registration-form .switch-form a:hover {
-    color: #45a049;
-    text-decoration: underline;
+.floating-shape {
+    position: absolute;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 50%;
+    animation: float 15s infinite ease-in-out;
+}
+.floating-shape.shape-1 { width: 300px; height: 300px; top: -150px; right: -100px; animation-delay: 0s; }
+.floating-shape.shape-2 { width: 200px; height: 200px; bottom: -100px; left: -50px; animation-delay: 5s; }
+.floating-shape.shape-3 { width: 150px; height: 150px; top: 50%; right: 10%; animation-delay: 10s; }
+.floating-shape.shape-4 { width: 100px; height: 100px; top: 20%; left: 15%; animation-delay: 2s; }
+
+@keyframes float {
+    50% { transform: translateY(-20px) rotate(10deg); }
 }
 
-/* Responsive design for registration form */
 @media (max-width: 768px) {
-    .registration-page {
-        padding: 20px 15px;
-    }
-    
-    .registration-card {
-        padding: 30px 25px;
-    }
-    
-    .registration-header h2 {
-        font-size: 24px;
-    }
+    .registration-page, .login-page { padding: 20px 15px; }
+    .registration-card, .login-card { padding: 30px 25px; }
+    .registration-header h2, .login-header h2 { font-size: 24px; }
 }
