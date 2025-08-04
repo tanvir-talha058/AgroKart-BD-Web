@@ -17,20 +17,435 @@ include 'includes/header.php';
 $order_id = $_SESSION['last_order_id'];
 unset($_SESSION['last_order_id']); // Clear it after use
 ?>
-<div class="success-container">
-    <div class="success-box">
-        <i class="fas fa-check-circle"></i>
-        <h1>Payment Successful!</h1>
-        <p>Thank you for your purchase. Your order has been placed successfully.</p>
-        <p>Your Order ID is: <strong>#<?php echo $order_id; ?></strong></p>
-        <p>You can view your order details in the "My Orders" section.</p>
-        <div class="receipt">
-            <h3>Order Receipt (Simulated)</h3>
-            <p><strong>Order ID:</strong> #<?php echo $order_id; ?></p>
-            <p><strong>Date:</strong> <?php echo date('F j, Y, g:i a'); ?></p>
-            <p>A detailed receipt has been sent to your email.</p>
+
+<style>
+.payment-success-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.success-container {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.success-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideUp 0.6s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.success-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+}
+
+.success-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    animation: bounceIn 0.8s ease-out 0.2s both;
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+}
+
+.success-icon i {
+    font-size: 3rem;
+    color: white;
+}
+
+.success-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.success-message {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.order-info {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    border-left: 4px solid #4CAF50;
+}
+
+.order-id {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.order-id span {
+    color: #4CAF50;
+    font-family: 'Courier New', monospace;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.order-note {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+.receipt-section {
+    background: white;
+    border: 2px dashed #ddd;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    position: relative;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.receipt-section::before {
+    content: '🧾';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 15px;
+    font-size: 1.5rem;
+}
+
+.receipt-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.receipt-details {
+    text-align: left;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.receipt-row:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.receipt-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.receipt-value {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.email-notice {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    color: #1976d2;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #4CAF50;
+    animation: confetti-fall 3s linear infinite;
+}
+
+.confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: #4CAF50; }
+.confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; background: #2196F3; }
+.confetti:nth-child(3) { left: 30%; animation-delay: 1s; background: #FF9800; }
+.confetti:nth-child(4) { left: 40%; animation-delay: 1.5s; background: #E91E63; }
+.confetti:nth-child(5) { left: 50%; animation-delay: 2s; background: #9C27B0; }
+.confetti:nth-child(6) { left: 60%; animation-delay: 0.3s; background: #00BCD4; }
+.confetti:nth-child(7) { left: 70%; animation-delay: 0.8s; background: #8BC34A; }
+.confetti:nth-child(8) { left: 80%; animation-delay: 1.3s; background: #FFC107; }
+.confetti:nth-child(9) { left: 90%; animation-delay: 1.8s; background: #FF5722; }
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-success-page {
+        padding: 20px 15px;
+    }
+    
+    .success-card {
+        padding: 40px 25px;
+        border-radius: 15px;
+    }
+    
+    .success-title {
+        font-size: 2rem;
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .success-icon i {
+        font-size: 2.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .receipt-details {
+        padding: 15px;
+    }
+}
+</style>
+
+<div class="payment-success-page">
+    <!-- Confetti Animation -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            
+            <h1 class="success-title">Payment Successful!</h1>
+            <p class="success-message">Thank you for your purchase. Your order has been placed successfully and is being processed.</p>
+            
+            <div class="order-info">
+                <div class="order-id">
+                    Your Order ID: <span>#<?php echo $order_id; ?></span>
+                </div>
+                <p class="order-note">
+                    <i class="fas fa-info-circle"></i>
+                    You can view your order details in the "My Orders" section.
+                </p>
+            </div>
+            
+            <div class="receipt-section">
+                <h3 class="receipt-title">
+                    <i class="fas fa-receipt"></i>
+                    Order Receipt
+                </h3>
+                
+                <div class="receipt-details">
+                    <div class="receipt-row">
+                        <span class="receipt-label">Order ID:</span>
+                        <span class="receipt-value">#<?php echo $order_id; ?></span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Date & Time:</span>
+                        <span class="receipt-value"><?php echo date('F j, Y, g:i a'); ?></span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Status:</span>
+                        <span class="receipt-value" style="color: #4CAF50;">✓ Confirmed</span>
+                    </div>
+                </div>
+                
+                <div class="email-notice">
+                    <i class="fas fa-envelope"></i>
+                    <span>A detailed receipt has been sent to your registered email address.</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="index.php" class="btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    Continue Shopping
+                </a>
+                <a href="my_orders.php" class="btn-secondary">
+                    <i class="fas fa-list-alt"></i>
+                    View My Orders
+                </a>
+            </div>
         </div>
-        <a href="index.php" class="btn-primary">Continue Shopping</a>
     </div>
 </div>
+
+<script>
+// Add some interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Add a subtle pulse animation to the success icon
+    const successIcon = document.querySelector('.success-icon');
+    if (successIcon) {
+        setTimeout(() => {
+            successIcon.style.animation += ', pulse 2s infinite';
+        }, 1000);
+    }
+    
+    // Add CSS for pulse animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+
 <?php include 'includes/footer.php'; ?>
