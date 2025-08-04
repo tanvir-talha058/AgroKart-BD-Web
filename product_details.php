@@ -52,7 +52,7 @@ if ($reviews_result->num_rows > 0) {
             <span class="current-page"><?php echo htmlspecialchars($product['name']); ?></span>
         </nav>
     </div>
-
+  
     <!-- Product Details Section -->
     <div class="product-details-container">
         <div class="product-image-section">
