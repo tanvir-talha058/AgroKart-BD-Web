@@ -42,8 +42,8 @@ $stmt->close();
                     </div>
                 </div>
                 <div class="current-profile-photo">
-                    <?php if (!empty($user['profile_photo']) && file_exists($user['profile_photo'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Current Profile" class="current-photo">
+                    <?php if (!empty($user['profile_image_path']) && file_exists($user['profile_image_path'])): ?>
+                        <img src="<?php echo htmlspecialchars($user['profile_image_path']); ?>" alt="Current Profile" class="current-photo">
                     <?php else: ?>
                         <div class="default-avatar">
                             <i class="fas fa-user"></i>
@@ -82,8 +82,8 @@ $stmt->close();
                     </h3>
                     <div class="photo-upload-wrapper">
                         <div class="photo-preview" id="photoPreview">
-                            <?php if (!empty($user['profile_photo']) && file_exists($user['profile_photo'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Profile Preview" class="preview-image">
+                            <?php if (!empty($user['profile_image_path']) && file_exists($user['profile_image_path'])): ?>
+                                <img src="<?php echo htmlspecialchars($user['profile_image_path']); ?>" alt="Profile Preview" class="preview-image">
                             <?php else: ?>
                                 <div class="preview-placeholder">
                                     <i class="fas fa-user"></i>
