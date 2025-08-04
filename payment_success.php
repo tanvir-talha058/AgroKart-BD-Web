@@ -18,6 +18,9 @@ $order_id = $_SESSION['last_order_id'];
 unset($_SESSION['last_order_id']); // Clear it after use
 ?>
 
+<!-- Include jsPDF library for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 .payment-success-page {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -197,6 +200,31 @@ unset($_SESSION['last_order_id']); // Clear it after use
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.download-receipt {
+    background: linear-gradient(135deg, #FF6B6B, #FF5252);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.download-receipt:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    text-decoration: none;
+    color: white;
 }
 
 .action-buttons {
@@ -408,6 +436,12 @@ unset($_SESSION['last_order_id']); // Clear it after use
                     <i class="fas fa-envelope"></i>
                     <span>A detailed receipt has been sent to your registered email address.</span>
                 </div>
+                
+                <!-- Download Receipt Button -->
+                <button class="download-receipt" onclick="downloadReceipt()">
+                    <i class="fas fa-download"></i>
+                    Download Receipt (PDF)
+                </button>
             </div>
             
             <div class="action-buttons">
@@ -446,6 +480,141 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 });
+
+// Function to download receipt as PDF
+function downloadReceipt() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Get order details
+    const orderId = '<?php echo $order_id; ?>';
+    const orderDate = '<?php echo date('F j, Y, g:i a'); ?>';
+    const currentDate = new Date().toLocaleDateString();
+    
+    // Set colors
+    const primaryColor = [76, 175, 80]; // Green
+    const secondaryColor = [44, 62, 80]; // Dark blue
+    const lightGray = [248, 249, 250];
+    
+    // Header with company branding
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Company logo/name
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AgroKart BD', 20, 25);
+    
+    // Tagline
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Fresh Products, Direct from Farm', 20, 32);
+    
+    // Receipt title
+    doc.setTextColor(...secondaryColor);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PAYMENT RECEIPT', 20, 60);
+    
+    // Success indicator
+    doc.setFillColor(...primaryColor);
+    doc.circle(180, 55, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.text('✓', 177, 58);
+    
+    // Order information section
+    doc.setFillColor(...lightGray);
+    doc.rect(20, 75, 170, 35, 'F');
+    
+    doc.setTextColor(...secondaryColor);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Order Information', 25, 88);
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Order ID:', 25, 98);
+    doc.setFont('helvetica', 'bold');
+    doc.text('#' + orderId, 70, 98);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Order Date:', 25, 105);
+    doc.setFont('helvetica', 'bold');
+    doc.text(orderDate, 70, 105);
+    
+    // Payment status
+    doc.setTextColor(...primaryColor);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Status: CONFIRMED ✓', 120, 98);
+    
+    // Customer information (placeholder)
+    doc.setTextColor(...secondaryColor);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Customer Information', 25, 130);
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Customer: Valued Customer', 25, 140);
+    doc.text('Email: customer@example.com', 25, 147);
+    doc.text('Phone: +880-XXXXXXXXX', 25, 154);
+    
+    // Order summary section
+    doc.setFillColor(...lightGray);
+    doc.rect(20, 165, 170, 25, 'F');
+    
+    doc.setTextColor(...secondaryColor);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Order Summary', 25, 178);
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Items: Various fresh products', 25, 185);
+    
+    // Payment information
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Payment Information', 25, 210);
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Payment Method: Cash on Delivery', 25, 220);
+    doc.text('Payment Status: Confirmed', 25, 227);
+    doc.text('Transaction ID: TXN' + orderId, 25, 234);
+    
+    // Footer
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 270, 210, 27, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Thank you for choosing AgroKart BD!', 20, 283);
+    doc.text('For support: support@agrokartbd.com | +880-XXXXXXXXX', 20, 290);
+    
+    // Watermark
+    doc.setTextColor(200, 200, 200);
+    doc.setFontSize(50);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PAID', 105, 150, { angle: 45, align: 'center' });
+    
+    // Download the PDF
+    doc.save('AgroKart-Receipt-' + orderId + '.pdf');
+    
+    // Show success message
+    const button = document.querySelector('.download-receipt');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+    button.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = 'linear-gradient(135deg, #FF6B6B, #FF5252)';
+    }, 2000);
+}
 </script>
 
 <?php include 'includes/footer.php'; ?>
