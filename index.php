@@ -88,6 +88,21 @@ include 'includes/header.php';
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         $category_class = strtolower($row["category"]);
+        
+        // Determine pricing unit based on category
+        $price_unit = '';
+        switch(strtolower($row["category"])) {
+          case 'vegetable':
+          case 'fruit':
+            $price_unit = '/kg';
+            break;
+          case 'spice':
+            $price_unit = '/gm';
+            break;
+          default:
+            $price_unit = '';
+        }
+        
         echo '<div class="product-card" data-category="' . $category_class . '">';
         echo '<div class="product-image-container">';
         echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '" class="product-image">';
@@ -104,7 +119,7 @@ include 'includes/header.php';
         echo '<div class="product-info">';
         echo '<h4 class="product-title">' . htmlspecialchars($row["name"]) . '</h4>';
         echo '<div class="product-meta">';
-        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '</span>';
+        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '<span class="price-unit">' . $price_unit . '</span></span>';
         echo '</div>';
         echo '</div>';
         echo '<form action="php/cart_manager.php" method="POST" class="product-form">';
@@ -116,6 +131,7 @@ include 'includes/header.php';
         echo '</button>';
         echo '</form>';
         echo '</div>';
+
       }
     } else {
       echo '<div class="no-products">';
@@ -607,20 +623,31 @@ include 'includes/header.php';
 
   .product-info {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px; /* Ensure consistent height */
   }
 
   .product-title {
     font-size: 1.1rem;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 10px;
+    margin-bottom: auto; /* Push price to bottom */
     line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.8em; /* Reserve space for 2 lines */
   }
 
   .product-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: auto;
     margin-bottom: 15px;
   }
 
@@ -628,6 +655,7 @@ include 'includes/header.php';
     font-size: 1.2rem;
     font-weight: 700;
     color: #4CAF50;
+    white-space: nowrap;
   }
 
   .stock-badge {
@@ -676,6 +704,39 @@ include 'includes/header.php';
   .add-to-cart-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+
+  .price-unit {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+  }
+
+  /* Enhanced Cart Badge Animation */
+  .cart-badge {
+    animation: cartBadgePulse 0.3s ease-in-out;
+  }
+
+  @keyframes cartBadgePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* Add to cart button feedback */
+  .add-to-cart-btn:active {
+    transform: scale(0.95);
+  }
+
+  .add-to-cart-btn.added {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    animation: addedFeedback 0.6s ease-in-out;
+  }
+
+  @keyframes addedFeedback {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background: linear-gradient(135deg, #66BB6A, #4CAF50); }
+    100% { transform: scale(1); }
   }
 
   .no-products {
