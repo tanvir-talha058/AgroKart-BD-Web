@@ -660,7 +660,7 @@ $buyer_id = $_SESSION['user_id'];
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -668,6 +668,7 @@ $buyer_id = $_SESSION['user_id'];
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
+        padding: 20px;
     }
 
     .order-details-modal.show {
@@ -677,44 +678,69 @@ $buyer_id = $_SESSION['user_id'];
 
     .order-details-content {
         background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        width: 90%;
-        max-width: 800px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        width: 95%;
+        max-width: 900px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         animation: slideIn 0.4s ease;
+        overflow: hidden;
+        position: relative;
     }
 
     .order-details-header {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-bottom: 1px solid #e9ecef;
+        background: linear-gradient(135deg, #4CAF50, #8BC34A);
+        padding: 20px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 5;
     }
 
     .order-details-header h3 {
         margin: 0;
         font-size: 1.5rem;
-        color: #343a40;
+        color: white;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .order-details-header h3 i {
+        font-size: 1.2rem;
     }
 
     .close-modal {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.2);
         border: none;
-        color: #868e96;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.2rem;
         cursor: pointer;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
     }
 
     .close-modal:hover {
-        color: #495057;
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
     }
 
     .order-details-body {
-        padding: 20px;
+        padding: 25px;
+        overflow-y: auto;
+        max-height: calc(85vh - 80px);
+        /* Header height is approximately 80px */
     }
 
     .loading-spinner {
@@ -738,36 +764,45 @@ $buyer_id = $_SESSION['user_id'];
     .order-info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin-bottom: 20px;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .order-info-section {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(76, 175, 80, 0.1);
     }
 
     .order-info-section h4 {
-        margin: 0 0 10px 0;
-        font-size: 1.2rem;
-        color: #343a40;
+        margin: 0 0 15px 0;
+        font-size: 1.3rem;
+        color: #2c3e50;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     .order-info-section h4 i {
-        color: #007bff;
-        font-size: 1.5rem;
+        color: #4CAF50;
+        font-size: 1.3rem;
     }
 
     .info-row {
         display: flex;
         justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #e9ecef;
+        padding: 12px 0;
+        border-bottom: 1px dashed #e9ecef;
     }
 
     .info-row:last-child {
@@ -775,47 +810,95 @@ $buyer_id = $_SESSION['user_id'];
     }
 
     .label {
-        font-weight: 600;
-        color: #495057;
+        color: #6c757d;
+        font-weight: 500;
     }
 
     .value {
-        color: #343a40;
+        font-weight: 600;
+        color: #2c3e50;
     }
 
     .status-badge {
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
         font-weight: 600;
         text-transform: uppercase;
     }
 
     .order-items-section {
-        margin-top: 20px;
+        margin-top: 25px;
+        background: #f9f9f9;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .order-items-section h4 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 1.3rem;
+    }
+
+    .order-items-section h4 i {
+        color: #4CAF50;
     }
 
     .order-items-list {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .order-items-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .order-items-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .order-items-list::-webkit-scrollbar-thumb {
+        background: #4CAF50;
+        border-radius: 10px;
     }
 
     .detail-item {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        gap: 15px;
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid rgba(76, 175, 80, 0.1);
+    }
+
+    .detail-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
 
     .item-image {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         overflow: hidden;
-        border-radius: 8px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        flex-shrink: 0;
     }
 
     .item-image img {
@@ -826,35 +909,75 @@ $buyer_id = $_SESSION['user_id'];
 
     .item-info {
         flex: 1;
+        min-width: 0;
+        /* Prevents flex item from overflowing */
+    }
+
+    .item-info h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .item-meta {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-top: 5px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .price {
+        color: #4CAF50;
+        font-weight: 600;
+    }
+
+    .quantity {
         color: #666;
+        background: #f5f5f5;
+        padding: 3px 8px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+    }
+
+    .subtotal {
+        font-weight: 700;
+        color: #2c3e50;
     }
 
     .order-summary {
-        margin-top: 25px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f9f9f9, #f3f3f3);
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(76, 175, 80, 0.1);
     }
 
     .summary-row {
         display: flex;
         justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #e9ecef;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed #e0e0e0;
+        font-size: 1.05rem;
     }
 
     .summary-row:last-child {
         border-bottom: none;
+        margin-top: 5px;
+        padding-top: 15px;
         font-weight: 700;
-        color: #343a40;
+        color: #2c3e50;
+        font-size: 1.2rem;
+    }
+
+    .summary-row:last-child span:last-child {
+        color: #4CAF50;
+        font-size: 1.3rem;
     }
 
     /* Animations */
@@ -930,7 +1053,7 @@ $buyer_id = $_SESSION['user_id'];
         modal.innerHTML = `
             <div class="order-details-content">
                 <div class="order-details-header">
-                    <h3>Order #${String(orderId).padStart(6, '0')} Details</h3>
+                    <h3><i class="fas fa-clipboard-list"></i> Order #${String(orderId).padStart(6, '0')} Details</h3>
                     <button class="close-modal"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="order-details-body">
@@ -945,8 +1068,21 @@ $buyer_id = $_SESSION['user_id'];
 
         // Add event listener to close button
         modal.querySelector('.close-modal').addEventListener('click', function() {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
+            closeModal(modal);
+        });
+
+        // Close modal when clicking outside the content
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal(modal);
+            }
+        });
+
+        // Also close on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.classList.contains('show')) {
+                closeModal(modal);
+            }
         });
 
         // Show modal with animation
@@ -992,6 +1128,26 @@ $buyer_id = $_SESSION['user_id'];
             minute: '2-digit'
         });
 
+        // Get status icon based on order status
+        let statusIcon = 'fas fa-info-circle';
+        switch (order.status.toLowerCase()) {
+            case 'pending':
+                statusIcon = 'fas fa-clock';
+                break;
+            case 'processing':
+                statusIcon = 'fas fa-cog fa-spin';
+                break;
+            case 'shipped':
+                statusIcon = 'fas fa-truck';
+                break;
+            case 'delivered':
+                statusIcon = 'fas fa-check-circle';
+                break;
+            case 'cancelled':
+                statusIcon = 'fas fa-times-circle';
+                break;
+        }
+
         // Create items list HTML
         const itemsHTML = items.map(item => `
             <div class="detail-item">
@@ -1019,15 +1175,17 @@ $buyer_id = $_SESSION['user_id'];
                     </div>
                     <div class="info-row">
                         <span class="label">Status:</span>
-                        <span class="value status-badge status-${order.status.toLowerCase()}">${order.status}</span>
+                        <span class="value status-badge status-${order.status.toLowerCase()}"><i class="${statusIcon}"></i> ${order.status}</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Payment Method:</span>
-                        <span class="value">${order.payment_method}</span>
+                        <span class="value"><i class="fas fa-credit-card"></i> ${order.payment_method}</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Payment Status:</span>
-                        <span class="value">${order.payment_status}</span>
+                        <span class="value">${order.payment_status === 'Paid' ? 
+                          '<span style="color: #4CAF50;"><i class="fas fa-check-circle"></i> Paid</span>' : 
+                          '<span style="color: #ffc107;"><i class="fas fa-clock"></i> Pending</span>'}</span>
                     </div>
                 </div>
                 
@@ -1035,11 +1193,11 @@ $buyer_id = $_SESSION['user_id'];
                     <h4><i class="fas fa-map-marker-alt"></i> Shipping Information</h4>
                     <div class="info-row">
                         <span class="label">Name:</span>
-                        <span class="value">${order.full_name}</span>
+                        <span class="value">${order.full_name || 'Not available'}</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Phone:</span>
-                        <span class="value">${order.phone}</span>
+                        <span class="value">${order.phone || 'Not available'}</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Address:</span>
@@ -1049,7 +1207,7 @@ $buyer_id = $_SESSION['user_id'];
             </div>
             
             <div class="order-items-section">
-                <h4><i class="fas fa-shopping-cart"></i> Order Items</h4>
+                <h4><i class="fas fa-shopping-cart"></i> Order Items (${items.length} items)</h4>
                 <div class="order-items-list">
                     ${itemsHTML}
                 </div>
@@ -1062,10 +1220,10 @@ $buyer_id = $_SESSION['user_id'];
                 </div>
                 <div class="summary-row">
                     <span>Shipping:</span>
-                    <span>${parseFloat(order.shipping_cost) > 0 ? '৳' + parseFloat(order.shipping_cost).toFixed(2) : 'Free'}</span>
+                    <span>${parseFloat(order.shipping_cost) > 0 ? '৳' + parseFloat(order.shipping_cost).toFixed(2) : '<span class="free-delivery">Free</span>'}</span>
                 </div>
                 <div class="summary-row total">
-                    <span>Total:</span>
+                    <span>Total Amount:</span>
                     <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
                 </div>
             </div>
@@ -1115,6 +1273,12 @@ $buyer_id = $_SESSION['user_id'];
                     button.disabled = false;
                 });
         }
+    }
+
+    // Helper function to close modal with animation
+    function closeModal(modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
     }
 
     function reorderItems(orderId) {
