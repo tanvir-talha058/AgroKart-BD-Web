@@ -1,5 +1,4 @@
 <?php
-
 // FILE: /php/update_order_status_user.php
 require_once '../includes/db_connect.php';
 
@@ -38,9 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['order_id']) && isset($
         }
 
         // Update order status to 'Cancelled'
-        $update_sql = "UPDATE orders SET status = 'Cancelled' WHERE id = ?";
+        $update_sql = "UPDATE orders SET status = 'Cancelled' WHERE id = ? AND buyer_id = ?";
         $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("i", $order_id);
+        $update_stmt->bind_param("ii", $order_id, $user_id);
 
         if ($update_stmt->execute()) {
             header('Content-Type: application/json');

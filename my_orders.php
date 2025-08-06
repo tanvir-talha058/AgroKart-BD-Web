@@ -869,6 +869,57 @@ $buyer_id = $_SESSION['user_id'];
             opacity: 1;
         }
     }
+
+    /* Notification Styles */
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .notification {
+        background: white;
+        border-radius: 10px;
+        padding: 15px 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification.success {
+        border-left: 4px solid #4CAF50;
+    }
+
+    .notification.error {
+        border-left: 4px solid #dc3545;
+    }
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .notification-content i {
+        font-size: 1.2rem;
+    }
+
+    .notification.success i {
+        color: #4CAF50;
+    }
+
+    .notification.error i {
+        color: #dc3545;
+    }
 </style>
 
 <script>
@@ -1108,6 +1159,62 @@ $buyer_id = $_SESSION['user_id'];
                 button.innerHTML = originalContent;
                 button.disabled = false;
             });
+    }
+
+    // Add this function to my_orders.php if it's not already present
+    function showNotification(message, type) {
+        // Check if notification container exists, if not create it
+        let container = document.querySelector('.notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        // Add to container
+        container.appendChild(notification);
+
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 10);
+
+        // Hide notification after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+    }
+
+    // Add cart count update function if not already present
+    function updateCartCount(count) {
+        // Target all possible cart counter elements
+        const cartIcons = document.querySelectorAll('[data-count]');
+        const cartBadges = document.querySelectorAll('.badge');
+        const cartCountTexts = document.querySelectorAll('.cart-count');
+
+        // Update data-count attributes
+        cartIcons.forEach(icon => {
+            icon.setAttribute('data-count', count);
+        });
+
+        // Update any badge elements
+        cartBadges.forEach(badge => {
+            badge.textContent = count;
+        });
+
+        // Update text content of any cart count elements
+        cartCountTexts.forEach(text => {
+            if (text) text.textContent = count;
+        });
     }
 </script>
 
