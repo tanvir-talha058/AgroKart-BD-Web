@@ -625,7 +625,7 @@ include 'includes/header.php';
   }
 
   .product-info {
-    padding: 15px 20px;
+    padding: 10px 15px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -634,19 +634,19 @@ include 'includes/header.php';
   .product-title {
     font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 15px;
-    line-height: 1.4;
+    margin-bottom: 8px;
+    line-height: 1.3;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    min-height: 2.8em;
+    min-height: 2.6em;
   }
 
   .product-meta {
     margin-top: auto;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -667,7 +667,7 @@ include 'includes/header.php';
 
   .product-form {
     margin-top: auto;
-    padding: 0 20px 15px;
+    padding: 0 15px 10px;
   }
 
   /* Enhanced Cart Badge Animation */
@@ -1088,30 +1088,36 @@ include 'includes/header.php';
   // Update cart count in the header
   function updateCartCount(count) {
     // Target all possible cart counter elements more precisely
-    const cartIcon = document.querySelector('.cart-icon');
-    const cartCountBadge = document.querySelector('.cart-icon[data-count]');
-    const cartText = document.querySelector('.cart-text .cart-count');
-    
-    // Update the main cart icon in header
-    if (cartIcon) {
-      cartIcon.setAttribute('data-count', count);
+    const cartLink = document.querySelector('.cart-link');
+    const cartBadge = document.querySelector('.cart-badge');
+
+    // Update the cart link data-count attribute
+    if (cartLink) {
+      cartLink.setAttribute('data-count', count);
     }
-    
-    // Update any text-based counter
-    if (cartText) {
-      cartText.textContent = count;
-    }
-    
-    // Add animation effect
-    if (cartCountBadge) {
-      // Remove and re-add the animation class to trigger it again
-      cartCountBadge.classList.remove('cart-badge');
-      
-      // Force browser reflow to restart animation
-      void cartCountBadge.offsetWidth;
-      
-      // Add animation class
-      cartCountBadge.classList.add('cart-badge');
+
+    if (count > 0) {
+      if (cartBadge) {
+        // If badge exists, update its content
+        cartBadge.textContent = count;
+
+        // Remove and re-add the animation class to trigger it again
+        cartBadge.classList.remove('cart-badge');
+        void cartBadge.offsetWidth; // Force browser reflow
+        cartBadge.classList.add('cart-badge');
+      } else {
+        // Create new badge if it doesn't exist
+        const cartWrapper = document.querySelector('.cart-wrapper');
+        if (cartWrapper) {
+          const newBadge = document.createElement('span');
+          newBadge.className = 'cart-badge';
+          newBadge.textContent = count;
+          cartWrapper.appendChild(newBadge);
+        }
+      }
+    } else if (cartBadge) {
+      // Remove badge if count is 0
+      cartBadge.remove();
     }
   }
 </script>
