@@ -58,15 +58,7 @@ $total = 0;
                                 <div class="item-image-container">
                                     <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="item-image">
                                     <div class="item-overlay">
-                                        <div class="item-actions">
-                                            <form action="php/cart_manager.php" method="POST" class="remove-form">
-                                                <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-                                                <input type="hidden" name="action" value="remove">
-                                                <button type="submit" class="remove-btn">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <!-- Removed delete button from overlay -->
                                     </div>
                                 </div>
 
@@ -932,6 +924,10 @@ $total = 0;
 
     // Function to handle cart operations without page reload
     document.addEventListener('DOMContentLoaded', function() {
+        // Make sure cart badge is properly displayed with the current cart count
+        const cartCount = <?php echo $cart_count; ?>;
+        updateCartCount(cartCount);
+
         // Find all delete and remove forms
         const deleteForms = document.querySelectorAll('.delete-form, .remove-form');
 
@@ -1110,6 +1106,9 @@ $total = 0;
         const cartBadges = document.querySelectorAll('.badge');
         const cartCountTexts = document.querySelectorAll('.cart-count');
         const itemsCountElements = document.querySelectorAll('.items-count, .stat-item span');
+        const cartBadge = document.querySelector('.cart-badge');
+
+        console.log('Updating cart count to:', count);
 
         // Update data-count attributes
         cartIcons.forEach(icon => {
@@ -1131,17 +1130,50 @@ $total = 0;
             el.textContent = count + ' Items';
         });
 
-        // If this is in the header or global navigation
-        const headerCartBadge = document.querySelector('header .badge, .nav-cart .badge');
-        if (headerCartBadge) {
-            headerCartBadge.textContent = count;
+        // Update cart badge in header
+        if (cartBadge) {
+            cartBadge.textContent = count;
 
             // Add animation effect for badge update
-            headerCartBadge.classList.add('pulse');
+            cartBadge.classList.add('pulse');
             setTimeout(() => {
-                headerCartBadge.classList.remove('pulse');
+                cartBadge.classList.remove('pulse');
             }, 500);
+
+            // Hide badge if count is zero
+            if (count == 0) {
+                cartBadge.style.display = 'none';
+            } else {
+                cartBadge.style.display = 'flex';
+            }
+        } else {
+            // If badge doesn't exist but should (count > 0), create it
+            const cartLink = document.querySelector('.cart-link');
+            if (cartLink && count > 0) {
+                const cartWrapper = cartLink.querySelector('.cart-wrapper');
+                if (cartWrapper) {
+                    // Check if badge already exists
+                    let badge = cartWrapper.querySelector('.cart-badge');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'cart-badge pulse';
+                        badge.textContent = count;
+                        cartWrapper.appendChild(badge);
+
+                        setTimeout(() => {
+                            badge.classList.remove('pulse');
+                        }, 500);
+                    }
+                }
+            }
         }
+
+        // Update any parent elements that need to know about cart changes
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+            detail: {
+                count: count
+            }
+        }));
     }
 </script>
 
