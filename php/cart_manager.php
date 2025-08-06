@@ -79,8 +79,23 @@ if (isset($_POST['action'])) {
     // Calculate cart count
     $response['cart_count'] = count($_SESSION['cart']);
 
-    // If it's an AJAX request, return JSON response
+    // Calculate cart totals for JSON response
     if ($is_ajax) {
+        $cart_total = 0;
+        foreach ($_SESSION['cart'] as $pid => $item) {
+            $cart_total += $item['price'] * $item['quantity'];
+        }
+        $response['cart_total'] = $cart_total;
+
+        // For update action, calculate item total
+        if ($action == 'update' && isset($_SESSION['cart'][$product_id])) {
+            $response['item_total'] = $_SESSION['cart'][$product_id]['price'] * $_SESSION['cart'][$product_id]['quantity'];
+        }
+
+        // Make sure cart count is set
+        $response['cart_count'] = count($_SESSION['cart']);
+
+        // Return JSON response
         header('Content-Type: application/json');
         echo json_encode($response);
         exit();
@@ -90,4 +105,3 @@ if (isset($_POST['action'])) {
 // Default redirect for non-AJAX requests
 header('Location: ../cart.php');
 exit();
-?>
