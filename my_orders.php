@@ -85,7 +85,7 @@ $buyer_id = $_SESSION['user_id'];
                 while ($order = $result->fetch_assoc()) {
                     $status_class = strtolower(str_replace(' ', '-', $order['status']));
                     $status_icon = '';
-                    switch($order['status']) {
+                    switch ($order['status']) {
                         case 'Pending':
                             $status_icon = 'fas fa-clock';
                             break;
@@ -104,7 +104,7 @@ $buyer_id = $_SESSION['user_id'];
                         default:
                             $status_icon = 'fas fa-info-circle';
                     }
-                    
+
                     echo '<div class="order-card">';
                     echo '<div class="order-card-header">';
                     echo '<div class="order-id-section">';
@@ -116,7 +116,7 @@ $buyer_id = $_SESSION['user_id'];
                     echo '<span>' . $order['status'] . '</span>';
                     echo '</div>';
                     echo '</div>';
-                    
+
                     echo '<div class="order-card-body">';
                     echo '<div class="order-details">';
                     echo '<div class="order-info">';
@@ -129,7 +129,7 @@ $buyer_id = $_SESSION['user_id'];
                     echo '<span>' . htmlspecialchars($order['delivery_location']) . '</span>';
                     echo '</div>';
                     echo '</div>';
-                    
+
                     if ($order['product_names']) {
                         $products = explode(', ', $order['product_names']);
                         $display_products = array_slice($products, 0, 3);
@@ -143,13 +143,13 @@ $buyer_id = $_SESSION['user_id'];
                         echo '</div>';
                     }
                     echo '</div>';
-                    
+
                     echo '<div class="order-amount">';
                     echo '<span class="amount-label">Total Amount</span>';
                     echo '<span class="amount-value">৳' . number_format($order['total_amount'], 2) . '</span>';
                     echo '</div>';
                     echo '</div>';
-                    
+
                     echo '<div class="order-card-footer">';
                     echo '<div class="order-actions">';
                     if ($order['status'] == 'Pending') {
@@ -652,24 +652,462 @@ $buyer_id = $_SESSION['user_id'];
             font-size: 0.8rem;
         }
     }
+
+    /* Order Details Modal Styles */
+    .order-details-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .order-details-modal.show {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .order-details-content {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 90%;
+        max-width: 800px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.4s ease;
+    }
+
+    .order-details-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-details-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #343a40;
+    }
+
+    .close-modal {
+        background: transparent;
+        border: none;
+        color: #868e96;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-modal:hover {
+        color: #495057;
+    }
+
+    .order-details-body {
+        padding: 20px;
+    }
+
+    .loading-spinner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #007bff;
+        font-size: 1rem;
+        margin: 20px 0;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .order-info-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-info-section h4 {
+        margin: 0 0 10px 0;
+        font-size: 1.2rem;
+        color: #343a40;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .order-info-section h4 i {
+        color: #007bff;
+        font-size: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .value {
+        color: #343a40;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .order-items-section {
+        margin-top: 20px;
+    }
+
+    .order-items-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-image {
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .order-summary {
+        margin-top: 25px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 </style>
 
 <script>
     function viewOrderDetails(orderId) {
-        // You can implement a modal or redirect to order details page
-        alert('View details for order #' + orderId + ' - This can be implemented with a modal or separate page');
+        // Create and open a modal with order details
+        const modal = document.createElement('div');
+        modal.className = 'order-details-modal';
+        modal.innerHTML = `
+            <div class="order-details-content">
+                <div class="order-details-header">
+                    <h3>Order #${String(orderId).padStart(6, '0')} Details</h3>
+                    <button class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="order-details-body">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading order details...</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Add event listener to close button
+        modal.querySelector('.close-modal').addEventListener('click', function() {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        });
+
+        // Show modal with animation
+        setTimeout(() => modal.classList.add('show'), 10);
+
+        // Fetch order details using AJAX
+        fetch(`php/get_order_details.php?order_id=${orderId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update modal content with order details
+                    const detailsBody = modal.querySelector('.order-details-body');
+                    detailsBody.innerHTML = createOrderDetailsHTML(data.order, data.items);
+                } else {
+                    modal.querySelector('.order-details-body').innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${data.message}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error);
+                modal.querySelector('.order-details-body').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Failed to load order details. Please try again.</p>
+                    </div>
+                `;
+            });
+    }
+
+    // Helper function to create order details HTML
+    function createOrderDetailsHTML(order, items) {
+        // Format date
+        const orderDate = new Date(order.created_at);
+        const formattedDate = orderDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Create items list HTML
+        const itemsHTML = items.map(item => `
+            <div class="detail-item">
+                <div class="item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="item-info">
+                    <h4>${item.name}</h4>
+                    <div class="item-meta">
+                        <span class="price">৳${parseFloat(item.price).toFixed(2)}</span>
+                        <span class="quantity">× ${item.quantity}</span>
+                        <span class="subtotal">৳${(parseFloat(item.price) * parseInt(item.quantity)).toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        return `
+            <div class="order-info-grid">
+                <div class="order-info-section">
+                    <h4><i class="fas fa-info-circle"></i> Order Information</h4>
+                    <div class="info-row">
+                        <span class="label">Order Date:</span>
+                        <span class="value">${formattedDate}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Status:</span>
+                        <span class="value status-badge status-${order.status.toLowerCase()}">${order.status}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Payment Method:</span>
+                        <span class="value">${order.payment_method}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Payment Status:</span>
+                        <span class="value">${order.payment_status}</span>
+                    </div>
+                </div>
+                
+                <div class="order-info-section">
+                    <h4><i class="fas fa-map-marker-alt"></i> Shipping Information</h4>
+                    <div class="info-row">
+                        <span class="label">Name:</span>
+                        <span class="value">${order.full_name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Phone:</span>
+                        <span class="value">${order.phone}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Address:</span>
+                        <span class="value">${order.delivery_location}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-items-section">
+                <h4><i class="fas fa-shopping-cart"></i> Order Items</h4>
+                <div class="order-items-list">
+                    ${itemsHTML}
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>${parseFloat(order.shipping_cost) > 0 ? '৳' + parseFloat(order.shipping_cost).toFixed(2) : 'Free'}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
+                </div>
+            </div>
+        `;
     }
 
     function cancelOrder(orderId) {
         if (confirm('Are you sure you want to cancel this order?')) {
-            // Implement order cancellation logic
-            alert('Order #' + orderId + ' cancellation requested - Implement backend logic');
+            // Show loading indicator on the button
+            const button = document.querySelector(`.cancel-btn[onclick="cancelOrder(${orderId})"]`);
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
+            button.disabled = true;
+
+            // Submit cancel request via AJAX
+            fetch('php/update_order_status_user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `order_id=${orderId}&action=cancel`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showNotification(data.message, 'success');
+
+                        // Update order status in UI
+                        const orderCard = button.closest('.order-card');
+                        const statusElement = orderCard.querySelector('.order-status');
+                        statusElement.className = 'order-status status-cancelled';
+                        statusElement.innerHTML = '<i class="fas fa-times-circle"></i><span>Cancelled</span>';
+
+                        // Remove cancel button
+                        button.remove();
+                    } else {
+                        showNotification(data.message || 'Failed to cancel order.', 'error');
+                        button.innerHTML = originalContent;
+                        button.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred. Please try again.', 'error');
+                    button.innerHTML = originalContent;
+                    button.disabled = false;
+                });
         }
     }
 
     function reorderItems(orderId) {
-        // Implement reorder functionality
-        alert('Reordering items from order #' + orderId + ' - Implement add to cart logic');
+        // Show loading indicator
+        const button = document.querySelector(`.reorder-btn[onclick="reorderItems(${orderId})"]`);
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding to cart...';
+        button.disabled = true;
+
+        // Submit reorder request via AJAX
+        fetch('php/reorder_items.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `order_id=${orderId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+
+                    // Update cart count in header
+                    updateCartCount(data.cart_count);
+
+                    // Show success UI on button
+                    button.innerHTML = '<i class="fas fa-check"></i> Added to cart';
+
+                    // Redirect to cart page after short delay
+                    setTimeout(() => {
+                        window.location.href = 'cart.php';
+                    }, 1500);
+                } else {
+                    showNotification(data.message || 'Failed to add items to cart.', 'error');
+                    button.innerHTML = originalContent;
+                    button.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            });
     }
 </script>
 
