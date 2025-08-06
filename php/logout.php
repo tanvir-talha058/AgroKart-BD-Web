@@ -1,8 +1,24 @@
 <?php
 // FILE: /php/logout.php
 session_start();
+
+// Check if user was logged in
+$was_logged_in = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+
+// Clear all session variables
 $_SESSION = array();
+
+// Destroy the session
 session_destroy();
+
+// Start a new session but don't restore the cart if user was logged in
+// This ensures that logged-in user's cart doesn't remain for the next user
+session_start();
+
+// Initialize an empty cart
+$_SESSION['cart'] = [];
+
+// Redirect to home page
 header("location: ../index.php");
 exit;
 ?>
@@ -31,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if image file is a actual image or fake image
     $check = getimagesize($_FILES["product_image"]["tmp_name"]);
-    if($check === false) {
+    if ($check === false) {
         $_SESSION['error'] = "File is not an image.";
         header("Location: ../dashboard.php");
         exit();
@@ -44,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $target_file = $target_dir . $new_name;
         $i++;
     }
-    
+
     if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
         $image_path = "images/uploads/" . basename($target_file);
 
