@@ -95,6 +95,17 @@ $total = 0;
                                     <span class="total-label">Total</span>
                                     <span class="total-amount">৳<?php echo number_format($item_total, 2); ?></span>
                                 </div>
+
+                                <!-- Add visible delete button -->
+                                <div class="item-remove">
+                                    <form action="php/cart_manager.php" method="POST" class="delete-form">
+                                        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                                        <input type="hidden" name="action" value="remove">
+                                        <button type="submit" class="delete-btn" title="Remove item">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -320,7 +331,8 @@ $total = 0;
 
     .cart-item-card {
         display: grid;
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-columns: auto 1fr auto auto auto;
+        /* Added one more column for delete button */
         gap: 20px;
         align-items: center;
         background: #f8fff9;
@@ -651,7 +663,63 @@ $total = 0;
         color: white;
     }
 
-    /* Responsive Design */
+    /* New delete button styles */
+    .cart-item-card {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto auto;
+        /* Added one more column for delete button */
+        gap: 20px;
+        align-items: center;
+        background: #f8fff9;
+        padding: 20px;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .item-remove {
+        align-self: flex-start;
+        margin-top: 5px;
+    }
+
+    .delete-btn {
+        background: none;
+        border: none;
+        color: #e74c3c;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+    }
+
+    .delete-btn:hover {
+        background: #e74c3c;
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    /* Update responsive styles to handle the new column */
+    @media (max-width: 768px) {
+        .cart-item-card {
+            grid-template-columns: 1fr;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .item-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            margin-top: 0;
+        }
+    }
+
     @media (max-width: 1200px) {
         .cart-content {
             grid-template-columns: 1fr;
