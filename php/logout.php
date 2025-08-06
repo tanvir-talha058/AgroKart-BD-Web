@@ -1,9 +1,38 @@
 <?php
 // FILE: /php/logout.php
 session_start();
+require_once '../includes/db_connect.php';
 
-// Check if user was logged in
-$was_logged_in = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+// Before logging out, ensure all cart items are saved to database for logged in user
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    // Save any items in the session cart to the database before logout
+    if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $product_id => $item) {
+            // Check if this product is already in the user's database cart
+            $check_stmt = $conn->prepare("SELECT quantity FROM user_cart WHERE user_id = ? AND product_id = ?");
+            $check_stmt->bind_param("ii", $user_id, $product_id);
+            $check_stmt->execute();
+            $check_result = $check_stmt->get_result();
+
+            if ($check_result->num_rows > 0) {
+                // Update existing cart item
+                $update_stmt = $conn->prepare("UPDATE user_cart SET quantity = ? WHERE user_id = ? AND product_id = ?");
+                $update_stmt->bind_param("iii", $item['quantity'], $user_id, $product_id);
+                $update_stmt->execute();
+                $update_stmt->close();
+            } else {
+                // Insert new cart item
+                $insert_stmt = $conn->prepare("INSERT INTO user_cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
+                $insert_stmt->bind_param("iii", $user_id, $product_id, $item['quantity']);
+                $insert_stmt->execute();
+                $insert_stmt->close();
+            }
+            $check_stmt->close();
+        }
+    }
+}
 
 // Clear all session variables
 $_SESSION = array();
@@ -11,11 +40,10 @@ $_SESSION = array();
 // Destroy the session
 session_destroy();
 
-// Start a new session but don't restore the cart if user was logged in
-// This ensures that logged-in user's cart doesn't remain for the next user
+// Start a new session
 session_start();
 
-// Initialize an empty cart
+// Initialize an empty cart for the guest
 $_SESSION['cart'] = [];
 
 // Redirect to home page

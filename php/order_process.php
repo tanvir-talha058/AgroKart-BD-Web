@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $product_id => $item) {
             $stmt_item->bind_param("iiid", $order_id, $product_id, $item['quantity'], $item['price']);
             $stmt_item->execute();
-            
+
             $stmt_stock->bind_param("ii", $item['quantity'], $product_id);
             $stmt_stock->execute();
         }
@@ -53,12 +53,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
         // If all queries were successful, commit the transaction
         $conn->commit();
 
-        // Clear the cart and redirect to success page
+        // Clear the cart from session
         unset($_SESSION['cart']);
+
+        // Clear the cart from database for this user
+        $clear_cart_stmt = $conn->prepare("DELETE FROM user_cart WHERE user_id = ?");
+        $clear_cart_stmt->bind_param("i", $buyer_id);
+        $clear_cart_stmt->execute();
+        $clear_cart_stmt->close();
+
         $_SESSION['last_order_id'] = $order_id;
         header('Location: ../payment_success.php');
         exit();
-
     } catch (mysqli_sql_exception $exception) {
         // If any query fails, roll back the transaction
         $conn->rollback();
@@ -70,4 +76,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
     header('Location: ../cart.php');
     exit();
 }
-?>
