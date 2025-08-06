@@ -850,58 +850,58 @@ $total = 0;
         const minValue = parseInt(input.min);
         const maxValue = parseInt(input.max);
         const newValue = currentValue + change;
-
+        
         if (newValue >= minValue && newValue <= maxValue) {
             input.value = newValue;
-
+            
             // Trigger the form submission but don't reload
             const form = button.closest('form');
-
+            
             // Get form data
             const formData = new FormData(form);
             formData.append('ajax', '1');
-
+            
             // Visual feedback
             const productCard = form.closest('.cart-item-card');
             productCard.style.opacity = '0.7';
-
+            
             fetch('php/cart_manager.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Response:', data);
-
-                    if (data.success) {
-                        showNotification(data.message, 'success');
-
-                        // Update cart count
-                        updateCartCount(data.cart_count);
-
-                        // Update item total price
-                        const itemTotal = productCard.querySelector('.total-amount');
-                        if (itemTotal && data.item_total) {
-                            itemTotal.textContent = '৳' + data.item_total.toFixed(2);
-                        }
-
-                        // Update cart summary
-                        updateCartSummary(data.cart_total);
-                    } else {
-                        showNotification(data.message, 'error');
-                        // Reset to previous value
-                        input.value = currentValue;
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    
+                    // Update cart count
+                    updateCartCount(data.cart_count);
+                    
+                    // Update item total price
+                    const itemTotal = productCard.querySelector('.total-amount');
+                    if (itemTotal && data.item_total) {
+                        itemTotal.textContent = '৳' + data.item_total.toFixed(2);
                     }
-
-                    // Reset product card appearance
-                    productCard.style.opacity = '1';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('An error occurred. Please try again.', 'error');
+                    
+                    // Update cart summary
+                    updateCartSummary(data.cart_total);
+                } else {
+                    showNotification(data.message, 'error');
+                    // Reset to previous value
                     input.value = currentValue;
-                    productCard.style.opacity = '1';
-                });
+                }
+                
+                // Reset product card appearance
+                productCard.style.opacity = '1';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+                input.value = currentValue;
+                productCard.style.opacity = '1';
+            });
         }
     }
 
@@ -909,127 +909,127 @@ $total = 0;
     document.addEventListener('DOMContentLoaded', function() {
         // Find all delete and remove forms
         const deleteForms = document.querySelectorAll('.delete-form, .remove-form');
-
+        
         deleteForms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault(); // Prevent normal form submission
-
+                
                 const productId = this.querySelector('input[name="product_id"]').value;
                 const formData = new FormData(this);
                 formData.append('ajax', '1'); // Add AJAX flag
-
+                
                 // Visual feedback - add fading out effect to the product card
                 const productCard = this.closest('.cart-item-card');
                 productCard.style.opacity = '0.5';
                 productCard.style.transform = 'scale(0.98)';
-
+                
                 fetch('php/cart_manager.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Response:', data);
-
-                        if (data.success) {
-                            // Show success notification
-                            showNotification(data.message, 'success');
-
-                            // Update cart count in header
-                            updateCartCount(data.cart_count);
-
-                            // Remove product card with animation
-                            productCard.style.opacity = '0';
-                            productCard.style.maxHeight = '0';
-                            productCard.style.margin = '0';
-                            productCard.style.padding = '0';
-
-                            setTimeout(() => {
-                                productCard.remove();
-
-                                // Update items count in the cart header
-                                const itemsCountElements = document.querySelectorAll('.items-count, .stat-item span');
-                                itemsCountElements.forEach(el => {
-                                    el.textContent = data.cart_count + ' Items';
-                                });
-
-                                // Update cart summary
-                                updateCartSummary(data.cart_total);
-
-                                // If cart is empty, reload to show empty cart message
-                                if (data.cart_count === 0) {
-                                    location.reload();
-                                }
-                            }, 300);
-                        } else {
-                            // Show error notification
-                            showNotification(data.message, 'error');
-
-                            // Reset product card appearance
-                            productCard.style.opacity = '1';
-                            productCard.style.transform = 'none';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showNotification('An error occurred. Please try again.', 'error');
-
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                    
+                    if (data.success) {
+                        // Show success notification
+                        showNotification(data.message, 'success');
+                        
+                        // Update cart count in header
+                        updateCartCount(data.cart_count);
+                        
+                        // Remove product card with animation
+                        productCard.style.opacity = '0';
+                        productCard.style.maxHeight = '0';
+                        productCard.style.margin = '0';
+                        productCard.style.padding = '0';
+                        
+                        setTimeout(() => {
+                            productCard.remove();
+                            
+                            // Update items count in the cart header
+                            const itemsCountElements = document.querySelectorAll('.items-count, .stat-item span');
+                            itemsCountElements.forEach(el => {
+                                el.textContent = data.cart_count + ' Items';
+                            });
+                            
+                            // Update cart summary
+                            updateCartSummary(data.cart_total);
+                            
+                            // If cart is empty, reload to show empty cart message
+                            if (data.cart_count === 0) {
+                                location.reload();
+                            }
+                        }, 300);
+                    } else {
+                        // Show error notification
+                        showNotification(data.message, 'error');
+                        
                         // Reset product card appearance
                         productCard.style.opacity = '1';
                         productCard.style.transform = 'none';
-                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred. Please try again.', 'error');
+                    
+                    // Reset product card appearance
+                    productCard.style.opacity = '1';
+                    productCard.style.transform = 'none';
+                });
             });
         });
-
+        
         // Also make quantity update forms use AJAX
         const updateForms = document.querySelectorAll('.update-form');
-
+        
         updateForms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-
+                
                 const productId = this.querySelector('input[name="product_id"]').value;
                 const quantity = this.querySelector('input[name="quantity"]').value;
                 const formData = new FormData(this);
                 formData.append('ajax', '1');
-
+                
                 const productCard = this.closest('.cart-item-card');
                 productCard.style.opacity = '0.7';
-
+                
                 fetch('php/cart_manager.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Response:', data);
-
-                        if (data.success) {
-                            showNotification(data.message, 'success');
-
-                            // Update cart count
-                            updateCartCount(data.cart_count);
-
-                            // Update item total price
-                            const itemTotal = productCard.querySelector('.total-amount');
-                            if (itemTotal && data.item_total) {
-                                itemTotal.textContent = '৳' + data.item_total.toFixed(2);
-                            }
-
-                            // Update cart summary
-                            updateCartSummary(data.cart_total);
-                        } else {
-                            showNotification(data.message, 'error');
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                    
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        
+                        // Update cart count
+                        updateCartCount(data.cart_count);
+                        
+                        // Update item total price
+                        const itemTotal = productCard.querySelector('.total-amount');
+                        if (itemTotal && data.item_total) {
+                            itemTotal.textContent = '৳' + data.item_total.toFixed(2);
                         }
-
-                        // Reset product card appearance
-                        productCard.style.opacity = '1';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showNotification('An error occurred. Please try again.', 'error');
-                        productCard.style.opacity = '1';
-                    });
+                        
+                        // Update cart summary
+                        updateCartSummary(data.cart_total);
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                    
+                    // Reset product card appearance
+                    productCard.style.opacity = '1';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred. Please try again.', 'error');
+                    productCard.style.opacity = '1';
+                });
             });
         });
     });
@@ -1037,10 +1037,10 @@ $total = 0;
     // Function to update cart summary totals
     function updateCartSummary(total) {
         if (typeof total === 'undefined') return;
-
+        
         const subtotalEl = document.querySelector('.summary-row:first-child span:last-child');
         const totalEl = document.querySelector('.final-total');
-
+        
         if (subtotalEl) subtotalEl.textContent = '৳' + total.toFixed(2);
         if (totalEl) totalEl.textContent = '৳' + total.toFixed(2);
     }
@@ -1054,7 +1054,7 @@ $total = 0;
             notificationContainer.className = 'notification-container';
             document.body.appendChild(notificationContainer);
         }
-
+        
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `cart-notification ${type}`;
@@ -1064,13 +1064,13 @@ $total = 0;
                 <span>${message}</span>
             </div>
         `;
-
+        
         // Add to container
         notificationContainer.appendChild(notification);
-
+        
         // Show notification
         setTimeout(() => notification.classList.add('show'), 10);
-
+        
         // Hide notification after 3 seconds
         setTimeout(() => {
             notification.classList.remove('show');
@@ -1084,17 +1084,17 @@ $total = 0;
         const cartIcons = document.querySelectorAll('[data-count]');
         const cartBadges = document.querySelectorAll('.badge');
         const cartCountTexts = document.querySelectorAll('.cart-count');
-
+        
         // Update data-count attributes
         cartIcons.forEach(icon => {
             icon.setAttribute('data-count', count);
         });
-
+        
         // Update any badge elements
         cartBadges.forEach(badge => {
             badge.textContent = count;
         });
-
+        
         // Update text content of any cart count elements
         cartCountTexts.forEach(text => {
             if (text) text.textContent = count;
