@@ -59,13 +59,14 @@ include 'includes/header.php';
 
             <?php else: ?>
                 <!-- Step 2: OTP Verification Form -->
-                <form action="php/verify_otp_process.php" method="post" class="login-form">
+                <!-- Step 2: OTP verification and password reset form -->
+                <form action="php/verify_otp_process_new.php" method="post" class="login-form">
                     <p class="verification-message">A verification code has been sent to <strong><?php echo htmlspecialchars($_SESSION['forgot_email']); ?></strong></p>
 
                     <div class="form-group">
                         <div class="input-icon-wrapper">
                             <i class="fas fa-key"></i>
-                            <input type="text" id="otp" name="otp" placeholder="Enter 6-digit verification code" required>
+                            <input type="text" id="otp" name="otp" placeholder="Enter 6-digit verification code" required pattern="\d{6}" inputmode="numeric" maxlength="6" minlength="6">
                         </div>
                     </div>
 

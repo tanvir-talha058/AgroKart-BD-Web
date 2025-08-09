@@ -48,9 +48,12 @@ $user = $result->fetch_assoc();
 $user_id = $user['id'];
 $user_name = $user['name'];
 
+// Set default timezone to ensure consistency
+date_default_timezone_set('UTC');
+
 // Generate a new OTP
 $otp = generateOTP();
-$expiry_time = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+$expiry_time = date('Y-m-d H:i:s', strtotime('+1 hour')); // Extended to 1 hour
 
 // Update the OTP in the database
 $update_stmt = $conn->prepare("UPDATE password_reset_tokens SET token = ?, expires_at = ? WHERE user_id = ?");
@@ -63,6 +66,9 @@ if ($update_stmt->affected_rows === 0) {
     $insert_stmt->bind_param("iss", $user_id, $otp, $expiry_time);
     $insert_stmt->execute();
 }
+
+// Log the generated OTP for debugging
+error_log("Resent OTP for user ID $user_id: $otp, expires at $expiry_time");
 
 // Create a new PHPMailer instance
 $mail = new PHPMailer(true);

@@ -49,9 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $user['id'];
     $user_name = $user['name'];
 
+    // Set default timezone to ensure consistency
+    date_default_timezone_set('UTC');
+
     // Generate OTP
     $otp = generateOTP();
-    $expiry_time = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+    $expiry_time = date('Y-m-d H:i:s', strtotime('+1 hour')); // Extended to 1 hour
 
     // Check if there's an existing OTP for this user
     $check_stmt = $conn->prepare("SELECT id FROM password_reset_tokens WHERE user_id = ?");
@@ -71,6 +74,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $insert_stmt->bind_param("iss", $user_id, $otp, $expiry_time);
         $insert_stmt->execute();
     }
+
+    // Log the generated OTP for debugging
+    error_log("Generated OTP for user ID $user_id: $otp, expires at $expiry_time");
 
     // Create a new PHPMailer instance
     $mail = new PHPMailer(true);
@@ -118,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <body>
             <div class='container'>
                 <div class='header'>
-                    <img src='images/AGrO.png' alt='AgroKart BD Logo'>
+                    <img src='https://ibb.co.com/YFmnNsvQ' alt='AgroKart BD Logo'>
                 </div>
                 <div class='content'>
                     <h2>Hello, " . htmlspecialchars($user_name) . "!</h2>
