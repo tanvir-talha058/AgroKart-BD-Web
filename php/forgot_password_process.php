@@ -8,6 +8,11 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Include database connection
 require_once '../includes/db_connect.php';
+require_once '../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 // Function to generate a random 6-digit OTP
 function generateOTP()
@@ -67,63 +72,94 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $insert_stmt->execute();
     }
 
-    // Send the OTP via email
-    $to = $email;
-    $subject = "Password Reset Request - AgroKart BD";
+    // Create a new PHPMailer instance
+    $mail = new PHPMailer(true);
 
-    $message = "
-    <html>
-    <head>
-        <title>Password Reset Request</title>
-        <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; }
-            .header { text-align: center; padding: 20px 0; }
-            .header img { max-width: 150px; }
-            .content { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .code { font-size: 24px; font-weight: bold; text-align: center; padding: 15px; margin: 20px 0; background: #f5f5f5; border-radius: 5px; letter-spacing: 5px; }
-            .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #777; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <img src='https://agrokartbd.com/images/AGrO.png' alt='AgroKart BD Logo'>
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'fahimtalha79@gmail.com'; // Your Gmail address
+        $mail->Password = 'kpfmqrbyutecsqip'; // Your Gmail app password - generate a new one if needed
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Using SSL instead of TLS
+        $mail->Port = 465; // SSL port
+        $mail->SMTPDebug = 0; // Turn off debug output for production
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ];
+
+        // Recipients
+        $mail->setFrom('fahimtalha79@gmail.com', 'AgroKart BD');
+        $mail->addAddress($email, $user_name);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = "Password Reset Request - AgroKart BD";
+
+        $message = "
+        <html>
+        <head>
+            <title>Password Reset Request</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; }
+                .header { text-align: center; padding: 20px 0; }
+                .header img { max-width: 150px; }
+                .content { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .code { font-size: 24px; font-weight: bold; text-align: center; padding: 15px; margin: 20px 0; background: #f5f5f5; border-radius: 5px; letter-spacing: 5px; }
+                .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #777; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <img src='images/AGrO.png' alt='AgroKart BD Logo'>
+                </div>
+                <div class='content'>
+                    <h2>Hello, " . htmlspecialchars($user_name) . "!</h2>
+                    <p>We received a request to reset your password for your AgroKart BD account. Please use the following verification code to complete the process:</p>
+                    
+                    <div class='code'>$otp</div>
+                    
+                    <p>This code will expire in 15 minutes for security reasons.</p>
+                    <p>If you didn't request a password reset, please ignore this email or contact customer support if you have concerns.</p>
+                    <p>Thank you,<br>AgroKart BD Team</p>
+                </div>
+                <div class='footer'>
+                    <p>&copy; " . date('Y') . " AgroKart BD. All rights reserved.</p>
+                    <p>This is an automated message, please do not reply to this email.</p>
+                </div>
             </div>
-            <div class='content'>
-                <h2>Hello, " . htmlspecialchars($user_name) . "!</h2>
-                <p>We received a request to reset your password for your AgroKart BD account. Please use the following verification code to complete the process:</p>
-                
-                <div class='code'>$otp</div>
-                
-                <p>This code will expire in 15 minutes for security reasons.</p>
-                <p>If you didn't request a password reset, please ignore this email or contact customer support if you have concerns.</p>
-                <p>Thank you,<br>AgroKart BD Team</p>
-            </div>
-            <div class='footer'>
-                <p>&copy; " . date('Y') . " AgroKart BD. All rights reserved.</p>
-                <p>This is an automated message, please do not reply to this email.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
+        </body>
+        </html>
+        ";
 
-    // Set content-type header for sending HTML email
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: AgroKart BD <noreply@agrokartbd.com>" . "\r\n";
+        $mail->Body = $message;
 
-    // Send the email
-    mail($to, $subject, $message, $headers);
+        // Send the email
+        $mail->send();
 
-    // Store the email in session for the next step
-    $_SESSION['forgot_email'] = $email;
+        // Store the email in session for the next step
+        $_SESSION['forgot_email'] = $email;
 
-    // Redirect back to the forgot password page with success message
-    $_SESSION['message'] = "A verification code has been sent to your email address.";
-    header("Location: ../forgot_password.php");
-    exit;
+        // Redirect back to the forgot password page with success message
+        $_SESSION['message'] = "A verification code has been sent to your email address.";
+        header("Location: ../forgot_password.php");
+        exit;
+    } catch (Exception $e) {
+        // Log the error
+        error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+
+        // For production use a more user-friendly message
+        $_SESSION['error'] = "We couldn't send the verification code. Please try again or contact support.";
+        header("Location: ../forgot_password.php");
+        exit;
+    }
 } else {
     // If not a POST request, redirect to the forgot password page
     header("Location: ../forgot_password.php");
