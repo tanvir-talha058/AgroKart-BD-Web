@@ -142,7 +142,6 @@ if (isset($_SESSION['cart'])) {
                 </div>
                 <div class="profile-info">
                   <span class="profile-name"><?php echo htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]); ?></span>
-                  <span class="profile-role"><?php echo $_SESSION['user_role']; ?></span>
                 </div>
                 <i class="fas fa-chevron-down profile-arrow"></i>
               </button>

@@ -321,24 +321,29 @@ $total = 0;
         gap: 20px;
     }
 
-       .cart-item-card {
+    .cart-item-card {
         display: grid;
         grid-template-columns: auto 1fr auto auto auto;
         gap: 20px;
         align-items: center;
-        background: #ffffff; /* Changed from #f8fff9 to pure white */
+        background: #ffffff;
+        /* Changed from #f8fff9 to pure white */
         padding: 20px;
         border-radius: 15px;
         transition: all 0.3s ease;
         position: relative;
-        border: 1px solid #e8f5e8; /* Added subtle border for definition */
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Enhanced shadow for depth */
+        border: 1px solid #e8f5e8;
+        /* Added subtle border for definition */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        /* Enhanced shadow for depth */
     }
 
     .cart-item-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Stronger hover shadow */
-        border-color: #4CAF50; /* Green border on hover */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        /* Stronger hover shadow */
+        border-color: #4CAF50;
+        /* Green border on hover */
     }
 
     .item-image-container {
@@ -361,7 +366,6 @@ $total = 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(76, 175, 80, 0.8);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -370,7 +374,7 @@ $total = 0;
     }
 
     .cart-item-card:hover .item-overlay {
-        opacity: 1;
+        opacity: 0;
     }
 
     .remove-btn {

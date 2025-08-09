@@ -980,6 +980,43 @@ $buyer_id = $_SESSION['user_id'];
         font-size: 1.3rem;
     }
 
+    .order-notes-section {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8fff9;
+        border-radius: 15px;
+        border: 1px solid #e8f5e9;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .order-notes-section h4 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #2C3E50;
+        margin: 0 0 10px 0;
+        font-size: 1.1rem;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .order-notes-section h4 i {
+        color: #4CAF50;
+    }
+
+    .order-notes {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .order-notes p {
+        margin: 0;
+        color: #555;
+        line-height: 1.5;
+    }
+
     /* Animations */
     @keyframes slideIn {
         from {
@@ -1227,6 +1264,15 @@ $buyer_id = $_SESSION['user_id'];
                     <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
                 </div>
             </div>
+            
+            ${order.notes ? `
+            <div class="order-notes-section">
+                <h4><i class="fas fa-sticky-note"></i> Order Notes</h4>
+                <div class="order-notes">
+                    <p>${order.notes}</p>
+                </div>
+            </div>
+            ` : ''}
         `;
     }
 

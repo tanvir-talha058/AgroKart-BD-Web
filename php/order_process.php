@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
     $buyer_id = $_SESSION['user_id'];
     $delivery_location = trim($_POST['location']);
     $payment_method = trim($_POST['payment_method']);
+    $order_notes = isset($_POST['order_notes']) ? trim($_POST['order_notes']) : '';
     $total_amount = 0;
 
     // Calculate total amount
@@ -23,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
 
     try {
         // 1. Insert into orders table
-        $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location) VALUES (?, ?, ?)");
-        $stmt_order->bind_param("ids", $buyer_id, $total_amount, $delivery_location);
+        $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location, notes) VALUES (?, ?, ?, ?)");
+        $stmt_order->bind_param("idss", $buyer_id, $total_amount, $delivery_location, $order_notes);
         $stmt_order->execute();
         $order_id = $stmt_order->insert_id;
         $stmt_order->close();
