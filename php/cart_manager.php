@@ -146,11 +146,8 @@ if (isset($_POST['action'])) {
             break;
     }
 
-    // Calculate cart count (total quantity of all items)
-    $cart_count = 0;
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['quantity'];
-    }
+    // Calculate cart count (number of unique products)
+    $cart_count = count($_SESSION['cart']);
     $response['cart_count'] = $cart_count;
 
     // Calculate cart totals for JSON response

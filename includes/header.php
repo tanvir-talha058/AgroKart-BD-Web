@@ -40,9 +40,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 } // Calculate cart count
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
-  foreach ($_SESSION['cart'] as $item) {
-    $cart_count += $item['quantity'];
-  }
+  $cart_count = count($_SESSION['cart']); // Count unique products instead of quantities
 }
 ?>
 <!DOCTYPE html>
