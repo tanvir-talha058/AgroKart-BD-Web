@@ -72,6 +72,7 @@ $stmt_shipped->close();
             <ul class="nav-menu">
                 <li class="active"><a href="#"><span class="icon"><i class="fas fa-chart-bar"></i></span>Dashboard</a></li>
                 <li><a href="products.php"><span class="icon"><i class="fas fa-box"></i></span>Products</a></li>
+                <li><a href="orders.php"><span class="icon"><i class="fas fa-shopping-cart"></i></span>Orders</a></li>
                 <li><a href="customers.php"><span class="icon"><i class="fas fa-users"></i></span>Customers</a></li>
                 <li><a href="php/logout.php"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a></li>
             </ul>
@@ -242,55 +243,6 @@ $stmt_shipped->close();
                     <h3>Product Category Distribution</h3>
                     <div class="chart-content">
                         <canvas id="categoryChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Review Orders Card -->
-                <div class="review-orders-card">
-                    <div class="card-header">
-                        <h3>Recent Orders</h3>
-                    </div>
-                    <div class="orders-list">
-                        <?php
-                        $orders_sql = "SELECT o.id AS order_id, o.status, o.notes, u.name AS buyer_name, CONCAT(u.city, ', ', u.district) AS location, o.created_at 
-               FROM orders o
-               JOIN users u ON o.buyer_id = u.id
-               WHERE o.id IN (SELECT DISTINCT oi.order_id FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE p.seller_id = ?)
-               ORDER BY o.created_at DESC LIMIT 5";
-                        $stmt_orders = $conn->prepare($orders_sql);
-                        $stmt_orders->bind_param("i", $seller_id);
-                        $stmt_orders->execute();
-                        $orders_result = $stmt_orders->get_result();
-
-                        if ($orders_result->num_rows > 0) {
-                            while ($order = $orders_result->fetch_assoc()) {
-                                echo '<div class="order-item">';
-                                echo '<div class="order-date">' . date('d/m/Y', strtotime($order['created_at'])) . '</div>';
-                                echo '<div class="order-details"><div class="product-name">Order #' . $order['order_id'] . '</div><div class="order-id">Buyer: ' . htmlspecialchars($order['buyer_name']) . '</div>';
-
-                                // Add order notes if they exist
-                                if (!empty($order['notes'])) {
-                                    echo '<div class="order-notes"><i class="fas fa-sticky-note"></i> ' . htmlspecialchars($order['notes']) . '</div>';
-                                }
-
-                                echo '</div>';
-                                echo '<div class="company-details"><div class="location">' . htmlspecialchars($order['location']) . '</div></div>';
-                                echo '<form action="php/update_order_status.php" method="POST" class="status-form">';
-                                echo '<input type="hidden" name="order_id" value="' . $order['order_id'] . '">';
-                                echo '<select name="status" class="status ' . strtolower($order['status']) . '" onchange="this.form.submit()">';
-                                $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
-                                foreach ($statuses as $status) {
-                                    $selected = ($order['status'] == $status) ? 'selected' : '';
-                                    echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
-                                }
-                                echo '</select></form>';
-                                echo '</div>';
-                            }
-                        } else {
-                            echo '<p>No recent orders found.</p>';
-                        }
-                        $stmt_orders->close();
-                        ?>
                     </div>
                 </div>
             </div>

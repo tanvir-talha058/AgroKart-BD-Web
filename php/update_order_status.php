@@ -27,10 +27,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     } else {
-        $_SESSION['error'] = "You are not authorized to update this order.";
     }
     $stmt_check->close();
 }
-header("Location: ../dashboard.php");
+
+// Check if redirect_to parameter is provided
+$redirect_to = isset($_POST['redirect_to']) ? $_POST['redirect_to'] : 'dashboard';
+$redirect_page = ($redirect_to === 'orders') ? '../orders.php' : '../dashboard.php';
+
+header("Location: $redirect_page");
 exit();
-?>
