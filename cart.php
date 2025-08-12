@@ -1,8 +1,41 @@
 <?php
-// FILE: cart.php
+session_start();
+
+// Include header after session start
 include 'includes/header.php';
-$cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+
+// Initialize cart if not exists
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = array();
+}
+
+// Initialize total
+$cart_items = $_SESSION['cart'];
 $total = 0;
+
+// Remove incorrect cart item addition code
+// This should only be in your add-to-cart handler
+/*
+$_SESSION['cart'][] = array(
+    'id' => $product_id,
+    'name' => $product_name,
+    'price' => $product_price,
+    'quantity' => $quantity
+);
+*/
+
+// Calculate total
+foreach ($cart_items as $item) {
+    if (isset($item['price']) && isset($item['quantity'])) {
+        $total += $item['price'] * $item['quantity'];
+    }
+}
+
+// Add debugging if needed
+if (isset($_SESSION['debug'])) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}
 ?>
 
 <!-- Enhanced Cart Section -->
