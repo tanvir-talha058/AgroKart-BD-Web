@@ -163,7 +163,7 @@ $stmt_shipped->close();
                     </div>
                     <div class="orders-list">
                         <?php
-                        $orders_sql = "SELECT o.id AS order_id, o.status, u.name AS buyer_name, CONCAT(u.city, ', ', u.district) AS location, o.created_at 
+                        $orders_sql = "SELECT o.id AS order_id, o.status, o.notes, u.name AS buyer_name, CONCAT(u.city, ', ', u.district) AS location, o.created_at 
                FROM orders o
                JOIN users u ON o.buyer_id = u.id
                WHERE o.id IN (SELECT DISTINCT oi.order_id FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE p.seller_id = ?)
@@ -177,7 +177,14 @@ $stmt_shipped->close();
                             while ($order = $orders_result->fetch_assoc()) {
                                 echo '<div class="order-item">';
                                 echo '<div class="order-date">' . date('d/m/Y', strtotime($order['created_at'])) . '</div>';
-                                echo '<div class="order-details"><div class="product-name">Order #' . $order['order_id'] . '</div><div class="order-id">Buyer: ' . htmlspecialchars($order['buyer_name']) . '</div></div>';
+                                echo '<div class="order-details"><div class="product-name">Order #' . $order['order_id'] . '</div><div class="order-id">Buyer: ' . htmlspecialchars($order['buyer_name']) . '</div>';
+
+                                // Add order notes if they exist
+                                if (!empty($order['notes'])) {
+                                    echo '<div class="order-notes"><i class="fas fa-sticky-note"></i> ' . htmlspecialchars($order['notes']) . '</div>';
+                                }
+
+                                echo '</div>';
                                 echo '<div class="company-details"><div class="location">' . htmlspecialchars($order['location']) . '</div></div>';
                                 echo '<form action="php/update_order_status.php" method="POST" class="status-form">';
                                 echo '<input type="hidden" name="order_id" value="' . $order['order_id'] . '">';
