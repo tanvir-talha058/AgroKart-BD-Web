@@ -71,6 +71,7 @@ $stmt_shipped->close();
             </div>
             <ul class="nav-menu">
                 <li class="active"><a href="#"><span class="icon"><i class="fas fa-chart-bar"></i></span>Dashboard</a></li>
+                <li><a href="products.php"><span class="icon"><i class="fas fa-box"></i></span>Products</a></li>
                 <li><a href="customers.php"><span class="icon"><i class="fas fa-users"></i></span>Customers</a></li>
                 <li><a href="php/logout.php"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a></li>
             </ul>
@@ -78,15 +79,7 @@ $stmt_shipped->close();
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <button class="add-product"><i class="fas fa-plus"></i> Add New Product</button>
-                <div class="header-right">
-                    <div class="user-profile">
-                        <img src="images/profiles/user_<?php echo $_SESSION['user_id']; ?>_<?php echo time(); ?>.jpg" alt="Profile" onerror="this.src='images/AGrO.png'">
-                    </div>
-                </div>
-            </header>
+
 
             <?php
             if (isset($_SESSION['error'])) {
@@ -302,41 +295,6 @@ $stmt_shipped->close();
                 </div>
             </div>
 
-            <!-- Add New Product Modal -->
-            <div id="addProductModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h2>Add New Product</h2>
-                    <form class="add-product-form" action="php/add_product_process.php" method="POST" enctype="multipart/form-data">
-                        <label>Product Name</label>
-                        <input type="text" name="product_name" placeholder="Enter product name" required />
-                        <label>Category</label>
-                        <select name="category" required>
-                            <option value="">Select category</option>
-                            <option value="Vegetable">Vegetable</option>
-                            <option value="Fruit">Fruit</option>
-                            <option value="Spice">Spice</option>
-                        </select>
-                        <label>Price (৳)</label>
-                        <div class="price-unit-group">
-                            <input type="number" name="price" placeholder="Enter price" min="0" step="0.01" required />
-                            <select name="unit" required>
-                                <option value="kg">per kg</option>
-                                <option value="gm">per gm</option>
-                                <option value="pc">per pc</option>
-                                <option value="pack">per pack</option>
-                            </select>
-                        </div>
-                        <label>Stock Quantity</label>
-                        <input type="number" name="stock" placeholder="Enter stock quantity" min="0" required />
-                        <label>Product Image</label>
-                        <input type="file" name="product_image" accept="image/*" required />
-                        <label>Description</label>
-                        <textarea name="description" placeholder="Enter product description" rows="3" required></textarea>
-                        <button type="submit" class="submit-btn">Add Product</button>
-                    </form>
-                </div>
-            </div>
         </main>
     </div>
     <script src="js/dashboard.js"></script>

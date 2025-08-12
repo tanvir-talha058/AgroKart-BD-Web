@@ -1,37 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Modal functionality
-    const addProductBtn = document.querySelector('.add-product');
-    const modal = document.getElementById('addProductModal');
-    const closeModalBtn = document.querySelector('.close-modal');
-    
-    if (addProductBtn) { 
-        addProductBtn.onclick = () => { 
-            modal.style.display = 'flex';
-            // Add a small delay before adding the class to trigger animation
-            setTimeout(() => {
-                document.body.classList.add('modal-open');
-            }, 10);
-        }; 
-    }
-    
-    if (closeModalBtn) { 
-        closeModalBtn.onclick = () => { 
-            document.body.classList.remove('modal-open');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300); // Match this delay with your CSS transition time
-        }; 
-    }
-    
-    window.onclick = (event) => { 
-        if (event.target === modal) { 
-            document.body.classList.remove('modal-open');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        } 
-    };
-    
     // Add animations to stat cards
     const statCards = document.querySelectorAll('.stat-card');
     statCards.forEach((card, index) => {
@@ -39,12 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
             card.classList.add('animated');
         }, 100 * index);
     });
-    
-    // Add icon to Add Product button
-    const addProductButton = document.querySelector('.add-product');
-    if (addProductButton && !addProductButton.querySelector('i')) {
-        addProductButton.innerHTML = '<i class="fas fa-plus"></i> Add New Product';
-    }
     
     // Chart.js configuration
     initializeCharts();

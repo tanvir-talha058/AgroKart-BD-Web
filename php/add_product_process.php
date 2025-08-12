@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "No file was uploaded";
 
         $_SESSION['error'] = $error_message;
-        header("Location: ../dashboard.php");
+        header("Location: ../products.php");
         exit();
     }
 
@@ -52,21 +52,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check = getimagesize($_FILES["product_image"]["tmp_name"]);
     if ($check === false) {
         $_SESSION['error'] = "File is not an image.";
-        header("Location: ../dashboard.php");
+        header("Location: ../products.php");
         exit();
     }
 
     // Check file size (limit to 5MB)
     if ($_FILES["product_image"]["size"] > 5000000) {
         $_SESSION['error'] = "Sorry, your file is too large. Maximum size is 5MB.";
-        header("Location: ../dashboard.php");
+        header("Location: ../products.php");
         exit();
     }
 
     // Allow certain file formats
     if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
         $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        header("Location: ../dashboard.php");
+        header("Location: ../products.php");
         exit();
     }
 
@@ -94,6 +94,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $_SESSION['error'] = "Sorry, there was an error uploading your file. Please try again.";
     }
-    header("Location: ../dashboard.php");
+    header("Location: ../products.php");
     exit();
 }
