@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
     $buyer_id = $_SESSION['user_id'];
     $delivery_location = trim($_POST['location']);
     $payment_method = trim($_POST['payment_method']);
+    $order_notes = isset($_POST['order_notes']) ? trim($_POST['order_notes']) : '';
     $total_amount = 0;
 
     // Calculate total amount
@@ -23,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
 
     try {
         // 1. Insert into orders table
-        $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location) VALUES (?, ?, ?)");
-        $stmt_order->bind_param("ids", $buyer_id, $total_amount, $delivery_location);
+        $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location, notes) VALUES (?, ?, ?, ?)");
+        $stmt_order->bind_param("idss", $buyer_id, $total_amount, $delivery_location, $order_notes);
         $stmt_order->execute();
         $order_id = $stmt_order->insert_id;
         $stmt_order->close();
@@ -36,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $product_id => $item) {
             $stmt_item->bind_param("iiid", $order_id, $product_id, $item['quantity'], $item['price']);
             $stmt_item->execute();
-            
+
             $stmt_stock->bind_param("ii", $item['quantity'], $product_id);
             $stmt_stock->execute();
         }
@@ -53,12 +54,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
         // If all queries were successful, commit the transaction
         $conn->commit();
 
-        // Clear the cart and redirect to success page
+        // Clear the cart from session
         unset($_SESSION['cart']);
+
+        // Clear the cart from database for this user
+        $clear_cart_stmt = $conn->prepare("DELETE FROM user_cart WHERE user_id = ?");
+        $clear_cart_stmt->bind_param("i", $buyer_id);
+        $clear_cart_stmt->execute();
+        $clear_cart_stmt->close();
+
         $_SESSION['last_order_id'] = $order_id;
         header('Location: ../payment_success.php');
         exit();
-
     } catch (mysqli_sql_exception $exception) {
         // If any query fails, roll back the transaction
         $conn->rollback();
@@ -70,4 +77,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SESSION['cart'])) {
     header('Location: ../cart.php');
     exit();
 }
-?>

@@ -88,6 +88,21 @@ include 'includes/header.php';
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         $category_class = strtolower($row["category"]);
+
+        // Determine pricing unit based on category
+        $price_unit = '';
+        switch (strtolower($row["category"])) {
+          case 'vegetable':
+          case 'fruit':
+            $price_unit = '/kg';
+            break;
+          case 'spice':
+            $price_unit = '/gm';
+            break;
+          default:
+            $price_unit = '';
+        }
+
         echo '<div class="product-card" data-category="' . $category_class . '">';
         echo '<div class="product-image-container">';
         echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '" class="product-image">';
@@ -104,7 +119,7 @@ include 'includes/header.php';
         echo '<div class="product-info">';
         echo '<h4 class="product-title">' . htmlspecialchars($row["name"]) . '</h4>';
         echo '<div class="product-meta">';
-        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '</span>';
+        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '<span class="price-unit">' . $price_unit . '</span></span>';
         echo '</div>';
         echo '</div>';
         echo '<form action="php/cart_manager.php" method="POST" class="product-form">';
@@ -516,6 +531,10 @@ include 'includes/header.php';
     position: relative;
     margin: 0;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Set fixed height for cards */
   }
 
   .product-card:hover {
@@ -606,22 +625,31 @@ include 'includes/header.php';
   }
 
   .product-info {
-    padding: 20px;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
   }
 
   .product-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    line-height: 1.4;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: auto;
+    min-height: 2.6em;
   }
 
   .product-meta {
+    margin-top: auto;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
   }
 
   .price {
@@ -630,52 +658,60 @@ include 'includes/header.php';
     color: #4CAF50;
   }
 
-  .stock-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 10px;
-    border-radius: 15px;
-    font-size: 11px;
-    font-weight: 600;
-    z-index: 10;
-  }
-
-  .limited-stock {
-    background: #fff3cd;
-    color: #856404;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  .price-unit {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+    margin-left: 2px;
   }
 
   .product-form {
-    padding: 0 20px 20px;
-    margin: 0;
+    margin-top: auto;
+    padding: 0 15px 10px;
   }
 
-  .add-to-cart-btn {
-    width: 100%;
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 0;
-    box-sizing: border-box;
+  /* Enhanced Cart Badge Animation */
+  .cart-badge {
+    animation: cartBadgePulse 0.3s ease-in-out;
   }
 
-  .add-to-cart-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  @keyframes cartBadgePulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.2);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Add to cart button feedback */
+  .add-to-cart-btn:active {
+    transform: scale(0.95);
+  }
+
+  .add-to-cart-btn.added {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    animation: addedFeedback 0.6s ease-in-out;
+  }
+
+  @keyframes addedFeedback {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    }
+
+    100% {
+      transform: scale(1);
+    }
   }
 
   .no-products {
@@ -793,6 +829,50 @@ include 'includes/header.php';
 
   .feature-card:hover .feature-highlight {
     transform: scaleX(1);
+  }
+
+  /* Notification Styles */
+  .cart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+  }
+
+  .cart-notification.show {
+    transform: translateX(0);
+  }
+
+  .cart-notification.success {
+    border-left: 4px solid #4CAF50;
+  }
+
+  .cart-notification.error {
+    border-left: 4px solid #f44336;
+  }
+
+  .notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .notification-content i {
+    font-size: 1.5rem;
+  }
+
+  .cart-notification.success i {
+    color: #4CAF50;
+  }
+
+  .cart-notification.error i {
+    color: #f44336;
   }
 
   /* Responsive Design */
@@ -915,6 +995,130 @@ include 'includes/header.php';
         showMoreBtn.innerHTML = '<i class="fas fa-plus"></i><span>Show More Products</span>';
         showMoreBtn.classList.remove('loading');
       });
+  }
+
+  // AJAX Cart functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Find and attach event listeners to all product forms
+    const addToCartForms = document.querySelectorAll('.product-form');
+
+    addToCartForms.forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the normal form submission
+
+        const formData = new FormData(this);
+        formData.append('ajax', '1'); // Add AJAX flag
+
+        const button = this.querySelector('.add-to-cart-btn');
+        const originalContent = button.innerHTML;
+
+        // Show loading state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Adding...</span>';
+        button.disabled = true;
+
+        fetch('php/cart_manager.php', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Show success notification
+              showNotification(data.message, 'success');
+
+              // Update cart count
+              updateCartCount(data.cart_count);
+
+              // Show success UI on button
+              button.innerHTML = '<i class="fas fa-check"></i><span>Added!</span>';
+              button.classList.add('added');
+
+              // Restore original button after delay
+              setTimeout(() => {
+                button.innerHTML = originalContent;
+                button.classList.remove('added');
+                button.disabled = false;
+              }, 2000);
+            } else {
+              // Show error notification
+              showNotification(data.message, 'error');
+              button.innerHTML = originalContent;
+              button.disabled = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred. Please try again.', 'error');
+            button.innerHTML = originalContent;
+            button.disabled = false;
+          });
+      });
+    });
+  });
+
+  // Make sure the notification functions are defined
+  function showNotification(message, type) {
+    // Remove any existing notifications
+    const existingNotifications = document.querySelectorAll('.cart-notification');
+    existingNotifications.forEach(notification => notification.remove());
+
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `cart-notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 100);
+
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+  }
+
+  // Update cart count in the header
+  function updateCartCount(count) {
+    // Target all possible cart counter elements more precisely
+    const cartLink = document.querySelector('.cart-link');
+    const cartBadge = document.querySelector('.cart-badge');
+
+    // Update the cart link data-count attribute
+    if (cartLink) {
+      cartLink.setAttribute('data-count', count);
+    }
+
+    if (count > 0) {
+      if (cartBadge) {
+        // If badge exists, update its content
+        cartBadge.textContent = count;
+
+        // Remove and re-add the animation class to trigger it again
+        cartBadge.classList.remove('cart-badge');
+        void cartBadge.offsetWidth; // Force browser reflow
+        cartBadge.classList.add('cart-badge');
+      } else {
+        // Create new badge if it doesn't exist
+        const cartWrapper = document.querySelector('.cart-wrapper');
+        if (cartWrapper) {
+          const newBadge = document.createElement('span');
+          newBadge.className = 'cart-badge';
+          newBadge.textContent = count;
+          cartWrapper.appendChild(newBadge);
+        }
+      }
+    } else if (cartBadge) {
+      // Remove badge if count is 0
+      cartBadge.remove();
+    }
   }
 </script>
 

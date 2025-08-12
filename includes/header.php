@@ -4,11 +4,47 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once 'db_connect.php';
+
+// Check if user is logging in and needs to load their saved cart from the database
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+  // Check if we need to load the cart (either first time login or forced reload)
+  if (!isset($_SESSION['cart_loaded']) || $_SESSION['cart_loaded'] === false) {
+    // Load user's cart from the database
+    $user_id = $_SESSION['user_id'];
+
+    // First clear any existing cart - important to prevent cart data mixing between users
+    $_SESSION['cart'] = [];
+
+    // Get cart items from database
+    $cart_query = "SELECT uc.product_id, uc.quantity, p.name, p.price, p.image_path, p.stock 
+                  FROM user_cart uc 
+                  JOIN products p ON uc.product_id = p.id 
+                  WHERE uc.user_id = ?";
+    $stmt = $conn->prepare($cart_query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Add database items to session cart
+    while ($item = $result->fetch_assoc()) {
+      $product_id = $item['product_id'];
+      $_SESSION['cart'][$product_id] = [
+        'name' => $item['name'],
+        'price' => $item['price'],
+        'image' => $item['image_path'],
+        'quantity' => $item['quantity'],
+        'stock' => $item['stock']
+      ];
+    }
+    $stmt->close();
+
+    // Mark cart as loaded to prevent loading it on every page refresh
+    $_SESSION['cart_loaded'] = true;
+  }
+} // Calculate cart count
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
-  foreach ($_SESSION['cart'] as $item) {
-    $cart_count += $item['quantity'];
-  }
+  $cart_count = count($_SESSION['cart']); // Count unique products instead of quantities
 }
 ?>
 <!DOCTYPE html>
@@ -110,7 +146,6 @@ if (isset($_SESSION['cart'])) {
                 </div>
                 <div class="profile-info">
                   <span class="profile-name"><?php echo htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]); ?></span>
-                  <span class="profile-role"><?php echo $_SESSION['user_role']; ?></span>
                 </div>
                 <i class="fas fa-chevron-down profile-arrow"></i>
               </button>

@@ -1,0 +1,2 @@
+# Exclude vendor directory (managed by Composer)
+/vendor/
