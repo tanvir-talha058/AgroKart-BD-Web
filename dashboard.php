@@ -150,10 +150,74 @@ $stmt_shipped->close();
                     </div>
                 </div>
 
-                <!-- Payment Summary Card (Static as per design) -->
+                <!-- Payment Summary Card -->
                 <div class="payment-summary-card">
                     <h3>Payment Summary</h3>
-                    <p style="text-align: center; margin-top: 40px; color: #888;">Payment data will be shown here.</p>
+                    <div class="payment-data">
+                        <?php
+                        // Query to get payment summary data for this seller
+                        $payment_sql = "SELECT 
+                            COUNT(DISTINCT p.id) AS total_payments,
+                            SUM(oi.quantity * oi.price) AS total_amount,
+                            COUNT(DISTINCT CASE WHEN p.status = 'Completed' THEN p.id END) AS completed_payments,
+                            COUNT(DISTINCT CASE WHEN p.status = 'Pending' THEN p.id END) AS pending_payments
+                        FROM payments p
+                        JOIN orders o ON p.order_id = o.id
+                        JOIN order_items oi ON o.id = oi.order_id
+                        JOIN products pr ON oi.product_id = pr.id
+                        WHERE pr.seller_id = ?";
+
+                        $stmt_payment = $conn->prepare($payment_sql);
+                        $stmt_payment->bind_param("i", $seller_id);
+                        $stmt_payment->execute();
+                        $payment_result = $stmt_payment->get_result();
+                        $payment_data = $payment_result->fetch_assoc();
+
+                        // Get payment methods breakdown
+                        $methods_sql = "SELECT 
+                            p.method, 
+                            COUNT(DISTINCT p.id) AS count,
+                            SUM(oi.quantity * oi.price) AS total
+                        FROM payments p
+                        JOIN orders o ON p.order_id = o.id
+                        JOIN order_items oi ON o.id = oi.order_id
+                        JOIN products pr ON oi.product_id = pr.id
+                        WHERE pr.seller_id = ?
+                        GROUP BY p.method";
+
+                        $stmt_methods = $conn->prepare($methods_sql);
+                        $stmt_methods->bind_param("i", $seller_id);
+                        $stmt_methods->execute();
+                        $methods_result = $stmt_methods->get_result();
+
+                        if ($payment_result->num_rows > 0) {
+                            echo '<div class="payment-summary-stats">';
+                            echo '<div class="payment-stat"><span>Total Payments:</span> <strong>' . $payment_data['total_payments'] . '</strong></div>';
+                            echo '<div class="payment-stat"><span>Total Amount:</span> <strong>৳' . number_format($payment_data['total_amount'], 2) . '</strong></div>';
+                            echo '<div class="payment-stat"><span>Completed:</span> <strong>' . $payment_data['completed_payments'] . '</strong></div>';
+                            echo '<div class="payment-stat"><span>Pending:</span> <strong>' . $payment_data['pending_payments'] . '</strong></div>';
+                            echo '</div>';
+
+                            if ($methods_result->num_rows > 0) {
+                                echo '<div class="payment-methods">';
+                                echo '<h4>Payment Methods</h4>';
+                                echo '<ul>';
+                                while ($method = $methods_result->fetch_assoc()) {
+                                    echo '<li><div class="method-name">' . htmlspecialchars($method['method']) . '</div>';
+                                    echo '<div class="method-count">' . $method['count'] . ' payments</div>';
+                                    echo '<div class="method-total">৳' . number_format($method['total'], 2) . '</div></li>';
+                                }
+                                echo '</ul>';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo '<p class="no-data">No payment data available yet.</p>';
+                        }
+
+                        $stmt_payment->close();
+                        $stmt_methods->close();
+                        ?>
+                    </div>
                 </div>
 
                 <!-- Review Orders Card -->
