@@ -98,7 +98,7 @@ if ($reviews_result->num_rows > 0) {
             </div>
 
             <div class="price-section">
-                <span class="current-price">৳<?php echo number_format($product['price'], 2); ?></span>
+                <span class="current-price">৳<?php echo number_format($product['price'], 2); ?> <span class="per-unit">per <?php echo htmlspecialchars($product['unit']); ?></span></span>
             </div>
 
             <div class="stock-section">

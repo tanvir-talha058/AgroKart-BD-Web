@@ -23,7 +23,7 @@ if (isset($_POST['action'])) {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
 
             // Fetch product details from DB
-            $stmt = $conn->prepare("SELECT name, price, image_path, stock FROM products WHERE id = ?");
+            $stmt = $conn->prepare("SELECT name, price, unit, image_path, stock FROM products WHERE id = ?");
             $stmt->bind_param("i", $product_id);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -75,6 +75,7 @@ if (isset($_POST['action'])) {
                     $_SESSION['cart'][$product_id] = [
                         'name' => $product['name'],
                         'price' => $product['price'],
+                        'unit' => $product['unit'],
                         'image' => $product['image_path'],
                         'quantity' => $quantity,
                         'stock' => $product['stock']

@@ -1,7 +1,7 @@
 <?php
 // No output before this line
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 require_once 'db_connect.php';
 
@@ -16,7 +16,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     $_SESSION['cart'] = [];
 
     // Get cart items from database
-    $cart_query = "SELECT uc.product_id, uc.quantity, p.name, p.price, p.image_path, p.stock 
+    $cart_query = "SELECT uc.product_id, uc.quantity, p.name, p.price, p.unit, p.image_path, p.stock 
                   FROM user_cart uc 
                   JOIN products p ON uc.product_id = p.id 
                   WHERE uc.user_id = ?";
@@ -31,6 +31,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
       $_SESSION['cart'][$product_id] = [
         'name' => $item['name'],
         'price' => $item['price'],
+        'unit' => $item['unit'],
         'image' => $item['image_path'],
         'quantity' => $item['quantity'],
         'stock' => $item['stock']
@@ -57,6 +58,7 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
+  <link rel="stylesheet" href="css/unit-display.css">
   <link rel="icon" type="image/x-icon" href="../images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->

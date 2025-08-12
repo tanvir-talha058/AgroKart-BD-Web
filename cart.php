@@ -97,7 +97,7 @@ if (isset($_SESSION['debug'])) {
 
                                 <div class="item-details">
                                     <h4 class="item-name"><?php echo htmlspecialchars($item['name']); ?></h4>
-                                    <div class="item-price">৳<?php echo htmlspecialchars($item['price']); ?></div>
+                                    <div class="item-price">৳<?php echo htmlspecialchars($item['price']); ?> <span class="per-unit">per <?php echo htmlspecialchars($item['unit'] ?? 'kg'); ?></span></div>
                                 </div>
 
                                 <div class="item-quantity">

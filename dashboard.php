@@ -56,6 +56,7 @@ $stmt_shipped->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard - AgroKartBD</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/unit-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -316,7 +317,15 @@ $stmt_shipped->close();
                             <option value="Spice">Spice</option>
                         </select>
                         <label>Price (৳)</label>
-                        <input type="number" name="price" placeholder="Enter price" min="0" step="0.01" required />
+                        <div class="price-unit-group">
+                            <input type="number" name="price" placeholder="Enter price" min="0" step="0.01" required />
+                            <select name="unit" required>
+                                <option value="kg">per kg</option>
+                                <option value="gm">per gm</option>
+                                <option value="pc">per pc</option>
+                                <option value="pack">per pack</option>
+                            </select>
+                        </div>
                         <label>Stock Quantity</label>
                         <input type="number" name="stock" placeholder="Enter stock quantity" min="0" required />
                         <label>Product Image</label>

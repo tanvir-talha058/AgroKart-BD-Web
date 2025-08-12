@@ -1,0 +1,15 @@
+/* Unit price styling for product details page */
+.price-section .per-unit {
+    font-size: 0.65em;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-left: 0.25rem;
+    vertical-align: middle;
+}
+
+/* Enhance product grid with unit styling */
+.product-meta .price-unit {
+    font-size: 0.75em;
+    opacity: 0.8;
+    margin-left: 2px;
+}

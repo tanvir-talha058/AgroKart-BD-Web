@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $product_name = trim($_POST['product_name']);
     $category = trim($_POST['category']);
     $price = trim($_POST['price']);
+    $unit = trim($_POST['unit']);
     $stock = trim($_POST['stock']);
     $description = trim($_POST['description']);
 
@@ -81,8 +82,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
         $image_path = "images/uploads/" . basename($target_file);
 
-        $stmt = $conn->prepare("INSERT INTO products (seller_id, name, category, price, stock, description, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssiss", $seller_id, $product_name, $category, $price, $stock, $description, $image_path);
+        $stmt = $conn->prepare("INSERT INTO products (seller_id, name, category, price, unit, stock, description, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssiss", $seller_id, $product_name, $category, $price, $unit, $stock, $description, $image_path);
 
         if ($stmt->execute()) {
             $_SESSION['message'] = "Product added successfully!";

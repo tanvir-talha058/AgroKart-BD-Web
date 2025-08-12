@@ -83,25 +83,14 @@ include 'includes/header.php';
 
   <div class="product-grid" id="productContainer">
     <?php
-    $sql = "SELECT id, name, price, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
+    $sql = "SELECT id, name, price, unit, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         $category_class = strtolower($row["category"]);
 
-        // Determine pricing unit based on category
-        $price_unit = '';
-        switch (strtolower($row["category"])) {
-          case 'vegetable':
-          case 'fruit':
-            $price_unit = '/kg';
-            break;
-          case 'spice':
-            $price_unit = '/gm';
-            break;
-          default:
-            $price_unit = '';
-        }
+        // Use the unit from the database
+        $price_unit = '/' . $row["unit"];
 
         echo '<div class="product-card" data-category="' . $category_class . '">';
         echo '<div class="product-image-container">';
