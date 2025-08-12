@@ -77,10 +77,10 @@ $stmt_shipped->close();
         <main class="main-content">
             <!-- Header -->
             <header class="top-header">
-                <button class="add-product">Add New Product</button>
+                <button class="add-product"><i class="fas fa-plus"></i> Add New Product</button>
                 <div class="header-right">
                     <div class="user-profile">
-                        <img src="images/profile.jpg" alt="Profile">
+                        <img src="images/profiles/user_<?php echo $_SESSION['user_id']; ?>_<?php echo time(); ?>.jpg" alt="Profile" onerror="this.src='images/AGrO.png'">
                     </div>
                 </div>
             </header>
@@ -100,7 +100,7 @@ $stmt_shipped->close();
             <div class="stats-container">
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon">🛍️</div><span>Total Orders</span>
+                        <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><span>Total Orders</span>
                     </div>
                     <div class="stat-info">
                         <h2><?php echo $total_orders; ?></h2>
@@ -108,7 +108,7 @@ $stmt_shipped->close();
                 </div>
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon">💰</div><span>Total Sell</span>
+                        <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><span>Total Sell</span>
                     </div>
                     <div class="stat-info">
                         <h2>৳<?php echo number_format($total_sell, 2); ?></h2>
@@ -116,7 +116,7 @@ $stmt_shipped->close();
                 </div>
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon">📦</div><span>Total Products</span>
+                        <div class="stat-icon"><i class="fas fa-box"></i></div><span>Total Products</span>
                     </div>
                     <div class="stat-info">
                         <h2><?php echo $total_products; ?></h2>
