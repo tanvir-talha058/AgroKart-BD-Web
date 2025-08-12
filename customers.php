@@ -72,6 +72,7 @@ $stmt->close();
             </div>
             <ul class="nav-menu">
                 <li><a href="dashboard.php"><span class="icon"><i class="fas fa-chart-bar"></i></span>Dashboard</a></li>
+                <li><a href="products.php"><span class="icon"><i class="fas fa-box"></i></span>Products</a></li>
                 <li class="active"><a href="#"><span class="icon"><i class="fas fa-users"></i></span>Customers</a></li>
                 <li><a href="php/logout.php"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a></li>
             </ul>
