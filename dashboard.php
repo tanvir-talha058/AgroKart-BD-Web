@@ -57,6 +57,7 @@ $stmt_shipped->close();
     <title>Seller Dashboard - AgroKartBD</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -121,6 +122,19 @@ $stmt_shipped->close();
                     <div class="stat-info">
                         <h2><?php echo $total_products; ?></h2>
                     </div>
+                </div>
+            </div>
+
+            <!-- Sales & Revenue Chart -->
+            <div class="chart-container">
+                <h3>Sales & Revenue Overview</h3>
+                <div class="chart-tabs">
+                    <div class="chart-tab active" data-period="weekly">Weekly</div>
+                    <div class="chart-tab" data-period="monthly">Monthly</div>
+                    <div class="chart-tab" data-period="yearly">Yearly</div>
+                </div>
+                <div class="chart-content">
+                    <canvas id="salesChart"></canvas>
                 </div>
             </div>
 
@@ -220,6 +234,22 @@ $stmt_shipped->close();
                     </div>
                 </div>
 
+                <!-- Top Products Chart -->
+                <div class="activity-chart-container">
+                    <h3>Top Selling Products</h3>
+                    <div class="chart-content">
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Product Category Distribution Chart -->
+                <div class="activity-chart-container">
+                    <h3>Product Category Distribution</h3>
+                    <div class="chart-content">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
                 <!-- Review Orders Card -->
                 <div class="review-orders-card">
                     <div class="card-header">
@@ -300,6 +330,153 @@ $stmt_shipped->close();
         </main>
     </div>
     <script src="js/dashboard.js"></script>
+    <script>
+        // Generate chart data from PHP backend
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would normally come from your PHP backend
+            <?php
+            // Query to get category distribution
+            $category_sql = "SELECT category, COUNT(*) as count FROM products WHERE seller_id = ? GROUP BY category";
+            $stmt_category = $conn->prepare($category_sql);
+            $stmt_category->bind_param("i", $seller_id);
+            $stmt_category->execute();
+            $category_result = $stmt_category->get_result();
+
+            $categories = [];
+            $category_counts = [];
+            $category_colors = [
+                'Vegetable' => ['rgba(76, 175, 80, 0.8)', 'rgba(76, 175, 80, 1)'],
+                'Fruit' => ['rgba(255, 152, 0, 0.8)', 'rgba(255, 152, 0, 1)'],
+                'Spice' => ['rgba(233, 30, 99, 0.8)', 'rgba(233, 30, 99, 1)']
+            ];
+            $background_colors = [];
+            $border_colors = [];
+
+            while ($row = $category_result->fetch_assoc()) {
+                $categories[] = $row['category'];
+                $category_counts[] = $row['count'];
+                $color_key = isset($category_colors[$row['category']]) ? $row['category'] : array_keys($category_colors)[0];
+                $background_colors[] = $category_colors[$color_key][0];
+                $border_colors[] = $category_colors[$color_key][1];
+            }
+
+            // If no categories found, use sample data
+            if (empty($categories)) {
+                $categories = ['Vegetable', 'Fruit', 'Spice'];
+                $category_counts = [45, 35, 20];
+                $background_colors = ['rgba(76, 175, 80, 0.8)', 'rgba(255, 152, 0, 0.8)', 'rgba(233, 30, 99, 0.8)'];
+                $border_colors = ['rgba(76, 175, 80, 1)', 'rgba(255, 152, 0, 1)', 'rgba(233, 30, 99, 1)'];
+            }
+
+            // Query to get top products
+            $top_products_sql = "SELECT p.name, SUM(oi.quantity) as total_sold 
+                               FROM products p 
+                               JOIN order_items oi ON p.id = oi.product_id 
+                               JOIN orders o ON oi.order_id = o.id 
+                               WHERE p.seller_id = ? AND o.status = 'Delivered' 
+                               GROUP BY p.id 
+                               ORDER BY total_sold DESC 
+                               LIMIT 5";
+            $stmt_top = $conn->prepare($top_products_sql);
+            $stmt_top->bind_param("i", $seller_id);
+            $stmt_top->execute();
+            $top_result = $stmt_top->get_result();
+
+            $top_product_names = [];
+            $top_product_sales = [];
+            $product_colors = [
+                'rgba(76, 175, 80, 0.7)',
+                'rgba(255, 87, 34, 0.7)',
+                'rgba(156, 39, 176, 0.7)',
+                'rgba(255, 193, 7, 0.7)',
+                'rgba(3, 169, 244, 0.7)'
+            ];
+            $product_borders = [
+                'rgba(76, 175, 80, 1)',
+                'rgba(255, 87, 34, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(255, 193, 7, 1)',
+                'rgba(3, 169, 244, 1)'
+            ];
+            $top_backgrounds = [];
+            $top_borders = [];
+
+            $i = 0;
+            while ($row = $top_result->fetch_assoc()) {
+                $top_product_names[] = $row['name'];
+                $top_product_sales[] = $row['total_sold'];
+                $top_backgrounds[] = $product_colors[$i % count($product_colors)];
+                $top_borders[] = $product_borders[$i % count($product_borders)];
+                $i++;
+            }
+
+            // If no top products found, use sample data
+            if (empty($top_product_names)) {
+                $top_product_names = ['Fresh Tomatoes', 'Organic Apples', 'Red Potatoes', 'Turmeric Powder', 'Green Peppers'];
+                $top_product_sales = [85, 72, 65, 53, 48];
+                $top_backgrounds = $product_colors;
+                $top_borders = $product_borders;
+            }
+
+            // Sales data by month for current year
+            $current_year = date('Y');
+            $monthly_sales_sql = "SELECT MONTH(o.created_at) as month, 
+                                 SUM(oi.quantity * oi.price) as total_sales,
+                                 COUNT(DISTINCT o.id) as order_count
+                                 FROM orders o 
+                                 JOIN order_items oi ON o.id = oi.order_id 
+                                 JOIN products p ON oi.product_id = p.id 
+                                 WHERE p.seller_id = ? AND YEAR(o.created_at) = ? 
+                                 GROUP BY MONTH(o.created_at)
+                                 ORDER BY month";
+            $stmt_monthly = $conn->prepare($monthly_sales_sql);
+            $stmt_monthly->bind_param("ii", $seller_id, $current_year);
+            $stmt_monthly->execute();
+            $monthly_result = $stmt_monthly->get_result();
+
+            $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            $monthly_sales = array_fill(0, 12, 0);
+            $monthly_orders = array_fill(0, 12, 0);
+
+            while ($row = $monthly_result->fetch_assoc()) {
+                $month_index = $row['month'] - 1; // Convert 1-12 to 0-11 for array index
+                $monthly_sales[$month_index] = floatval($row['total_sales']);
+                $monthly_orders[$month_index] = intval($row['order_count']);
+            }
+
+            // Close statements
+            $stmt_category->close();
+            $stmt_top->close();
+            $stmt_monthly->close();
+            ?>
+
+            // Update category chart with real data
+            if (window.categoryChart) {
+                window.categoryChart.data.labels = <?php echo json_encode($categories); ?>;
+                window.categoryChart.data.datasets[0].data = <?php echo json_encode($category_counts); ?>;
+                window.categoryChart.data.datasets[0].backgroundColor = <?php echo json_encode($background_colors); ?>;
+                window.categoryChart.data.datasets[0].borderColor = <?php echo json_encode($border_colors); ?>;
+                window.categoryChart.update();
+            }
+
+            // Update top products chart with real data
+            if (window.topProductsChart) {
+                window.topProductsChart.data.labels = <?php echo json_encode($top_product_names); ?>;
+                window.topProductsChart.data.datasets[0].data = <?php echo json_encode($top_product_sales); ?>;
+                window.topProductsChart.data.datasets[0].backgroundColor = <?php echo json_encode($top_backgrounds); ?>;
+                window.topProductsChart.data.datasets[0].borderColor = <?php echo json_encode($top_borders); ?>;
+                window.topProductsChart.update();
+            }
+
+            // Update sales chart monthly data with real data
+            if (window.salesChart) {
+                // Only update the monthly data with real data
+                window.salesChart.data.datasets[0].data = <?php echo json_encode($monthly_sales); ?>;
+                window.salesChart.data.datasets[1].data = <?php echo json_encode($monthly_orders); ?>;
+                window.salesChart.update();
+            }
+        });
+    </script>
 </body>
 
 </html>
