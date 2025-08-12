@@ -1,4 +1,8 @@
 <?php
+// No output before this line
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'db_connect.php';
 
 // Check if user is logging in and needs to load their saved cart from the database

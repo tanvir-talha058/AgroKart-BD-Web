@@ -1,4 +1,30 @@
 <?php
+<<<<<<< HEAD
+// Start the session and perform checks before any output
+session_start();
+
+// Add debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Check login status and cart with detailed conditions
+if (!isset($_SESSION['loggedin'])) {
+    $_SESSION['error'] = "Please login to checkout";
+    header('Location: login.php');
+    exit;
+}
+
+if (empty($_SESSION['cart'])) {
+    $_SESSION['error'] = "Your cart is empty";
+    header('Location: cart.php');
+    exit;
+}
+
+// Include header after all redirects
+include 'includes/header.php';
+
+// Initialize total
+=======
 // FILE: checkout.php
 
 // Start session if not already started
@@ -14,10 +40,18 @@ if (!isset($_SESSION['loggedin']) || empty($_SESSION['cart'])) {
 
 // Include header after checking for redirect
 include 'includes/header.php';
+>>>>>>> a735355fd531c64ec89b1802f9221fce4befefbb
 $total = 0;
 foreach ($_SESSION['cart'] as $item) {
-    $total += $item['price'] * $item['quantity'];
+    if (isset($item['price']) && isset($item['quantity'])) {
+        $total += $item['price'] * $item['quantity'];
+    }
 }
+
+// Add session debugging output (remove in production)
+echo "<!-- Debug: ";
+print_r($_SESSION);
+echo " -->";
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -41,6 +75,38 @@ foreach ($_SESSION['cart'] as $item) {
                 <span>Payment</span>
             </div>
         </div>
+<<<<<<< HEAD
+        <div class="checkout-form">
+            <h3>Shipping & Payment</h3>
+            <form action="php/order_process.php" method="POST">
+                <div class="form-group">
+                    <label for="location">Delivery Location</label>
+                    <textarea name="location" id="location" rows="3" required><?php echo htmlspecialchars($_SESSION['user_location']); ?></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div class="payment-options">
+                        <label>
+                            <input type="radio" name="payment_method" value="bKash" required>
+                            <img src="images/payment-methods/bkash.jpg" alt="bKash" class="payment-logo">
+                            bKash
+                        </label>
+                        <label>
+                            <input type="radio" name="payment_method" value="Nagad">
+                            <img src="images/payment-methods/nagad.png" alt="Nagad" class="payment-logo">
+                            Nagad
+                        </label>
+                        <label>
+                            <input type="radio" name="payment_method" value="Card">
+                            <img src="images/payment-methods/card.png" alt="Card" class="payment-logo">
+                            Card
+                        </label>
+                        <label>
+                            <input type="radio" name="payment_method" value="COD">
+                            <img src="" alt="Cash on Delivery" class="payment-logo">
+                            Cash on Delivery
+                        </label>
+=======
     </div>
 
     <div class="checkout-container">
@@ -100,6 +166,7 @@ foreach ($_SESSION['cart'] as $item) {
                     <div class="security-badge">
                         <i class="fas fa-shield-alt"></i>
                         <span>Secure SSL Encrypted Payment</span>
+>>>>>>> a735355fd531c64ec89b1802f9221fce4befefbb
                     </div>
                 </div>
             </div>
@@ -255,6 +322,9 @@ foreach ($_SESSION['cart'] as $item) {
         </div>
     </div>
 </div>
+<<<<<<< HEAD
+<a href="checkout.php" class="btn btn-primary">Proceed to Checkout</a>
+=======
 
 <style>
     /* Checkout Page Styles */
@@ -982,4 +1052,5 @@ foreach ($_SESSION['cart'] as $item) {
     addFloatingAnimation();
 </script>
 
+>>>>>>> a735355fd531c64ec89b1802f9221fce4befefbb
 <?php include 'includes/footer.php'; ?>

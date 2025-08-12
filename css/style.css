@@ -609,3 +609,50 @@ body {
 .center-video {
     border-radius: 18px;
 }
+.payment-options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.payment-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+    font-size: 13px;
+    min-width: 100px;
+}
+
+.payment-options input[type="radio"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.payment-options label:hover {
+    border-color: #4CAF50;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-options input[type="radio"]:checked + label {
+    border-color: #4CAF50;
+    background-color: #f1f8e9;
+    box-shadow: 0 1px 3px rgba(76,175,80,0.2);
+}
+
+.payment-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: middle;
+}
