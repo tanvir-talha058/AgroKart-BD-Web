@@ -360,18 +360,17 @@ if (isset($_SESSION['debug'])) {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        align-items: center;
-        /* center the cards horizontally */
+        align-items: stretch;
+        /* full-width cards for modern look */
     }
 
     .cart-item-card {
         display: grid;
-        grid-template-columns: 1fr;
-        /* stack for better centering */
-        gap: 14px;
+        grid-template-columns: auto 1fr auto auto auto;
+        /* image | details | qty | total | remove */
+        gap: 20px;
         align-items: center;
-        justify-items: center;
-        /* center grid children */
+        justify-items: initial;
         background: #ffffff;
         padding: 20px;
         border-radius: 15px;
@@ -379,11 +378,9 @@ if (isset($_SESSION['debug'])) {
         position: relative;
         border: 1px solid #e8f5e8;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        text-align: center;
-        /* center text inside card */
+        text-align: left;
+        /* readable alignment */
         width: 100%;
-        max-width: 720px;
-        /* keep nice line length */
     }
 
     .cart-item-card:hover {
@@ -449,8 +446,8 @@ if (isset($_SESSION['debug'])) {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        align-items: center;
-        /* center name and price */
+        align-items: flex-start;
+        /* left-align details on desktop */
     }
 
     .item-name {
@@ -551,11 +548,11 @@ if (isset($_SESSION['debug'])) {
     .item-total {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        /* center total */
+        align-items: flex-end;
+        /* right-align total on desktop */
         gap: 6px;
-        min-width: unset;
-        text-align: center;
+        min-width: 110px;
+        text-align: right;
     }
 
     .total-label {
@@ -754,19 +751,14 @@ if (isset($_SESSION['debug'])) {
         color: white;
     }
 
-    /* Ensure centered layout for item cards (override any older styles) */
+    /* Desktop row layout for item cards */
     .cart-item-card {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 14px;
+        grid-template-columns: auto 1fr auto auto auto;
+        gap: 20px;
         align-items: center;
-        justify-items: center;
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-        position: relative;
-        text-align: center;
+        justify-items: initial;
+        text-align: left;
     }
 
     .item-remove {
@@ -802,8 +794,20 @@ if (isset($_SESSION['debug'])) {
     @media (max-width: 768px) {
         .cart-item-card {
             grid-template-columns: 1fr;
+            /* stack on mobile */
             padding: 15px;
             gap: 15px;
+            text-align: center;
+        }
+
+        .item-details {
+            align-items: center;
+        }
+
+        .item-total {
+            align-items: center;
+            text-align: center;
+            min-width: unset;
         }
 
         .item-remove {

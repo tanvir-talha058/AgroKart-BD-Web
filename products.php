@@ -158,7 +158,7 @@ foreach ($products as $product) {
                             <div class="product-card"
                                 data-category="<?php echo htmlspecialchars($product['category']); ?>"
                                 data-stock="<?php echo $product['stock'] <= 0 ? 'out-of-stock' : ($product['stock'] <= 5 ? 'low-stock' : 'in-stock'); ?>">
-                                <div class="product-actions">
+                                <div class="product-actions-floating">
                                     <button class="edit-btn" onclick="editProduct(<?php echo $product['id']; ?>)">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -201,7 +201,7 @@ foreach ($products as $product) {
                                     <div class="product-date"><i class="fas fa-calendar-alt"></i> Added: <?php echo date('M d, Y', strtotime($product['created_at'])); ?></div>
 
                                     <div class="product-actions">
-                                        <button class="btn btn-primary btn-sm" onclick="editProduct(<?php echo htmlspecialchars(json_encode($product)); ?>)">
+                                        <button class="btn btn-primary btn-sm" onclick="editProduct(<?php echo $product['id']; ?>)">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
                                         <button class="btn <?php echo $hot_deal ? 'btn-warning' : 'btn-success'; ?> btn-sm" onclick="<?php echo $hot_deal ? 'removeHotDeal' : 'addHotDeal'; ?>(<?php echo $product['id']; ?>)">

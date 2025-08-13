@@ -1,0 +1,9 @@
+
+
+2025-08-13 17:34:24 - New request received
+Processing request for order ID: 27, user ID: 3
+Executing order query
+Fetching order items
+Found 3 items
+Sending response
+--------------------------------
