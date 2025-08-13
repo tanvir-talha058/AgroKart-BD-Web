@@ -296,22 +296,28 @@ $stats = [
                                     <?php endif; ?>
                                 </div>
                                 <div class="order-actions">
-                                    <form action="php/update_order_status.php" method="POST" class="status-update-form">
-                                        <input type="hidden" name="order_id" value="<?php echo $item['order_id']; ?>">
-                                        <input type="hidden" name="redirect_to" value="orders">
-                                        <div class="status-dropdown-wrapper">
-                                            <select name="status" class="status-select status-select-<?php echo strtolower($item['status']); ?>">
-                                                <?php
-                                                $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
-                                                foreach ($statuses as $status) {
-                                                    $selected = ($item['status'] == $status) ? 'selected' : '';
-                                                    echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="update-btn">UPDATE STATUS</button>
-                                    </form>
+                                    <div class="order-actions-row">
+                                        <button type="button" class="view-details-btn" onclick="viewOrderDetails(<?php echo $item['order_id']; ?>)">
+                                            <i class="fas fa-eye"></i> View Details
+                                        </button>
+
+                                        <form action="php/update_order_status.php" method="POST" class="status-update-form">
+                                            <input type="hidden" name="order_id" value="<?php echo $item['order_id']; ?>">
+                                            <input type="hidden" name="redirect_to" value="orders">
+                                            <div class="status-dropdown-wrapper">
+                                                <select name="status" class="status-select status-select-<?php echo strtolower($item['status']); ?>">
+                                                    <?php
+                                                    $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+                                                    foreach ($statuses as $status) {
+                                                        $selected = ($item['status'] == $status) ? 'selected' : '';
+                                                        echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="update-btn">UPDATE STATUS</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -403,8 +409,592 @@ $stats = [
                     e.preventDefault();
                 });
             });
+
+            // Order Details Modal functionality
+            window.viewOrderDetails = function(orderId) {
+                // Create and show modal
+                const modal = document.createElement('div');
+                modal.className = 'order-details-modal';
+                modal.innerHTML = `
+                    <div class="order-details-content">
+                        <div class="order-details-header">
+                            <h3><i class="fas fa-clipboard-list"></i> Order #${orderId} Details</h3>
+                            <button class="close-modal" onclick="closeOrderModal(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="order-details-body">
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i> Loading order details...
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Show modal with animation
+                setTimeout(() => modal.classList.add('show'), 10);
+
+                // Close modal when clicking outside content
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeOrderModal(modal);
+                    }
+                });
+
+                // Also close on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeOrderModal(modal);
+                    }
+                });
+
+                // Fetch order details
+                fetch(`php/get_order_details.php?order_id=${orderId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const detailsBody = modal.querySelector('.order-details-body');
+
+                        if (data.success) {
+                            detailsBody.innerHTML = createOrderDetailsHTML(data.order);
+                        } else {
+                            detailsBody.innerHTML = `
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i> 
+                                    ${data.message || 'Failed to load order details. Please try again.'}
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching order details:', error);
+                        const detailsBody = modal.querySelector('.order-details-body');
+                        detailsBody.innerHTML = `
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i> 
+                                An error occurred while loading order details. Please try again.
+                            </div>
+                        `;
+                    });
+            }
+
+            // Close modal with animation
+            window.closeOrderModal = function(element) {
+                const modal = element.closest('.order-details-modal') || element;
+                modal.classList.remove('show');
+                setTimeout(() => modal.remove(), 300);
+            }
+
+            // Helper function to create order details HTML
+            function createOrderDetailsHTML(order) {
+                // Format date
+                const orderDate = new Date(order.created_at);
+                const formattedDate = orderDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Get status badge class
+                const statusClass = `status-${order.status.toLowerCase()}`;
+
+                // Create items list HTML
+                const itemsHTML = order.items.map(item => `
+                    <div class="detail-item">
+                        <div class="item-image">
+                            <img src="${item.image_path}" alt="${item.name}" onerror="this.src='images/AGrO.png'">
+                        </div>
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <div class="item-meta">
+                                <span class="price">৳${parseFloat(item.price).toFixed(2)}</span>
+                                <span class="quantity">${item.quantity} ${item.unit}</span>
+                            </div>
+                            <div class="subtotal">Subtotal: ৳${(item.quantity * item.price).toFixed(2)}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="order-info-grid">
+                        <div class="order-info-section">
+                            <h4><i class="fas fa-info-circle"></i> Order Information</h4>
+                            <div class="info-row">
+                                <span class="label">Order ID:</span>
+                                <span class="value">#${order.order_id}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Date:</span>
+                                <span class="value">${formattedDate}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Status:</span>
+                                <span class="value">
+                                    <span class="status-badge ${statusClass}">
+                                        ${order.status}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Total Amount:</span>
+                                <span class="value">৳${parseFloat(order.total_amount).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-info-section">
+                            <h4><i class="fas fa-user"></i> Buyer Information</h4>
+                            <div class="info-row">
+                                <span class="label">Name:</span>
+                                <span class="value">${order.buyer_name}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Phone:</span>
+                                <span class="value">${order.buyer_phone}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Location:</span>
+                                <span class="value">${order.location}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-items-section">
+                        <h4><i class="fas fa-shopping-basket"></i> Order Items</h4>
+                        <div class="order-items-list">
+                            ${itemsHTML}
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Total Items:</span>
+                            <span>${order.items.length}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Amount:</span>
+                            <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
+                        </div>
+                    </div>
+                    
+                    ${order.notes ? `
+                    <div class="order-notes-section">
+                        <h4><i class="fas fa-sticky-note"></i> Special Notes</h4>
+                        <div class="order-notes">
+                            <p>${order.notes}</p>
+                        </div>
+                    </div>` : ''}
+                `;
+            }
         });
     </script>
+
+    <style>
+        /* View Details button styling */
+        .view-details-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .view-details-btn:hover {
+            background-color: #3e8e41;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-actions-row {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* Order Details Modal Styles */
+        .order-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .order-details-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .order-details-content {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 900px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .order-details-header {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .order-details-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-details-header h3 i {
+            font-size: 1.2rem;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .order-details-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: calc(85vh - 80px);
+        }
+
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #4CAF50;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Order Info Grid */
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .order-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .order-info-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .order-info-section h4 {
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .order-info-section h4 i {
+            color: #4CAF50;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-processing {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+
+        .status-shipped {
+            background: rgba(138, 43, 226, 0.1);
+            color: #8a2be2;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Order Items Section */
+        .order-items-section {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .order-items-section h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .order-items-section h4 i {
+            color: #4CAF50;
+        }
+
+        .order-items-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            border: none;
+            padding: 0;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .quantity {
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .subtotal {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Order Summary and Notes */
+        .order-summary {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            padding-top: 15px;
+            font-weight: 700;
+        }
+
+        .summary-row:last-child span:last-child {
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+
+        .order-notes-section {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .order-notes-section h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .order-notes-section h4 i {
+            color: #4CAF50;
+        }
+
+        .order-notes {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .order-notes p {
+            margin: 0;
+            color: #555;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </body>
 
 </html>

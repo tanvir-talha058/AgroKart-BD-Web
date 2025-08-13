@@ -1127,17 +1127,18 @@ $buyer_id = $_SESSION['user_id'];
 
         // Fetch order details using AJAX
         fetch(`php/get_order_details.php?order_id=${orderId}`)
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                if (data.success) {
-                    // Update modal content with order details
-                    const detailsBody = modal.querySelector('.order-details-body');
-                    detailsBody.innerHTML = createOrderDetailsHTML(data.order, data.items);
+                console.log('Order details response:', data);
+                const bodyEl = modal.querySelector('.order-details-body');
+                if (data && data.success && data.order) {
+                    const items = Array.isArray(data.order.items) ? data.order.items : [];
+                    bodyEl.innerHTML = createOrderDetailsHTML(data.order, items);
                 } else {
-                    modal.querySelector('.order-details-body').innerHTML = `
+                    bodyEl.innerHTML = `
                         <div class="error-message">
                             <i class="fas fa-exclamation-circle"></i>
-                            <p>${data.message}</p>
+                            <p>${(data && data.message) ? data.message : 'Failed to load order details. Please try again.'}</p>
                         </div>
                     `;
                 }
@@ -1154,7 +1155,11 @@ $buyer_id = $_SESSION['user_id'];
     }
 
     // Helper function to create order details HTML
-    function createOrderDetailsHTML(order, items) {
+    function createOrderDetailsHTML(order, items = []) {
+        // Fallback to order.items if items param is missing
+        if (!Array.isArray(items) || items.length === 0) {
+            items = Array.isArray(order?.items) ? order.items : [];
+        }
         // Format date
         const orderDate = new Date(order.created_at);
         const formattedDate = orderDate.toLocaleDateString('en-US', {
@@ -1186,10 +1191,12 @@ $buyer_id = $_SESSION['user_id'];
         }
 
         // Create items list HTML
-        const itemsHTML = items.map(item => `
+        const itemsHTML = items.map(item => {
+            const imgSrc = item.image || item.image_path || 'images/AGrO.png';
+            return `
             <div class="detail-item">
                 <div class="item-image">
-                    <img src="${item.image}" alt="${item.name}">
+            <img src="${imgSrc}" alt="${item.name}" onerror="this.src='images/AGrO.png'">
                 </div>
                 <div class="item-info">
                     <h4>${item.name}</h4>
@@ -1200,7 +1207,8 @@ $buyer_id = $_SESSION['user_id'];
                     </div>
                 </div>
             </div>
-        `).join('');
+    `;
+        }).join('');
 
         return `
             <div class="order-info-grid">

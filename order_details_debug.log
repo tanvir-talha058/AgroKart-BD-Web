@@ -1,0 +1,24 @@
+2025-08-13 14:48:40 - Request received for order ID: 26
+Session status: logged in
+User ID: 4
+User role: Buyer
+Order query returned 1 rows
+Sending success response with 4 items
+Response sent successfully
+--------------------------------
+2025-08-13 14:48:49 - Request received for order ID: 26
+Session status: logged in
+User ID: 4
+User role: Buyer
+Order query returned 1 rows
+Sending success response with 4 items
+Response sent successfully
+--------------------------------
+2025-08-13 14:49:21 - Request received for order ID: 26
+Session status: logged in
+User ID: 4
+User role: Buyer
+Order query returned 1 rows
+Sending success response with 4 items
+Response sent successfully
+--------------------------------
