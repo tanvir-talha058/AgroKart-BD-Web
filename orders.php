@@ -116,6 +116,7 @@ $stats = [
     <title>Orders Management - AgroKartBD</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/orders.css">
+    <link rel="stylesheet" href="css/order-card-fixes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -255,20 +256,20 @@ $stats = [
                                     <h3 class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></h3>
 
                                     <div class="order-details-grid">
-                                        <div class="order-details-row">
-                                            <div class="order-details-label">Quantity:</div>
-                                            <div class="order-details-value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></div>
-                                        </div>
-
-                                        <div class="order-details-row">
-                                            <div class="order-details-label">Unit Price:</div>
-                                            <div class="order-details-value">৳<?php echo number_format($item['price'], 2); ?></div>
-                                        </div>
-
-                                        <div class="order-details-row total">
-                                            <div class="order-details-label">Total:</div>
-                                            <div class="order-details-value price-value">৳<?php echo number_format($item['item_total'], 2); ?></div>
-                                        </div>
+                                        <table class="order-details-table">
+                                            <tr>
+                                                <td class="order-detail-label">Quantity:</td>
+                                                <td class="order-detail-value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="order-detail-label">Unit Price:</td>
+                                                <td class="order-detail-value">৳<?php echo number_format($item['price'], 2); ?></td>
+                                            </tr>
+                                            <tr class="total-row">
+                                                <td class="order-detail-label">Total:</td>
+                                                <td class="order-detail-value total-value">৳<?php echo number_format($item['item_total'], 2); ?></td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                                 <div class="buyer-info">
