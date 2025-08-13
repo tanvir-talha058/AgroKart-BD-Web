@@ -238,60 +238,65 @@ $stats = [
                                 </div>
 
                                 <div class="product-details">
+                                    <div class="order-header-grid">
+                                        <div class="order-code-section">
+                                            <div class="order-code"><?php echo strtoupper(substr($item['product_name'], 0, 2)); ?></div>
+                                        </div>
+                                        <div class="order-info-section">
+                                            <div class="order-id">Order #<?php echo $item['order_id']; ?></div>
+                                            <div class="order-date">
+                                                <i class="fas fa-calendar"></i>
+                                                <span><?php echo date('M d, Y', strtotime($item['created_at'])); ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <h3 class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></h3>
 
-                                    <div class="order-meta">
-                                        <div class="meta-item">
-                                            <i class="fas fa-hashtag"></i>
-                                            <span>Order #<?php echo $item['order_id']; ?></span>
+                                    <div class="order-details-grid">
+                                        <div class="order-details-row">
+                                            <div class="order-details-label">Quantity:</div>
+                                            <div class="order-details-value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></div>
                                         </div>
-                                        <div class="meta-item">
-                                            <i class="fas fa-calendar"></i>
-                                            <span><?php echo date('M d, Y', strtotime($item['created_at'])); ?></span>
-                                        </div>
-                                    </div>
 
-                                    <div class="product-quantity">
-                                        <span class="quantity-label">Quantity:</span>
-                                        <span class="quantity-value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></span>
-                                    </div>
-
-                                    <div class="price-section">
-                                        <div class="unit-price">
-                                            <span>Unit Price:</span>
-                                            <span>৳<?php echo number_format($item['price'], 2); ?></span>
+                                        <div class="order-details-row">
+                                            <div class="order-details-label">Unit Price:</div>
+                                            <div class="order-details-value">৳<?php echo number_format($item['price'], 2); ?></div>
                                         </div>
-                                        <div class="total-price">
-                                            <span>Total:</span>
-                                            <span>৳<?php echo number_format($item['item_total'], 2); ?></span>
+
+                                        <div class="order-details-row total">
+                                            <div class="order-details-label">Total:</div>
+                                            <div class="order-details-value price-value">৳<?php echo number_format($item['item_total'], 2); ?></div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="buyer-info">
                                     <div class="buyer-header">
                                         <i class="fas fa-user-circle"></i>
                                         <h4>Buyer Information</h4>
                                     </div>
-                                    <p><i class="fas fa-user"></i> <?php echo htmlspecialchars($item['buyer_name']); ?></p>
-                                    <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($item['buyer_phone']); ?></p>
-                                    <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['location']); ?></p>
+                                    <div class="buyer-details">
+                                        <p><i class="fas fa-user"></i> <?php echo htmlspecialchars($item['buyer_name']); ?></p>
+                                        <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($item['buyer_phone']); ?></p>
+                                        <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['location']); ?></p>
+                                    </div>
                                 </div>
-
                                 <div class="order-actions">
                                     <form action="php/update_order_status.php" method="POST" class="status-update-form">
                                         <input type="hidden" name="order_id" value="<?php echo $item['order_id']; ?>">
                                         <input type="hidden" name="redirect_to" value="orders">
-                                        <select name="status" class="status-select">
-                                            <?php
-                                            $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
-                                            foreach ($statuses as $status) {
-                                                $selected = ($item['status'] == $status) ? 'selected' : '';
-                                                echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                        <button type="submit" class="update-btn">Update Status</button>
+                                        <div class="status-dropdown-wrapper">
+                                            <select name="status" class="status-select status-select-<?php echo strtolower($item['status']); ?>">
+                                                <?php
+                                                $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+                                                foreach ($statuses as $status) {
+                                                    $selected = ($item['status'] == $status) ? 'selected' : '';
+                                                    echo '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="update-btn">UPDATE STATUS</button>
                                     </form>
                                 </div>
                             </div>
@@ -310,7 +315,7 @@ $stats = [
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Product cards animation
+            // Product cards animation with slight delay for a nice effect
             const orderCards = document.querySelectorAll('.product-order-card');
             orderCards.forEach((card, index) => {
                 setTimeout(() => {
@@ -318,12 +323,70 @@ $stats = [
                 }, 100 * index);
             });
 
-            // Status select styling
+            // Status select styling - enhance with improved color management
             const statusSelects = document.querySelectorAll('.status-select');
             statusSelects.forEach(select => {
+                // Initialize the status colors based on current value
+                const currentStatus = select.value.toLowerCase();
+                select.classList.add('status-select-' + currentStatus);
+
+                // Set initial border color to match status
+                updateSelectBorderColor(select);
+
                 select.addEventListener('change', function() {
                     const selectedStatus = this.value.toLowerCase();
-                    this.className = 'status-select ' + selectedStatus;
+
+                    // Remove old status classes
+                    const classes = this.className.split(' ');
+                    classes.forEach(className => {
+                        if (className.startsWith('status-select-')) {
+                            this.classList.remove(className);
+                        }
+                    });
+
+                    // Add new status class
+                    this.classList.add('status-select-' + selectedStatus);
+
+                    // Update border color to match the new status
+                    updateSelectBorderColor(this);
+                });
+            });
+
+            // Function to update select border color based on status
+            function updateSelectBorderColor(selectElement) {
+                const status = selectElement.value.toLowerCase();
+                let borderColor = '#ddd';
+
+                switch (status) {
+                    case 'pending':
+                        borderColor = '#f5bc42';
+                        break;
+                    case 'processing':
+                        borderColor = '#3498db';
+                        break;
+                    case 'shipped':
+                        borderColor = '#9b59b6';
+                        break;
+                    case 'delivered':
+                        borderColor = '#2ecc71';
+                        break;
+                    case 'cancelled':
+                        borderColor = '#e74c3c';
+                        break;
+                }
+
+                selectElement.style.borderColor = borderColor;
+                selectElement.style.color = borderColor;
+            }
+
+            // Prevent form from submitting automatically - require explicit button click
+            const statusForms = document.querySelectorAll('.status-update-form');
+            statusForms.forEach(form => {
+                const selectElement = form.querySelector('.status-select');
+
+                selectElement.addEventListener('change', function(e) {
+                    // Only show visual change, don't submit
+                    e.preventDefault();
                 });
             });
         });
