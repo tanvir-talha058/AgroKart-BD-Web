@@ -97,7 +97,16 @@ if (isset($_SESSION['debug'])) {
 
                                 <div class="item-details">
                                     <h4 class="item-name"><?php echo htmlspecialchars($item['name']); ?></h4>
-                                    <div class="item-price">৳<?php echo htmlspecialchars($item['price']); ?> <span class="per-unit">per <?php echo htmlspecialchars($item['unit'] ?? 'kg'); ?></span></div>
+                                    <div class="item-price">
+                                        <?php if (isset($item['is_deal']) && $item['is_deal'] && isset($item['original_price'])): ?>
+                                            <span class="deal-price">৳<?php echo htmlspecialchars($item['price']); ?></span>
+                                            <span class="original-price">৳<?php echo htmlspecialchars($item['original_price']); ?></span>
+                                            <span class="deal-badge">HOT DEAL!</span>
+                                        <?php else: ?>
+                                            ৳<?php echo htmlspecialchars($item['price']); ?>
+                                        <?php endif; ?>
+                                        <span class="per-unit">per <?php echo htmlspecialchars($item['unit'] ?? 'kg'); ?></span>
+                                    </div>
                                 </div>
 
                                 <div class="item-quantity">
@@ -447,6 +456,40 @@ if (isset($_SESSION['debug'])) {
         font-size: 1.1rem;
         font-weight: 700;
         color: #4CAF50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .deal-price {
+        color: #4CAF50;
+        font-weight: 700;
+    }
+
+    .original-price {
+        color: #888;
+        text-decoration: line-through;
+        font-size: 0.9em;
+        font-weight: 400;
+    }
+
+    .deal-badge {
+        background: linear-gradient(135deg, #ff4757, #ff3742);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        animation: pulse 2s infinite;
+    }
+
+    .per-unit {
+        color: #666;
+        font-size: 0.9em;
+        font-weight: 400;
     }
 
     .item-quantity {

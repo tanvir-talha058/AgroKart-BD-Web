@@ -177,9 +177,38 @@ foreach ($products as $product) {
                                 <div class="product-info">
                                     <h4 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h4>
                                     <div class="product-category"><i class="fas fa-tag"></i> <?php echo htmlspecialchars($product['category']); ?></div>
-                                    <div class="product-price">৳<?php echo number_format($product['price'], 2); ?> / <?php echo htmlspecialchars($product['unit']); ?></div>
+                                    <div class="product-price">
+                                        <?php
+                                        // Check if this product has a hot deal
+                                        $hot_deal_sql = "SELECT discount_price, discount_percentage FROM hot_deals WHERE product_id = ? AND is_active = 1";
+                                        $hot_deal_stmt = $conn->prepare($hot_deal_sql);
+                                        $hot_deal_stmt->bind_param("i", $product['id']);
+                                        $hot_deal_stmt->execute();
+                                        $hot_deal_result = $hot_deal_stmt->get_result();
+                                        $hot_deal = $hot_deal_result->fetch_assoc();
+                                        $hot_deal_stmt->close();
+
+                                        if ($hot_deal): ?>
+                                            <span class="deal-price">৳<?php echo number_format($hot_deal['discount_price'], 2); ?></span>
+                                            <span class="original-price">৳<?php echo number_format($product['price'], 2); ?></span>
+                                            <span class="hot-deal-badge">HOT DEAL!</span>
+                                        <?php else: ?>
+                                            ৳<?php echo number_format($product['price'], 2); ?>
+                                        <?php endif; ?>
+                                        / <?php echo htmlspecialchars($product['unit']); ?>
+                                    </div>
                                     <div class="product-stock"><i class="fas fa-cubes"></i> Stock: <?php echo $product['stock']; ?></div>
                                     <div class="product-date"><i class="fas fa-calendar-alt"></i> Added: <?php echo date('M d, Y', strtotime($product['created_at'])); ?></div>
+
+                                    <div class="product-actions">
+                                        <button class="btn btn-primary btn-sm" onclick="editProduct(<?php echo htmlspecialchars(json_encode($product)); ?>)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn <?php echo $hot_deal ? 'btn-warning' : 'btn-success'; ?> btn-sm" onclick="<?php echo $hot_deal ? 'removeHotDeal' : 'addHotDeal'; ?>(<?php echo $product['id']; ?>)">
+                                            <i class="fas <?php echo $hot_deal ? 'fa-times' : 'fa-fire'; ?>"></i>
+                                            <?php echo $hot_deal ? 'Remove Deal' : 'Add Hot Deal'; ?>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -417,7 +446,101 @@ foreach ($products as $product) {
             document.body.classList.remove('modal-open');
             modal.style.display = 'none';
         }
+
+        // Hot Deal functions
+        function addHotDeal(productId) {
+            // Get product details first to calculate discount
+            fetch(`php/get_product.php?id=${productId}`)
+                .then(response => response.json())
+                .then(product => {
+                    document.getElementById('hotDealProductId').value = productId;
+                    document.getElementById('originalPrice').value = product.price;
+
+                    const modal = document.getElementById('hotDealModal');
+                    modal.style.display = 'flex';
+                    document.body.classList.add('modal-open');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load product details');
+                });
+        }
+
+        function removeHotDeal(productId) {
+            if (confirm('Are you sure you want to remove this hot deal?')) {
+                fetch('php/manage_hot_deals.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=remove&product_id=${productId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Hot deal removed successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to remove hot deal');
+                    });
+            }
+        }
+
+        // Calculate discount price automatically
+        function calculateDiscountPrice() {
+            const originalPrice = parseFloat(document.getElementById('originalPrice').value);
+            const discountPercentage = parseFloat(document.getElementById('discountPercentage').value);
+
+            if (originalPrice && discountPercentage) {
+                const discountPrice = originalPrice - (originalPrice * discountPercentage / 100);
+                document.getElementById('discountPrice').value = discountPrice.toFixed(2);
+            }
+        }
     </script>
+
+    <!-- Hot Deal Modal -->
+    <div id="hotDealModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-fire"></i> Add Hot Deal</h2>
+            <form id="hotDealForm" action="php/manage_hot_deals.php" method="POST">
+                <input type="hidden" name="action" value="add">
+                <input type="hidden" id="hotDealProductId" name="product_id">
+                <input type="hidden" id="originalPrice" name="original_price">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Discount Percentage (%)</label>
+                        <input type="number" id="discountPercentage" name="discount_percentage"
+                            placeholder="e.g., 20" min="1" max="90"
+                            onchange="calculateDiscountPrice()" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Discount Price (৳)</label>
+                        <input type="number" id="discountPrice" name="discount_price"
+                            placeholder="Auto-calculated" step="0.01" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Deal Valid Until</label>
+                    <input type="datetime-local" name="valid_until" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('hotDealModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-fire"></i> Create Hot Deal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>
