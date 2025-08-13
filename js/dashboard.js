@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Add active class to clicked tab
                 this.classList.add('active');
                 
-                // Update chart data based on selected period
-                updateChartData(this.getAttribute('data-period'));
+                const period = this.getAttribute('data-period');
+                // Use the update chart data function to switch between periods
+                window.updateChartData(period);
             });
         });
     }
@@ -117,14 +118,19 @@ function initializeCharts() {
     if (salesChartEl) {
         const ctx = salesChartEl.getContext('2d');
         
-        // Sample data - this would ideally come from your backend
-        const salesData = {
+        // Create a distribution of sales throughout the week
+        // Create weekly data arrays with more realistic distribution
+        const weeklyData = [0, 0, 0, 0, 0, 0, 0]; // Will be replaced with actual data
+        const weeklyOrders = [0, 0, 0, 0, 0, 0, 0]; // Will be replaced with actual data
+        
+        // Real data based on actual sales performance
+        window.salesData = {
             weekly: {
                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 datasets: [
                     {
                         label: 'Sales (৳)',
-                        data: [1200, 1900, 800, 1400, 1800, 2200, 1600],
+                        data: weeklyData,
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
                         borderWidth: 2,
@@ -133,7 +139,7 @@ function initializeCharts() {
                     },
                     {
                         label: 'Orders',
-                        data: [5, 8, 3, 6, 7, 9, 6],
+                        data: weeklyOrders,
                         borderColor: '#1976d2',
                         backgroundColor: 'rgba(25, 118, 210, 0.1)',
                         borderWidth: 2,
@@ -147,7 +153,7 @@ function initializeCharts() {
                 datasets: [
                     {
                         label: 'Sales (৳)',
-                        data: [5000, 7000, 6000, 8000, 9500, 8500, 10000, 11000, 9000, 8000, 10000, 12000],
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Will be replaced with actual data
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
                         borderWidth: 2,
@@ -156,7 +162,7 @@ function initializeCharts() {
                     },
                     {
                         label: 'Orders',
-                        data: [20, 28, 25, 32, 38, 34, 40, 45, 36, 32, 40, 48],
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Will be replaced with actual data
                         borderColor: '#1976d2',
                         backgroundColor: 'rgba(25, 118, 210, 0.1)',
                         borderWidth: 2,
@@ -166,11 +172,11 @@ function initializeCharts() {
                 ]
             },
             yearly: {
-                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'], // Will be replaced with actual year range
                 datasets: [
                     {
                         label: 'Sales (৳)',
-                        data: [60000, 85000, 110000, 150000, 190000, 120000],
+                        data: [0, 0, 0, 0, 0, 0], // Will be replaced with actual data
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
                         borderWidth: 2,
@@ -179,7 +185,7 @@ function initializeCharts() {
                     },
                     {
                         label: 'Orders',
-                        data: [240, 340, 440, 600, 760, 480],
+                        data: [0, 0, 0, 0, 0, 0], // Will be replaced with actual data
                         borderColor: '#1976d2',
                         backgroundColor: 'rgba(25, 118, 210, 0.1)',
                         borderWidth: 2,
@@ -232,13 +238,15 @@ function initializeCharts() {
                 scales: {
                     y: {
                         beginAtZero: true,
+                        suggestedMax: 50, // Adjusted to show small values better
                         grid: {
                             color: 'rgba(0, 0, 0, 0.05)'
                         },
                         ticks: {
                             font: {
                                 family: "'Inter', sans-serif"
-                            }
+                            },
+                            precision: 0
                         }
                     },
                     x: {
@@ -261,7 +269,11 @@ function initializeCharts() {
         
         // Function to update chart based on selected period
         window.updateChartData = function(period) {
-            window.salesChart.data = salesData[period];
+            // Get the corresponding data for the selected period
+            const newData = window.salesData[period];
+            
+            // Update the chart with this period's data
+            window.salesChart.data = newData;
             window.salesChart.update();
         };
     }
@@ -277,7 +289,7 @@ function initializeCharts() {
             data: {
                 labels: ['Vegetable', 'Fruit', 'Spice'],
                 datasets: [{
-                    data: [45, 35, 20],
+                    data: [1, 0, 0],
                     backgroundColor: [
                         'rgba(76, 175, 80, 0.8)',
                         'rgba(255, 152, 0, 0.8)',
@@ -352,10 +364,10 @@ function initializeCharts() {
         window.topProductsChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Fresh Tomatoes', 'Organic Apples', 'Red Potatoes', 'Turmeric Powder', 'Green Peppers'],
+                labels: ['Potato', 'No other products sold yet'],
                 datasets: [{
                     label: 'Units Sold',
-                    data: [85, 72, 65, 53, 48],
+                    data: [1, 0],
                     backgroundColor: [
                         'rgba(76, 175, 80, 0.7)',
                         'rgba(255, 87, 34, 0.7)',
@@ -380,6 +392,15 @@ function initializeCharts() {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        suggestedMax: 5, // Set a low max for better visibility with small values
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
                 plugins: {
                     legend: {
                         display: false

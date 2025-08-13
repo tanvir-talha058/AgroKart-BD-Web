@@ -1,0 +1,30 @@
+.chart-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* Adjust for empty data visualization */
+.empty-data-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.empty-data-notice i {
+    font-size: 2rem;
+    color: #d1d5db;
+    margin-bottom: 10px;
+}
+
+.empty-data-notice p {
+    color: #6b7280;
+    font-size: 0.9rem;
+}

@@ -57,6 +57,7 @@ $stmt_shipped->close();
     <title>Seller Dashboard - AgroKartBD</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/unit-styles.css">
+    <link rel="stylesheet" href="css/dashboard-fixes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -124,6 +125,7 @@ $stmt_shipped->close();
             <!-- Sales & Revenue Chart -->
             <div class="chart-container">
                 <h3>Sales & Revenue Overview</h3>
+                <p class="chart-subtitle">Showing actual sales data based on your store performance</p>
                 <div class="chart-tabs">
                     <div class="chart-tab active" data-period="weekly">Weekly</div>
                     <div class="chart-tab" data-period="monthly">Monthly</div>
@@ -236,6 +238,10 @@ $stmt_shipped->close();
                     <div class="chart-content">
                         <canvas id="topProductsChart"></canvas>
                     </div>
+                    <div class="empty-data-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Showing real sales data. As your sales increase, this chart will populate with more products.</p>
+                    </div>
                 </div>
 
                 <!-- Product Category Distribution Chart -->
@@ -243,6 +249,10 @@ $stmt_shipped->close();
                     <h3>Product Category Distribution</h3>
                     <div class="chart-content">
                         <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="empty-data-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Displaying actual product category data based on your inventory.</p>
                     </div>
                 </div>
             </div>
@@ -364,10 +374,78 @@ $stmt_shipped->close();
                 $monthly_orders[$month_index] = intval($row['order_count']);
             }
 
+            // Weekly sales data - for the current week
+            $week_start = date('Y-m-d', strtotime('monday this week'));
+            $week_end = date('Y-m-d', strtotime('sunday this week'));
+
+            $weekly_sales_sql = "SELECT WEEKDAY(o.created_at) as weekday, 
+                               SUM(oi.quantity * oi.price) as total_sales,
+                               COUNT(DISTINCT o.id) as order_count
+                               FROM orders o 
+                               JOIN order_items oi ON o.id = oi.order_id 
+                               JOIN products p ON oi.product_id = p.id 
+                               WHERE p.seller_id = ? 
+                               AND DATE(o.created_at) BETWEEN ? AND ?
+                               GROUP BY WEEKDAY(o.created_at)
+                               ORDER BY weekday";
+            $stmt_weekly = $conn->prepare($weekly_sales_sql);
+            $stmt_weekly->bind_param("iss", $seller_id, $week_start, $week_end);
+            $stmt_weekly->execute();
+            $weekly_result = $stmt_weekly->get_result();
+
+            $weekly_sales = array_fill(0, 7, 0); // 0 = Monday to 6 = Sunday
+            $weekly_orders = array_fill(0, 7, 0);
+
+            while ($row = $weekly_result->fetch_assoc()) {
+                $weekday = intval($row['weekday']); // 0 = Monday, 6 = Sunday
+                $weekly_sales[$weekday] = floatval($row['total_sales']);
+                $weekly_orders[$weekday] = intval($row['order_count']);
+            }
+
+            // Yearly sales data - for the last 5 years plus current year
+            $current_year = intval(date('Y'));
+            $start_year = $current_year - 5;
+
+            $yearly_sales_sql = "SELECT YEAR(o.created_at) as year, 
+                               SUM(oi.quantity * oi.price) as total_sales,
+                               COUNT(DISTINCT o.id) as order_count
+                               FROM orders o 
+                               JOIN order_items oi ON o.id = oi.order_id 
+                               JOIN products p ON oi.product_id = p.id 
+                               WHERE p.seller_id = ? 
+                               AND YEAR(o.created_at) BETWEEN ? AND ?
+                               GROUP BY YEAR(o.created_at)
+                               ORDER BY year";
+            $stmt_yearly = $conn->prepare($yearly_sales_sql);
+            $stmt_yearly->bind_param("iii", $seller_id, $start_year, $current_year);
+            $stmt_yearly->execute();
+            $yearly_result = $stmt_yearly->get_result();
+
+            $year_labels = [];
+            $yearly_sales = [];
+            $yearly_orders = [];
+
+            // Initialize arrays with zeros for all years in range
+            for ($y = $start_year; $y <= $current_year; $y++) {
+                $year_labels[] = (string)$y;
+                $yearly_sales[$y - $start_year] = 0;
+                $yearly_orders[$y - $start_year] = 0;
+            }
+
+            while ($row = $yearly_result->fetch_assoc()) {
+                $year_index = intval($row['year']) - $start_year;
+                if ($year_index >= 0 && $year_index < count($yearly_sales)) {
+                    $yearly_sales[$year_index] = floatval($row['total_sales']);
+                    $yearly_orders[$year_index] = intval($row['order_count']);
+                }
+            }
+
             // Close statements
             $stmt_category->close();
             $stmt_top->close();
             $stmt_monthly->close();
+            $stmt_weekly->close();
+            $stmt_yearly->close();
             ?>
 
             // Update category chart with real data
@@ -388,12 +466,37 @@ $stmt_shipped->close();
                 window.topProductsChart.update();
             }
 
-            // Update sales chart monthly data with real data
+            // Update sales chart with actual data
             if (window.salesChart) {
-                // Only update the monthly data with real data
-                window.salesChart.data.datasets[0].data = <?php echo json_encode($monthly_sales); ?>;
-                window.salesChart.data.datasets[1].data = <?php echo json_encode($monthly_orders); ?>;
-                window.salesChart.update();
+                // Get current active period
+                const activePeriod = document.querySelector('.chart-tab.active').getAttribute('data-period');
+
+                // Create actual sales data for each period based on database values
+                // This ensures the chart data in salesData object is updated with real values
+
+                // Update weekly data with actual values from database
+                if (window.salesData && window.salesData.weekly) {
+                    window.salesData.weekly.datasets[0].data = <?php echo json_encode($weekly_sales); ?>;
+                    window.salesData.weekly.datasets[1].data = <?php echo json_encode($weekly_orders); ?>;
+                }
+
+                // Update monthly data with actual values from database
+                if (window.salesData && window.salesData.monthly) {
+                    window.salesData.monthly.datasets[0].data = <?php echo json_encode($monthly_sales); ?>;
+                    window.salesData.monthly.datasets[1].data = <?php echo json_encode($monthly_orders); ?>;
+                }
+
+                // Update yearly data with actual values from database
+                if (window.salesData && window.salesData.yearly) {
+                    window.salesData.yearly.labels = <?php echo json_encode($year_labels); ?>;
+                    window.salesData.yearly.datasets[0].data = <?php echo json_encode($yearly_sales); ?>;
+                    window.salesData.yearly.datasets[1].data = <?php echo json_encode($yearly_orders); ?>;
+                }
+
+                // Use the updated data for the currently active period
+                if (activePeriod) {
+                    window.updateChartData(activePeriod);
+                }
             }
         });
     </script>
