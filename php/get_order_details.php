@@ -81,12 +81,15 @@ if (isset($_GET['order_id'])) {
 
     $items = [];
     while ($item = $items_result->fetch_assoc()) {
+        // Ensure the image path is correctly formatted
+        $imagePath = !empty($item['image_path']) ? $item['image_path'] : 'images/AGrO.png';
+
         $items[] = [
             'name' => $item['name'],
             'quantity' => $item['quantity'],
             'price' => $item['price'],
             'unit' => $item['unit'] ?? 'kg', // Default to kg if not set
-            'image_path' => $item['image_path']
+            'image_path' => $imagePath
         ];
     }
     $items_stmt->close();
