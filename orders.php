@@ -46,6 +46,7 @@ $order_items_sql = "SELECT
                     o.id AS order_id, 
                     o.status,
                     o.created_at,
+                    o.notes,
                     u.name AS buyer_name,
                     u.email AS buyer_email,
                     u.phone AS buyer_phone,
@@ -280,6 +281,18 @@ $stats = [
                                         <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($item['buyer_phone']); ?></p>
                                         <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['location']); ?></p>
                                     </div>
+
+                                    <?php if (!empty($item['notes'])): ?>
+                                        <div class="order-notes-section">
+                                            <div class="notes-header">
+                                                <i class="fas fa-sticky-note"></i>
+                                                <h4>Special Notes</h4>
+                                            </div>
+                                            <div class="notes-content">
+                                                <p><?php echo htmlspecialchars($item['notes']); ?></p>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="order-actions">
                                     <form action="php/update_order_status.php" method="POST" class="status-update-form">
