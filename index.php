@@ -568,7 +568,7 @@ include 'includes/header.php';
   /* Hot Deals Section */
   .hot-deals-section {
     padding: 60px 0;
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #ffcc80 100%);
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #dcedc8 100%);
     position: relative;
     overflow: hidden;
   }
@@ -691,6 +691,9 @@ include 'includes/header.php';
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    /* center the text block */
+    text-align: center;
   }
 
   .deal-title {
@@ -711,6 +714,8 @@ include 'includes/header.php';
     display: flex;
     flex-direction: column;
     gap: 4px;
+    align-items: center;
+    /* center price lines */
   }
 
   .original-price {
@@ -733,12 +738,16 @@ include 'includes/header.php';
     background: rgba(76, 175, 80, 0.1);
     padding: 2px 8px;
     border-radius: 10px;
-    align-self: flex-start;
+    align-self: center;
+    /* center savings badge */
   }
 
   .deal-form {
     margin-top: auto;
     padding: 0 15px 15px;
+    display: flex;
+    /* center the button container */
+    justify-content: center;
   }
 
   .deal-btn {
@@ -755,7 +764,8 @@ include 'includes/header.php';
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
+    width: auto;
+    /* shrink to content */
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
   }
 
@@ -1045,6 +1055,7 @@ include 'includes/header.php';
     line-height: 1.3;
     overflow: hidden;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;

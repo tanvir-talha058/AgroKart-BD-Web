@@ -24,12 +24,7 @@ $_SESSION['cart'][] = array(
 );
 */
 
-// Calculate total
-foreach ($cart_items as $item) {
-    if (isset($item['price']) && isset($item['quantity'])) {
-        $total += $item['price'] * $item['quantity'];
-    }
-}
+// Total will be calculated during item rendering below to avoid double counting
 
 // Add debugging if needed
 if (isset($_SESSION['debug'])) {
@@ -330,15 +325,19 @@ if (isset($_SESSION['debug'])) {
         border-radius: 20px;
         padding: 30px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        /* center text in the items section header */
     }
 
     .cart-items-header {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
+        gap: 8px;
         margin-bottom: 30px;
         padding-bottom: 20px;
         border-bottom: 2px solid #f0f0f0;
+        text-align: center;
     }
 
     .cart-items-header h3 {
@@ -361,23 +360,30 @@ if (isset($_SESSION['debug'])) {
         display: flex;
         flex-direction: column;
         gap: 20px;
+        align-items: center;
+        /* center the cards horizontally */
     }
 
     .cart-item-card {
         display: grid;
-        grid-template-columns: auto 1fr auto auto auto;
-        gap: 20px;
+        grid-template-columns: 1fr;
+        /* stack for better centering */
+        gap: 14px;
         align-items: center;
+        justify-items: center;
+        /* center grid children */
         background: #ffffff;
-        /* Changed from #f8fff9 to pure white */
         padding: 20px;
         border-radius: 15px;
         transition: all 0.3s ease;
         position: relative;
         border: 1px solid #e8f5e8;
-        /* Added subtle border for definition */
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        /* Enhanced shadow for depth */
+        text-align: center;
+        /* center text inside card */
+        width: 100%;
+        max-width: 720px;
+        /* keep nice line length */
     }
 
     .cart-item-card:hover {
@@ -443,6 +449,8 @@ if (isset($_SESSION['debug'])) {
         display: flex;
         flex-direction: column;
         gap: 8px;
+        align-items: center;
+        /* center name and price */
     }
 
     .item-name {
@@ -495,6 +503,8 @@ if (isset($_SESSION['debug'])) {
     .item-quantity {
         display: flex;
         align-items: center;
+        justify-content: center;
+        /* center controls */
     }
 
     .quantity-controls {
@@ -541,11 +551,11 @@ if (isset($_SESSION['debug'])) {
     .item-total {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        gap: 5px;
-        min-width: 100px;
-        /* Ensures consistent width for price columns */
-        text-align: right;
+        align-items: center;
+        /* center total */
+        gap: 6px;
+        min-width: unset;
+        text-align: center;
     }
 
     .total-label {
@@ -563,6 +573,8 @@ if (isset($_SESSION['debug'])) {
     .cart-summary-section {
         position: sticky;
         top: 20px;
+        align-self: center;
+        /* center the summary column */
     }
 
     .summary-card {
@@ -635,6 +647,8 @@ if (isset($_SESSION['debug'])) {
         display: flex;
         flex-direction: column;
         gap: 15px;
+        align-items: center;
+        /* center buttons */
     }
 
     .checkout-btn {
@@ -740,22 +754,23 @@ if (isset($_SESSION['debug'])) {
         color: white;
     }
 
-    /* New delete button styles */
+    /* Ensure centered layout for item cards (override any older styles) */
     .cart-item-card {
         display: grid;
-        grid-template-columns: auto 1fr auto auto auto;
-        /* Added one more column for delete button */
-        gap: 20px;
+        grid-template-columns: 1fr;
+        gap: 14px;
         align-items: center;
-        background: #f8fff9;
+        justify-items: center;
+        background: #ffffff;
         padding: 20px;
         border-radius: 15px;
         transition: all 0.3s ease;
         position: relative;
+        text-align: center;
     }
 
     .item-remove {
-        align-self: flex-start;
+        align-self: center;
         margin-top: 5px;
     }
 
@@ -792,9 +807,7 @@ if (isset($_SESSION['debug'])) {
         }
 
         .item-remove {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            position: static;
             margin-top: 0;
         }
     }
