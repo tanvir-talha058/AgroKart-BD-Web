@@ -82,32 +82,4 @@ if (isset($_SESSION['forgot_email'])) {
     <button type="submit">Check OTP</button>
 </form>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 20px;
-    }
-
-    form {
-        margin-top: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    input {
-        padding: 8px;
-        margin: 5px 0;
-        width: 200px;
-    }
-
-    button {
-        padding: 8px 15px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-</style>
+<link rel="stylesheet" href="css/otp-style.css">

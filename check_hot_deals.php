@@ -135,47 +135,4 @@ try {
 $conn->close();
 ?>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f8f9fa;
-    }
-
-    h2,
-    h3 {
-        color: #2c3e50;
-    }
-
-    table {
-        width: 100%;
-        background: white;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    th {
-        background: #4CAF50;
-        color: white;
-        padding: 10px;
-    }
-
-    td {
-        padding: 8px;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    a {
-        color: #4CAF50;
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
-</style>
+<link rel="stylesheet" href="css/hot-deals-style.css">
