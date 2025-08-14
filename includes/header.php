@@ -15,11 +15,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     // First clear any existing cart - important to prevent cart data mixing between users
     $_SESSION['cart'] = [];
 
-    // Get cart items from database
-    $cart_query = "SELECT uc.product_id, uc.quantity, p.name, p.price, p.unit, p.image_path, p.stock 
-                  FROM user_cart uc 
-                  JOIN products p ON uc.product_id = p.id 
-                  WHERE uc.user_id = ?";
+    // Get cart items from database (include stored price)
+    $cart_query = "SELECT uc.product_id, uc.quantity, uc.price AS cart_price, p.name, p.price AS product_price, p.unit, p.image_path, p.stock 
+          FROM user_cart uc 
+          JOIN products p ON uc.product_id = p.id 
+          WHERE uc.user_id = ?";
     $stmt = $conn->prepare($cart_query);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -28,13 +28,16 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     // Add database items to session cart
     while ($item = $result->fetch_assoc()) {
       $product_id = $item['product_id'];
+      $price_to_use = isset($item['cart_price']) && $item['cart_price'] > 0 ? (float)$item['cart_price'] : (float)$item['product_price'];
       $_SESSION['cart'][$product_id] = [
         'name' => $item['name'],
-        'price' => $item['price'],
+        'price' => $price_to_use,
         'unit' => $item['unit'],
         'image' => $item['image_path'],
         'quantity' => $item['quantity'],
-        'stock' => $item['stock']
+        'stock' => $item['stock'],
+        'is_deal' => $price_to_use < (float)$item['product_price'],
+        'original_price' => $price_to_use < (float)$item['product_price'] ? (float)$item['product_price'] : null,
       ];
     }
     $stmt->close();
