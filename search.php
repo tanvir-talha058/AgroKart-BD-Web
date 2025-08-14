@@ -108,7 +108,9 @@ include 'includes/header.php';
     </div>
 </section>
 
-<style>
+<link rel="stylesheet" href="css/search.css">
+
+<!-- <style>
     /* Enhanced Search Hero Section */
     .search-hero {
         position: relative;
@@ -170,7 +172,7 @@ include 'includes/header.php';
     .no-results-card p { font-size: 1.1rem; color: #666; margin-bottom: 40px; }
     .back-to-home-btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); }
     .back-to-home-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); color: white; }
-</style>
+</style> -->
 
 <?php
 include 'includes/footer.php';
