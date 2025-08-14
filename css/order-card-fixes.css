@@ -1,0 +1,162 @@
+/* Order card fixes */
+.product-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.product-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    object-fit: cover;
+}
+
+.product-name {
+    margin: 12px 0;
+    font-size: 1rem;
+    padding: 0 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: auto;
+    font-weight: 600;
+    color: #333;
+}
+
+.order-details-grid {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+}
+
+/* New table-based layout */
+.order-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.order-details-table tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-details-table tr:last-child {
+    border-bottom: none;
+}
+
+.order-detail-label {
+    font-size: 0.9rem;
+    color: #666;
+    padding: 6px 0;
+    text-align: left;
+    width: 40%;
+}
+
+.order-detail-value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 6px 0;
+    text-align: right;
+}
+
+.total-row {
+    border-top: 1px solid #ddd;
+    margin-top: 5px;
+}
+
+.total-row .order-detail-label {
+    font-weight: 600;
+    color: #444;
+}
+
+.total-value {
+    font-weight: 700;
+    color: #2e7d32;
+    font-size: 1rem;
+}
+
+.order-details-value {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* For the combined row */
+.quantity-section span.order-details-label,
+.price-section span.order-details-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-right: 5px;
+}
+
+.quantity-section span.order-details-value,
+.price-section span.order-details-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.price-section {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.price-inline {
+    display: inline-block;
+}
+
+/* Make the cards more compact overall */
+.product-order-card {
+    max-height: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.product-order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-details {
+    padding: 0;
+}
+
+.order-header-grid {
+    padding: 10px 12px;
+}
+
+.order-status-badge {
+    top: 10px;
+    right: 10px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.buyer-info {
+    padding: 8px 10px;
+}
+
+.buyer-details p {
+    margin: 5px 0;
+    font-size: 0.85rem;
+}
+
+.order-notes-section {
+    margin-top: 5px;
+    padding-top: 5px;
+}
+
+.notes-content p {
+    font-size: 0.85rem;
+    margin: 5px 0;
+}

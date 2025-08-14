@@ -129,32 +129,6 @@ include 'includes/header.php';
     }
 </script>
 
-<style>
-    .verification-message {
-        background: #e8f4fd;
-        padding: 12px 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 0.95rem;
-        color: #0277bd;
-        border-left: 4px solid #0277bd;
-    }
-
-    .resend-link {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 0.9rem;
-    }
-
-    .resend-link a {
-        color: #4CAF50;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .resend-link a:hover {
-        text-decoration: underline;
-    }
-</style>
+<link rel="stylesheet" href="css/forgot-password-style.css">
 
 <?php include 'includes/footer.php'; ?>

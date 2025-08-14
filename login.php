@@ -12,6 +12,7 @@ if (isset($_SESSION['loggedin'])) {
 }
 
 // Include header after checking for redirect
+// Include header after checking for redirect
 include 'includes/header.php';
 ?>
 <div class="login-page">

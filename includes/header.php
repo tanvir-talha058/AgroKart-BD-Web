@@ -1,7 +1,7 @@
 <?php
 // No output before this line
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 require_once 'db_connect.php';
 
@@ -15,11 +15,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     // First clear any existing cart - important to prevent cart data mixing between users
     $_SESSION['cart'] = [];
 
-    // Get cart items from database
-    $cart_query = "SELECT uc.product_id, uc.quantity, p.name, p.price, p.image_path, p.stock 
-                  FROM user_cart uc 
-                  JOIN products p ON uc.product_id = p.id 
-                  WHERE uc.user_id = ?";
+    // Get cart items from database (include stored price)
+    $cart_query = "SELECT uc.product_id, uc.quantity, uc.price AS cart_price, p.name, p.price AS product_price, p.unit, p.image_path, p.stock 
+          FROM user_cart uc 
+          JOIN products p ON uc.product_id = p.id 
+          WHERE uc.user_id = ?";
     $stmt = $conn->prepare($cart_query);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -28,12 +28,16 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     // Add database items to session cart
     while ($item = $result->fetch_assoc()) {
       $product_id = $item['product_id'];
+      $price_to_use = isset($item['cart_price']) && $item['cart_price'] > 0 ? (float)$item['cart_price'] : (float)$item['product_price'];
       $_SESSION['cart'][$product_id] = [
         'name' => $item['name'],
-        'price' => $item['price'],
+        'price' => $price_to_use,
+        'unit' => $item['unit'],
         'image' => $item['image_path'],
         'quantity' => $item['quantity'],
-        'stock' => $item['stock']
+        'stock' => $item['stock'],
+        'is_deal' => $price_to_use < (float)$item['product_price'],
+        'original_price' => $price_to_use < (float)$item['product_price'] ? (float)$item['product_price'] : null,
       ];
     }
     $stmt->close();
@@ -57,7 +61,11 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
+<<<<<<< HEAD
   <link rel="stylesheet" href="css/chatbot.css">
+=======
+  <link rel="stylesheet" href="css/unit-display.css">
+>>>>>>> 94efe9c72351df2c7c26c9f64b2f78db5645edc5
   <link rel="icon" type="image/x-icon" href="../images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->
