@@ -21,8 +21,6 @@ unset($_SESSION['last_order_id']); // Clear it after use
 <!-- Include jsPDF library for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<!-- Add this before your <style> block or in header.php -->
-<!-- <link rel="stylesheet" href=""> -->
 
 <style>
 .payment-success-page {
