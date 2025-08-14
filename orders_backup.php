@@ -149,65 +149,7 @@ foreach ($orders as $order) {
     <link rel="stylesheet" href="css/orders.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Add any additional CSS files here -->
-    <style>
-        /* Direct overrides for card visibility */
-        .order-card {
-            display: block !important;
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eee;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 20px;
-        }
-
-        .orders-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Status colors */
-        .status-pending .status-dot {
-            background-color: #FFC107;
-        }
-
-        .status-processing .status-dot {
-            background-color: #2196F3;
-        }
-
-        .status-shipped .status-dot {
-            background-color: #9C27B0;
-        }
-
-        .status-delivered .status-dot {
-            background-color: #4CAF50;
-        }
-
-        .status-cancelled .status-dot {
-            background-color: #F44336;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/orders-backup-style.css">
 </head>
 
 <body>
