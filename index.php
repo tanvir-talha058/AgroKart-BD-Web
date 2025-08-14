@@ -746,7 +746,7 @@ include 'includes/header.php';
     margin-top: auto;
     padding: 0 15px 15px;
     display: flex;
-    /* center the button container */
+   
     justify-content: center;
   }
 
