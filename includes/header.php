@@ -57,6 +57,7 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
   <link rel="icon" type="image/x-icon" href="../images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->
@@ -771,3 +772,6 @@ if (isset($_SESSION['cart'])) {
       }
     });
   </script>
+
+  <!-- Chatbot Script -->
+  <script src="js/chatbot.js"></script>
