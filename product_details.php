@@ -199,21 +199,6 @@ try {
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>Add to Cart</span>
                             </button>
-                            <?php if (isset($_SESSION['loggedin'])): ?>
-                                <button type="button" class="wishlist-btn wishlist-toggle-btn" data-product-id="<?php echo $product_id; ?>">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <button type="button" class="compare-btn" onclick="addToComparison(<?php echo $product_id; ?>)">
-                                    <i class="fas fa-balance-scale"></i>
-                                </button>
-                            <?php else: ?>
-                                <a href="login.php" class="wishlist-btn" title="Login to add to wishlist">
-                                    <i class="far fa-heart"></i>
-                                </a>
-                                <a href="login.php" class="compare-btn" title="Login to compare products">
-                                    <i class="fas fa-balance-scale"></i>
-                                </a>
-                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
@@ -568,23 +553,25 @@ try {
     }
 
     .purchase-section {
-        background: #f8f9fa;
-        padding: 25px;
-        border-radius: 15px;
-        border: 2px solid #e9ecef;
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        padding: 30px;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
     .quantity-selector {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     .quantity-selector label {
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 10px;
+        margin-bottom: 12px;
         font-weight: 600;
         color: #2C3E50;
+        font-size: 1.1rem;
     }
 
     .quantity-controls {
@@ -593,40 +580,48 @@ try {
         gap: 0;
         width: fit-content;
         border: 2px solid #4CAF50;
-        border-radius: 25px;
+        border-radius: 50px;
         overflow: hidden;
         background: white;
-        /* Ensure background is white */
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .quantity-controls:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(76, 175, 80, 0.3);
     }
 
     .qty-btn {
         background: #4CAF50;
         color: white;
         border: none;
-        padding: 12px 16px;
+        padding: 14px 18px;
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: bold;
         transition: background 0.3s ease;
-        min-width: 40px;
-        height: 45px;
+        min-width: 48px;
+        height: 48px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
+    .qty-btn:hover {
+        background: #3d9c40;
+    }
+
     .quantity-controls input {
         border: none;
-        padding: 12px 10px;
+        padding: 12px 15px;
         text-align: center;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 600;
-        width: 60px;
+        width: 70px;
         background: white;
         color: #333;
-        /* Ensure text color has good contrast */
         margin: 0;
-        /* Remove any default margins */
     }
 
     /* Add this to ensure the input is visible and has consistent styling */
@@ -646,30 +641,50 @@ try {
 
     .action-buttons {
         display: flex;
-        gap: 15px;
+        width: 100%;
     }
 
     .add-to-cart-btn {
         flex: 1;
-        background: linear-gradient(135deg, #4CAF50, #45a049);
+        background: linear-gradient(135deg, #4CAF50, #388E3C);
         color: white;
         border: none;
-        padding: 15px 25px;
-        border-radius: 25px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        padding: 18px 30px;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 700;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .add-to-cart-btn:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.7s ease;
+        z-index: -1;
     }
 
     .add-to-cart-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.7);
+    }
+
+    .add-to-cart-btn:hover:before {
+        left: 100%;
     }
 
     .add-to-cart-btn:active {
@@ -681,54 +696,11 @@ try {
         cursor: not-allowed;
     }
 
-    .wishlist-btn {
-        background: white;
-        color: #e91e63;
-        border: 2px solid #e91e63;
-        padding: 15px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
+    .add-to-cart-btn i {
+        font-size: 1.3rem;
     }
 
-    .wishlist-btn:hover {
-        background: #e91e63;
-        color: white;
-        transform: scale(1.1);
-    }
-
-    .wishlist-btn.active {
-        background: #e91e63;
-        color: white;
-    }
-
-    .compare-btn {
-        background: white;
-        color: #2196F3;
-        border: 2px solid #2196F3;
-        padding: 15px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-
-    .compare-btn:hover {
-        background: #2196F3;
-        color: white;
-        transform: scale(1.1);
-    }
+    /* Removed wishlist and compare button styles */
 
     /* Reviews Section */
     .reviews-section {
@@ -1171,127 +1143,15 @@ try {
         }, 5000);
     }
 
-    // Add to comparison function
-    function addToComparison(productId) {
-        const formData = new FormData();
-        formData.append('product_id', productId);
-        formData.append('action', 'add');
+    // Removed comparison functionality
 
-        fetch('php/comparison_manager.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(data.message, 'success');
-                    updateComparisonCount(data.comparison_count);
-                } else {
-                    showNotification(data.message || 'Failed to add to comparison', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred. Please try again.', 'error');
-            });
-    }
+    // Removed wishlist functionality
 
-    // Update comparison count in header
-    function updateComparisonCount(count) {
-        const comparisonBadge = document.getElementById('comparison-count');
-        if (comparisonBadge) {
-            comparisonBadge.textContent = count;
-            comparisonBadge.style.display = count > 0 ? 'block' : 'none';
-        }
-    }
+    // Removed wishlist functionality
 
-    // Check wishlist status on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
-        if (wishlistBtn) {
-            const productId = wishlistBtn.getAttribute('data-product-id');
-            checkWishlistStatus(productId);
-        }
+    // Removed wishlist toggle functionality
 
-        // Initialize wishlist functionality
-        if (wishlistBtn) {
-            wishlistBtn.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                toggleWishlist(productId, this);
-            });
-        }
-    });
-
-    // Check wishlist status
-    function checkWishlistStatus(productId) {
-        const formData = new FormData();
-        formData.append('product_id', productId);
-        formData.append('action', 'check_status');
-
-        fetch('php/wishlist_manager.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.is_in_wishlist) {
-                    const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
-                    if (wishlistBtn) {
-                        const icon = wishlistBtn.querySelector('i');
-                        icon.className = 'fas fa-heart';
-                        wishlistBtn.classList.add('active');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error checking wishlist status:', error);
-            });
-    }
-
-    // Toggle wishlist
-    function toggleWishlist(productId, button) {
-        const formData = new FormData();
-        formData.append('product_id', productId);
-        formData.append('action', 'toggle');
-
-        fetch('php/wishlist_manager.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const icon = button.querySelector('i');
-                    if (data.is_in_wishlist) {
-                        icon.className = 'fas fa-heart';
-                        button.classList.add('active');
-                        showNotification('Added to wishlist!', 'success');
-                    } else {
-                        icon.className = 'far fa-heart';
-                        button.classList.remove('active');
-                        showNotification('Removed from wishlist!', 'success');
-                    }
-
-                    // Update wishlist count
-                    updateWishlistCount(data.wishlist_count);
-                } else {
-                    showNotification(data.message || 'Please log in to manage wishlist', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred. Please try again.', 'error');
-            });
-    }
-
-    // Update wishlist count in header
-    function updateWishlistCount(count) {
-        const wishlistBadge = document.getElementById('wishlist-count');
-        if (wishlistBadge) {
-            wishlistBadge.textContent = count;
-            wishlistBadge.style.display = count > 0 ? 'block' : 'none';
-        }
-    }
+    // Removed wishlist count update functionality
 
     // Add slideOut animation
     const style = document.createElement('style');
