@@ -44,21 +44,26 @@ try {
     $delivery_location = trim($_POST['location']);
     $payment_method = trim($_POST['payment_method']);
     $order_notes = isset($_POST['order_notes']) ? trim($_POST['order_notes']) : '';
+    $delivery_option = isset($_POST['delivery_option']) ? trim($_POST['delivery_option']) : 'standard';
+    $delivery_fee = isset($_POST['delivery_fee']) ? floatval($_POST['delivery_fee']) : 0;
     $total_amount = 0;
 
-    // Calculate total amount
+    // Calculate subtotal
     foreach ($_SESSION['cart'] as $item) {
         if (isset($item['price']) && isset($item['quantity'])) {
             $total_amount += $item['price'] * $item['quantity'];
         }
     }
 
+    // Add delivery fee if applicable
+    $total_amount += $delivery_fee;
+
     // Use a transaction to ensure all queries succeed or none do
     $conn->begin_transaction();
 
     // 1. Insert into orders table
-    $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location, notes) VALUES (?, ?, ?, ?)");
-    $stmt_order->bind_param("idss", $buyer_id, $total_amount, $delivery_location, $order_notes);
+    $stmt_order = $conn->prepare("INSERT INTO orders (buyer_id, total_amount, delivery_location, notes, delivery_option, delivery_fee) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt_order->bind_param("idsssd", $buyer_id, $total_amount, $delivery_location, $order_notes, $delivery_option, $delivery_fee);
     $stmt_order->execute();
     $order_id = $stmt_order->insert_id;
     $stmt_order->close();
@@ -99,10 +104,9 @@ try {
     // Set order ID in session and redirect to success page
     $_SESSION['last_order_id'] = $order_id;
     $_SESSION['success'] = "Order placed successfully!";
-    
+
     header('Location: ../payment_success.php');
     exit();
-
 } catch (mysqli_sql_exception $exception) {
     // If any query fails, roll back the transaction
     $conn->rollback();
@@ -117,4 +121,3 @@ try {
 }
 
 $conn->close();
-?>

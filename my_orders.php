@@ -374,11 +374,11 @@ $buyer_id = $_SESSION['user_id'];
             <div class="order-summary">
                 <div class="summary-row">
                     <span>Subtotal:</span>
-                    <span>৳${parseFloat(order.total_amount).toFixed(2)}</span>
+                    <span>৳${parseFloat(order.total_amount - (order.delivery_fee || 0)).toFixed(2)}</span>
                 </div>
                 <div class="summary-row">
-                    <span>Shipping:</span>
-                    <span>${parseFloat(order.shipping_cost) > 0 ? '৳' + parseFloat(order.shipping_cost).toFixed(2) : '<span class="free-delivery">Free</span>'}</span>
+                    <span>Delivery (${order.delivery_option === 'fast' ? 'Fast' : 'Standard'}):</span>
+                    <span>${parseFloat(order.delivery_fee) > 0 ? '৳' + parseFloat(order.delivery_fee).toFixed(2) : '<span class="free-delivery">Free</span>'}</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total Amount:</span>

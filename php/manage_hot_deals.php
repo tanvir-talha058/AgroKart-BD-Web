@@ -2,6 +2,25 @@
 session_start();
 require_once '../includes/db_connect.php';
 
+// Define a function to set a notification in session
+function setNotification($type, $message)
+{
+    $_SESSION['notification'] = [
+        'type' => $type,
+        'message' => $message,
+        'time' => time()
+    ];
+}
+
+// Define a function to redirect back to the previous page
+function redirectBack()
+{
+    // Get the referring page or default to dashboard
+    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../dashboard.php';
+    header('Location: ' . $redirect);
+    exit;
+}
+
 // First check if hot_deals table exists, create if not
 $table_check = $conn->query("SHOW TABLES LIKE 'hot_deals'");
 
@@ -24,14 +43,15 @@ if ($table_check->num_rows == 0) {
     )";
 
     if (!$conn->query($create_sql)) {
-        die(json_encode(['success' => false, 'message' => 'Failed to create hot_deals table: ' . $conn->error]));
+        setNotification('error', 'Failed to create hot_deals table: ' . $conn->error);
+        redirectBack();
     }
 }
 
 // Check if user is logged in and is a seller
 if (!isset($_SESSION['loggedin']) || $_SESSION['user_role'] !== 'Seller') {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit;
+    setNotification('error', 'Unauthorized access');
+    redirectBack();
 }
 
 $seller_id = $_SESSION['user_id'];
@@ -43,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $product_id = (int)$_POST['product_id'];
         $discount_percentage = (float)$_POST['discount_percentage'];
         $discount_price = (float)$_POST['discount_price'];
-        $valid_until = $_POST['valid_until'];
+        $valid_until = isset($_POST['valid_until']) && !empty($_POST['valid_until']) ? $_POST['valid_until'] : NULL;
 
         // Verify the product belongs to this seller
         $verify_sql = "SELECT id, price FROM products WHERE id = ? AND seller_id = ?";
@@ -53,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verify_result = $verify_stmt->get_result();
 
         if ($verify_result->num_rows === 0) {
-            echo json_encode(['success' => false, 'message' => 'Product not found or unauthorized']);
+            setNotification('error', 'Product not found or unauthorized');
             $verify_stmt->close();
-            exit;
+            redirectBack();
         }
 
         $product = $verify_result->fetch_assoc();
@@ -63,15 +83,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate discount
         if ($discount_percentage <= 0 || $discount_percentage >= 100) {
-            echo json_encode(['success' => false, 'message' => 'Invalid discount percentage']);
-            exit;
+            setNotification('error', 'Invalid discount percentage');
+            redirectBack();
         }
 
         // Calculate expected discount price for validation
         $expected_discount_price = $product['price'] - ($product['price'] * $discount_percentage / 100);
         if (abs($discount_price - $expected_discount_price) > 0.01) {
-            echo json_encode(['success' => false, 'message' => 'Discount price calculation mismatch']);
-            exit;
+            setNotification('error', 'Discount price calculation mismatch');
+            redirectBack();
         }
 
         // Check if there's already an active deal for this product
@@ -84,28 +104,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check_result->num_rows > 0) {
             // Update existing deal
             $deal_id = $check_result->fetch_assoc()['id'];
-            $update_sql = "UPDATE hot_deals SET discount_percentage = ?, discount_price = ?, valid_until = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+            $update_sql = "UPDATE hot_deals SET discount_percentage = ?, discount_price = ?, end_date = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
             $update_stmt = $conn->prepare($update_sql);
             $update_stmt->bind_param("dssi", $discount_percentage, $discount_price, $valid_until, $deal_id);
 
             if ($update_stmt->execute()) {
-                echo json_encode(['success' => true, 'message' => 'Hot deal updated successfully']);
+                setNotification('success', 'Hot deal updated successfully');
             } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update hot deal']);
+                setNotification('error', 'Failed to update hot deal: ' . $conn->error);
             }
             $update_stmt->close();
+            redirectBack();
         } else {
             // Insert new deal
-            $insert_sql = "INSERT INTO hot_deals (product_id, discount_percentage, discount_price, valid_until, is_active) VALUES (?, ?, ?, ?, 1)";
+            $insert_sql = "INSERT INTO hot_deals (product_id, original_price, discount_price, discount_percentage, end_date, is_active) VALUES (?, ?, ?, ?, ?, 1)";
             $insert_stmt = $conn->prepare($insert_sql);
-            $insert_stmt->bind_param("idds", $product_id, $discount_percentage, $discount_price, $valid_until);
+            $insert_stmt->bind_param("iddds", $product_id, $product['price'], $discount_price, $discount_percentage, $valid_until);
 
             if ($insert_stmt->execute()) {
-                echo json_encode(['success' => true, 'message' => 'Hot deal created successfully']);
+                setNotification('success', 'Hot deal created successfully');
             } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to create hot deal']);
+                setNotification('error', 'Failed to create hot deal: ' . $conn->error);
             }
             $insert_stmt->close();
+            redirectBack();
         }
         $check_stmt->close();
     } elseif ($action === 'remove') {
@@ -119,9 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verify_result = $verify_stmt->get_result();
 
         if ($verify_result->num_rows === 0) {
-            echo json_encode(['success' => false, 'message' => 'Product not found or unauthorized']);
+            setNotification('error', 'Product not found or unauthorized');
             $verify_stmt->close();
-            exit;
+            redirectBack();
         }
         $verify_stmt->close();
 
@@ -131,16 +153,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remove_stmt->bind_param("i", $product_id);
 
         if ($remove_stmt->execute() && $remove_stmt->affected_rows > 0) {
-            echo json_encode(['success' => true, 'message' => 'Hot deal removed successfully']);
+            setNotification('success', 'Hot deal removed successfully');
         } else {
-            echo json_encode(['success' => false, 'message' => 'No active hot deal found for this product']);
+            setNotification('warning', 'No active hot deal found for this product');
         }
         $remove_stmt->close();
+        redirectBack();
     } else {
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        setNotification('error', 'Invalid action');
+        redirectBack();
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+    setNotification('error', 'Invalid request method');
+    redirectBack();
 }
 
 $conn->close();

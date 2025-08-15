@@ -43,10 +43,7 @@ if (isset($_GET['debug'])) {
     echo "</div>";
 }
 ?>
-echo "<!-- Debug: ";
-print_r($_SESSION);
-echo " -->";
-?>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -112,16 +109,13 @@ echo " -->";
                             </div>
                             <div class="calc-row">
                                 <span>Delivery Fee</span>
-                                <span class="free">Free</span>
+                                <span id="delivery-fee">Free</span>
                             </div>
-                            <!-- <div class="calc-row discount">
-                                <span><i class="fas fa-tag"></i> Discount</span>
-                                <span>৳0.00</span>
-                            </div> -->
                             <hr>
                             <div class="summary-total">
                                 <strong>Total Amount</strong>
-                                <strong class="total-price">৳<?php echo number_format($total, 2); ?></strong>
+                                <strong class="total-price" id="total-amount">৳<?php echo number_format($total, 2); ?></strong>
+                                <input type="hidden" name="total_amount" value="<?php echo $total; ?>">
                             </div>
                         </div>
 
@@ -157,16 +151,29 @@ echo " -->";
                                 </div>
 
                                 <div class="delivery-options">
-                                    <div class="delivery-option selected">
+                                    <div class="delivery-option selected" data-type="standard" data-price="0">
+                                        <div class="option-icon">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                        <div class="option-details">
+                                            <h4>Standard Delivery</h4>
+                                            <p>In 2-3 Hours • Free</p>
+                                        </div>
+                                        <div class="option-price">৳0</div>
+                                    </div>
+
+                                    <div class="delivery-option" data-type="fast" data-price="40">
                                         <div class="option-icon">
                                             <i class="fas fa-shipping-fast"></i>
                                         </div>
                                         <div class="option-details">
-                                            <h4>Standard Delivery</h4>
-                                            <p>2-3 business days • Free</p>
+                                            <h4>Fast Delivery</h4>
+                                            <p>In 30 Minutes • Express</p>
                                         </div>
-                                        <div class="option-price">৳0</div>
+                                        <div class="option-price">৳40</div>
                                     </div>
+                                    <input type="hidden" name="delivery_option" value="standard">
+                                    <input type="hidden" name="delivery_fee" value="0">
                                 </div>
                             </div>
 
@@ -270,9 +277,8 @@ echo " -->";
                                 <button type="submit" class="place-order-btn">
                                     <i class="fas fa-lock"></i>
                                     <span>Place Secure Order</span>
-                                    <div class="btn-price">৳<?php echo number_format($total, 2); ?></div>
+                                    <div class="btn-price" id="btn-total-price">৳<?php echo number_format($total, 2); ?></div>
                                 </button>
-
                                 <div class="security-info">
                                     <i class="fas fa-shield-alt"></i>
                                     <span>Your payment information is secure and encrypted</span>
@@ -333,7 +339,43 @@ echo " -->";
                 // placeOrderBtn.disabled = true;
             });
 
-            // Form validation code here
+            // Handle delivery option selection
+            const deliveryOptions = document.querySelectorAll('.delivery-option');
+            const subtotal = <?php echo $total; ?>; // Get the subtotal from PHP
+            const deliveryFeeInput = document.querySelector('input[name="delivery_fee"]');
+            const deliveryOptionInput = document.querySelector('input[name="delivery_option"]');
+            const totalAmountInput = document.querySelector('input[name="total_amount"]');
+
+            // Function to update total based on delivery option
+            function updateTotal(deliveryFee) {
+                const totalAmount = subtotal + parseFloat(deliveryFee);
+                document.getElementById('delivery-fee').textContent = deliveryFee > 0 ? '৳' + deliveryFee.toFixed(2) : 'Free';
+                document.getElementById('total-amount').textContent = '৳' + totalAmount.toFixed(2);
+                document.getElementById('btn-total-price').textContent = '৳' + totalAmount.toFixed(2);
+                totalAmountInput.value = totalAmount;
+                deliveryFeeInput.value = deliveryFee;
+            }
+
+            // Initialize delivery option selection
+            deliveryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+
+                    // Update delivery option and fee
+                    const deliveryType = this.getAttribute('data-type');
+                    const deliveryFee = parseFloat(this.getAttribute('data-price'));
+
+                    // Update hidden inputs
+                    deliveryOptionInput.value = deliveryType;
+
+                    // Update the total
+                    updateTotal(deliveryFee);
+                });
+            });
 
             // Auto-resize textarea
             const textareas = document.querySelectorAll('textarea');

@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 require_once 'db_connect.php';
+require_once 'notification.php';
 
 // Check if user is logging in and needs to load their saved cart from the database
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
@@ -70,6 +71,8 @@ if (isset($_SESSION['cart'])) {
 </head>
 
 <body>
+  <?php showNotifications(); // Display any notifications 
+  ?>
   <!-- Enhanced Navigation Bar -->
   <header class="navbar-enhanced">
     <div class="nav-container">
