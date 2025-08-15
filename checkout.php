@@ -1,4 +1,5 @@
 <?php
+// FILE: checkout.php
 
 // Start the session and perform checks before any output
 session_start();
@@ -23,23 +24,7 @@ if (empty($_SESSION['cart'])) {
 // Include header after all redirects
 include 'includes/header.php';
 
-// Initialize total
-
-// FILE: checkout.php
-
-// Start session if not already started
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Check if user is logged in and has items in cart
-if (!isset($_SESSION['loggedin']) || empty($_SESSION['cart'])) {
-    header('Location: index.php');
-    exit;
-}
-
-
-
+// Calculate total
 $total = 0;
 foreach ($_SESSION['cart'] as $item) {
     if (isset($item['price']) && isset($item['quantity'])) {
@@ -47,7 +32,17 @@ foreach ($_SESSION['cart'] as $item) {
     }
 }
 
-// Add session debugging output (remove in production)
+// Debug info (remove in production)
+if (isset($_GET['debug'])) {
+    echo "<div style='background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;'>";
+    echo "<h3>Debug Info:</h3>";
+    echo "Logged in: " . (isset($_SESSION['loggedin']) ? 'Yes' : 'No') . "<br>";
+    echo "User Role: " . (isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Not set') . "<br>";
+    echo "Cart items: " . count($_SESSION['cart']) . "<br>";
+    echo "Total: ৳" . number_format($total, 2) . "<br>";
+    echo "</div>";
+}
+?>
 echo "<!-- Debug: ";
 print_r($_SESSION);
 echo " -->";
@@ -141,7 +136,7 @@ echo " -->";
             <!-- Checkout Form Section -->
             <div class="checkout-form-section">
                 <div class="checkout-form">
-                    <form action="php/order_process.php" method="POST" id="checkoutForm">
+                    <form action="php/order_process.php" method="POST" id="checkoutForm" onsubmit="console.log('Form onsubmit triggered'); return true;">
                         <!-- Shipping Information -->
                         <div class="form-section">
                             <div class="section-header">
@@ -277,6 +272,11 @@ echo " -->";
                                 <span>Place Secure Order</span>
                                 <div class="btn-price">৳<?php echo number_format($total, 2); ?></div>
                             </button>
+                            
+                            <!-- Debug: Simple test button -->
+                            <button type="button" onclick="testFormSubmission()" style="background: orange; color: white; padding: 10px; margin: 10px; border: none; border-radius: 5px;">
+                                🔧 Debug: Test Form Submission
+                            </button>
 
                             <div class="security-info">
                                 <i class="fas fa-shield-alt"></i>
@@ -316,7 +316,10 @@ echo " -->";
 
         // Form submission with loading state
         form.addEventListener('submit', function(e) {
+            console.log('Form submit event triggered');
+            
             const termsCheckbox = document.getElementById('terms');
+            console.log('Terms checkbox checked:', termsCheckbox.checked);
 
             if (!termsCheckbox.checked) {
                 e.preventDefault();
@@ -324,15 +327,52 @@ echo " -->";
                 return;
             }
 
-            // Show loading state
-            placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
-            placeOrderBtn.disabled = true;
+            // Log form data
+            const formData = new FormData(form);
+            console.log('Form data being submitted:', Object.fromEntries(formData));
 
-            // Add a small delay to show the loading state
-            setTimeout(() => {
-                // The form will submit naturally after this
-            }, 500);
+            console.log('Form submitting to:', form.action);
+            
+            // Remove the loading state change that might interfere
+            // placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
+            // placeOrderBtn.disabled = true;
         });
+
+        // Debug function to test form submission
+        window.testFormSubmission = function() {
+            console.log('Debug: Testing form submission...');
+            
+            const form = document.getElementById('checkoutForm');
+            const formData = new FormData(form);
+            
+            // Check if required fields are filled
+            const location = formData.get('location');
+            const paymentMethod = formData.get('payment_method');
+            const termsChecked = document.getElementById('terms').checked;
+            
+            console.log('Location:', location);
+            console.log('Payment Method:', paymentMethod);
+            console.log('Terms Checked:', termsChecked);
+            
+            if (!location) {
+                alert('Please enter delivery address');
+                return;
+            }
+            
+            if (!paymentMethod) {
+                alert('Please select payment method');
+                return;
+            }
+            
+            if (!termsChecked) {
+                alert('Please accept terms and conditions');
+                return;
+            }
+            
+            // If all checks pass, try to submit
+            alert('All checks passed! Submitting form...');
+            form.submit();
+        };
 
         // Auto-resize textarea
         const textareas = document.querySelectorAll('textarea');
