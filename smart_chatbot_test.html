@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Chatbot Test - AgroKart BD</title>
+    <link rel="stylesheet" href="css/chatbot.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .test-instructions {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .test-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .example-query {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .example-query:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🤖 Smart Chatbot Test - AgroKart BD</h1>
+        
+        <div class="test-instructions">
+            <h3>📋 Test Instructions:</h3>
+            <p>This page tests the new intelligent chatbot with product detection capabilities. Try the example queries below or type your own questions about products.</p>
+            
+            <h4>✨ New Features Being Tested:</h4>
+            <ul>
+                <li>🔍 <strong>Intelligent Product Detection:</strong> Automatically finds products mentioned in your message</li>
+                <li>📦 <strong>Real-time Stock Checking:</strong> Shows current stock levels and availability</li>
+                <li>🛒 <strong>Direct Order Links:</strong> Provides quick links to order products</li>
+                <li>💰 <strong>Price Information:</strong> Displays current prices with proper formatting</li>
+                <li>🎯 <strong>Contextual Responses:</strong> Gives relevant suggestions based on your question type</li>
+            </ul>
+        </div>
+
+        <div class="test-examples">
+            <div class="example-query" onclick="testQuery('Do you have tomatoes?')">
+                🍅 "Do you have tomatoes?"
+            </div>
+            <div class="example-query" onclick="testQuery('What is the price of rice?')">
+                🌾 "What is the price of rice?"
+            </div>
+            <div class="example-query" onclick="testQuery('I need onions and potatoes')">
+                🧅 "I need onions and potatoes"
+            </div>
+            <div class="example-query" onclick="testQuery('Show me vegetables')">
+                🥬 "Show me vegetables"
+            </div>
+            <div class="example-query" onclick="testQuery('Track my order AGR12345')">
+                📦 "Track my order AGR12345"
+            </div>
+            <div class="example-query" onclick="testQuery('Help me find dairy products')">
+                🥛 "Help me find dairy products"
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 15px; background: #e8f6f3; border-radius: 5px;">
+            <h4 style="color: #27ae60; margin-top: 0;">🎯 Expected Behavior:</h4>
+            <ul style="color: #2c3e50;">
+                <li>When you mention a product, the chatbot should automatically detect it</li>
+                <li>It should show stock quantity and availability status</li>
+                <li>Provide direct "Order Now" links for available products</li>
+                <li>Offer to notify you when out-of-stock items return</li>
+                <li>Display prices in proper Bangladeshi Taka format (৳)</li>
+                <li>Give contextual suggestions based on your question</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/chatbot.js"></script>
+    <script>
+        // Initialize chatbot
+        const chatbot = new AgroKartChatbot();
+        chatbot.init();
+
+        // Function to test specific queries
+        function testQuery(query) {
+            // Open chatbot if closed
+            if (!chatbot.isOpen) {
+                chatbot.toggleChat();
+            }
+            
+            // Set the query in the input field
+            setTimeout(() => {
+                const input = document.getElementById('chatbotInput');
+                if (input) {
+                    input.value = query;
+                    input.focus();
+                }
+            }, 300);
+        }
+
+        // Auto-open chatbot for testing
+        setTimeout(() => {
+            if (!chatbot.isOpen) {
+                chatbot.toggleChat();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

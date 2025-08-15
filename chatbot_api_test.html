@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot API Test - AgroKart BD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Chatbot API Test - AgroKart BD</h1>
+        
+        <div class="test-section">
+            <h3>🔍 Smart Chat Test</h3>
+            <p>Test the intelligent product detection feature:</p>
+            <input type="text" id="smartChatInput" class="test-input" placeholder="Enter your message (e.g., 'Do you have tomatoes?')" value="Do you have tomatoes?">
+            <button class="test-button" onclick="testSmartChat()">Test Smart Chat</button>
+            <div id="smartChatResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Product Search Test</h3>
+            <p>Test the product search functionality:</p>
+            <input type="text" id="searchInput" class="test-input" placeholder="Enter search query (e.g., 'tomato')" value="tomato">
+            <button class="test-button" onclick="testProductSearch()">Test Product Search</button>
+            <div id="searchResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📦 Order Tracking Test</h3>
+            <p>Test order tracking functionality:</p>
+            <input type="text" id="trackingInput" class="test-input" placeholder="Enter order ID (e.g., 'AGR12345')" value="AGR12345">
+            <button class="test-button" onclick="testOrderTracking()">Test Order Tracking</button>
+            <div id="trackingResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💰 Bulk Pricing Test</h3>
+            <p>Test bulk pricing calculation:</p>
+            <input type="number" id="productIdInput" class="test-input" placeholder="Product ID" value="1">
+            <input type="number" id="quantityInput" class="test-input" placeholder="Quantity" value="50">
+            <button class="test-button" onclick="testBulkPricing()">Test Bulk Pricing</button>
+            <div id="bulkResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Recommendations Test</h3>
+            <p>Test product recommendations:</p>
+            <input type="text" id="categoryInput" class="test-input" placeholder="Category (optional)" value="Vegetables">
+            <button class="test-button" onclick="testRecommendations()">Test Recommendations</button>
+            <div id="recommendationsResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(action, params) {
+            try {
+                const url = new URL('php/chatbot_api.php', window.location.origin);
+                url.searchParams.append('action', action);
+                
+                let body = new URLSearchParams();
+                for (const [key, value] of Object.entries(params)) {
+                    body.append(key, value);
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function testSmartChat() {
+            const message = document.getElementById('smartChatInput').value;
+            const result = document.getElementById('smartChatResult');
+            
+            result.innerHTML = 'Testing...';
+            const response = await testAPI('smart_chat', { message });
+            
+            result.className = `result ${response.success ? 'success' : 'error'}`;
+            result.innerHTML = JSON.stringify(response, null, 2);
+        }
+
+        async function testProductSearch() {
+            const query = document.getElementById('searchInput').value;
+            const result = document.getElementById('searchResult');
+            
+            result.innerHTML = 'Testing...';
+            const response = await testAPI('search_products', { query });
+            
+            result.className = `result ${response.success ? 'success' : 'error'}`;
+            result.innerHTML = JSON.stringify(response, null, 2);
+        }
+
+        async function testOrderTracking() {
+            const orderId = document.getElementById('trackingInput').value;
+            const result = document.getElementById('trackingResult');
+            
+            result.innerHTML = 'Testing...';
+            const response = await testAPI('track_order', { order_id: orderId });
+            
+            result.className = `result ${response.success ? 'success' : 'error'}`;
+            result.innerHTML = JSON.stringify(response, null, 2);
+        }
+
+        async function testBulkPricing() {
+            const productId = document.getElementById('productIdInput').value;
+            const quantity = document.getElementById('quantityInput').value;
+            const result = document.getElementById('bulkResult');
+            
+            result.innerHTML = 'Testing...';
+            const response = await testAPI('get_bulk_pricing', { product_id: productId, quantity });
+            
+            result.className = `result ${response.success ? 'success' : 'error'}`;
+            result.innerHTML = JSON.stringify(response, null, 2);
+        }
+
+        async function testRecommendations() {
+            const category = document.getElementById('categoryInput').value;
+            const result = document.getElementById('recommendationsResult');
+            
+            result.innerHTML = 'Testing...';
+            const response = await testAPI('get_recommendations', { category });
+            
+            result.className = `result ${response.success ? 'success' : 'error'}`;
+            result.innerHTML = JSON.stringify(response, null, 2);
+        }
+    </script>
+</body>
+</html>
