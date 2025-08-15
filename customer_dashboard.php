@@ -49,6 +49,7 @@ $recent_orders = $stmt->get_result();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,6 +58,7 @@ $recent_orders = $stmt->get_result();
     <link rel="stylesheet" href="css/customer-dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- Dashboard Header -->
@@ -102,7 +104,7 @@ $recent_orders = $stmt->get_result();
                         <div class="stat-number">৳<?php echo number_format($stats['total_spent'] ?? 0, 2); ?></div>
                         <div class="stat-label">Total Spent</div>
                     </div>
-                    <a href="loyalty_program.php" class="stat-link">View Rewards</a>
+                    <a href="my_orders.php" class="stat-link">View Orders</a>
                 </div>
 
                 <div class="stat-card wishlist">
@@ -111,9 +113,9 @@ $recent_orders = $stmt->get_result();
                     </div>
                     <div class="stat-content">
                         <div class="stat-number"><?php echo $stats['wishlist_count'] ?? 0; ?></div>
-                        <div class="stat-label">Wishlist Items</div>
+                        <div class="stat-label">Saved Items</div>
                     </div>
-                    <a href="wishlist.php" class="stat-link">View Wishlist</a>
+                    <a href="my_orders.php" class="stat-link">View Orders</a>
                 </div>
 
                 <div class="stat-card reviews">
@@ -138,12 +140,12 @@ $recent_orders = $stmt->get_result();
                         <i class="fas fa-redo-alt"></i>
                     </div>
                     <div class="action-content">
-                        <h4>Quick Reorder</h4>
+                        <h4>Reorder</h4>
                         <p>Reorder your frequently bought items</p>
-                        <button class="action-btn" onclick="loadQuickReorder()">
-                            <i class="fas fa-plus"></i>
-                            Reorder Now
-                        </button>
+                        <a href="my_orders.php" class="action-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            View Orders
+                        </a>
                     </div>
                 </div>
 
@@ -180,11 +182,11 @@ $recent_orders = $stmt->get_result();
                         <i class="fas fa-crown"></i>
                     </div>
                     <div class="action-content">
-                        <h4>Loyalty Program</h4>
-                        <p>Check your points and redeem rewards</p>
-                        <a href="loyalty_program.php" class="action-btn">
-                            <i class="fas fa-gift"></i>
-                            View Rewards
+                        <h4>My Profile</h4>
+                        <p>View and edit your profile</p>
+                        <a href="profile.php" class="action-btn">
+                            <i class="fas fa-user"></i>
+                            View Profile
                         </a>
                     </div>
                 </div>
@@ -197,7 +199,7 @@ $recent_orders = $stmt->get_result();
                 <h3><i class="fas fa-clock"></i> Recent Orders</h3>
                 <a href="my_orders.php" class="view-all-link">View All Orders</a>
             </div>
-            
+
             <?php if ($recent_orders->num_rows > 0): ?>
                 <div class="orders-list">
                     <?php while ($order = $recent_orders->fetch_assoc()): ?>
@@ -309,6 +311,7 @@ $recent_orders = $stmt->get_result();
 
     <script src="js/customer-dashboard.js"></script>
 </body>
+
 </html>
 
 <?php

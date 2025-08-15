@@ -14,32 +14,53 @@ include 'includes/header.php';
 // Track recently viewed product
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    
-    // Remove old entry if exists
-    $deleteStmt = $conn->prepare("DELETE FROM recently_viewed WHERE user_id = ? AND product_id = ?");
-    $deleteStmt->bind_param("ii", $user_id, $product_id);
-    $deleteStmt->execute();
-    
-    // Add new entry
-    $insertStmt = $conn->prepare("INSERT INTO recently_viewed (user_id, product_id) VALUES (?, ?)");
-    $insertStmt->bind_param("ii", $user_id, $product_id);
-    $insertStmt->execute();
-    
-    // Keep only last 20 viewed products
-    $cleanupStmt = $conn->prepare("
-        DELETE FROM recently_viewed 
-        WHERE user_id = ? 
-        AND id NOT IN (
-            SELECT id FROM (
-                SELECT id FROM recently_viewed 
-                WHERE user_id = ? 
-                ORDER BY viewed_at DESC 
-                LIMIT 20
-            ) tmp
-        )
-    ");
-    $cleanupStmt->bind_param("ii", $user_id, $user_id);
-    $cleanupStmt->execute();
+
+    try {
+        // Check if recently_viewed table exists
+        $check_table = $conn->query("SHOW TABLES LIKE 'recently_viewed'");
+        if ($check_table->num_rows == 0) {
+            // Create recently_viewed table
+            $conn->query("
+                CREATE TABLE `recently_viewed` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `user_id` int(11) NOT NULL,
+                  `product_id` int(11) NOT NULL,
+                  `viewed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                  PRIMARY KEY (`id`),
+                  KEY `user_id` (`user_id`),
+                  KEY `product_id` (`product_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            ");
+        }
+
+        // Remove old entry if exists
+        $deleteStmt = $conn->prepare("DELETE FROM recently_viewed WHERE user_id = ? AND product_id = ?");
+        $deleteStmt->bind_param("ii", $user_id, $product_id);
+        $deleteStmt->execute();
+
+        // Add new entry
+        $insertStmt = $conn->prepare("INSERT INTO recently_viewed (user_id, product_id) VALUES (?, ?)");
+        $insertStmt->bind_param("ii", $user_id, $product_id);
+        $insertStmt->execute();
+
+        // Keep only last 20 viewed products
+        $cleanupStmt = $conn->prepare("
+            DELETE FROM recently_viewed 
+            WHERE user_id = ? 
+            AND id NOT IN (
+                SELECT id FROM (
+                    SELECT id FROM recently_viewed 
+                    WHERE user_id = ? 
+                    ORDER BY viewed_at DESC 
+                    LIMIT 20
+                ) tmp
+            )
+        ");
+        $cleanupStmt->bind_param("ii", $user_id, $user_id);
+        $cleanupStmt->execute();
+    } catch (Exception $e) {
+        // Silently handle errors for recently viewed functionality
+    }
 }
 
 // Fetch Product Details
@@ -55,23 +76,34 @@ $product = $product_result->fetch_assoc();
 $stmt_prod->close();
 
 // Fetch Reviews
-$stmt_rev = $conn->prepare("SELECT r.*, u.name as reviewer_name FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ? ORDER BY r.created_at DESC");
-$stmt_rev->bind_param("i", $product_id);
-$stmt_rev->execute();
-$reviews_result = $stmt_rev->get_result();
-
-// Calculate average rating
 $avg_rating = 0;
 $total_reviews = 0;
-if ($reviews_result->num_rows > 0) {
-    $reviews_result->data_seek(0);
-    $total_rating = 0;
-    while ($review = $reviews_result->fetch_assoc()) {
-        $total_rating += $review['rating'];
-        $total_reviews++;
+$reviews_result = null;
+
+// Check if reviews table exists
+try {
+    $check_table = $conn->query("SHOW TABLES LIKE 'reviews'");
+    if ($check_table->num_rows > 0) {
+        $stmt_rev = $conn->prepare("SELECT r.*, u.name as reviewer_name FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ? ORDER BY r.created_at DESC");
+        $stmt_rev->bind_param("i", $product_id);
+        $stmt_rev->execute();
+        $reviews_result = $stmt_rev->get_result();
+
+        // Calculate average rating
+        if ($reviews_result->num_rows > 0) {
+            $reviews_result->data_seek(0);
+            $total_rating = 0;
+            while ($review = $reviews_result->fetch_assoc()) {
+                $total_rating += $review['rating'];
+                $total_reviews++;
+            }
+            $avg_rating = $total_rating / $total_reviews;
+            $reviews_result->data_seek(0);
+        }
     }
-    $avg_rating = $total_rating / $total_reviews;
-    $reviews_result->data_seek(0);
+} catch (Exception $e) {
+    // Silently handle the error - reviews will just be empty
+    $reviews_result = null;
 }
 ?>
 
@@ -264,7 +296,7 @@ if ($reviews_result->num_rows > 0) {
         <?php endif; ?>
 
         <div class="reviews-list">
-            <?php if ($reviews_result->num_rows > 0): ?>
+            <?php if ($reviews_result && $reviews_result->num_rows > 0): ?>
                 <?php while ($review = $reviews_result->fetch_assoc()): ?>
                     <div class="review-item">
                         <div class="review-header">
@@ -1144,24 +1176,24 @@ if ($reviews_result->num_rows > 0) {
         const formData = new FormData();
         formData.append('product_id', productId);
         formData.append('action', 'add');
-        
+
         fetch('php/comparison_manager.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification(data.message, 'success');
-                updateComparisonCount(data.comparison_count);
-            } else {
-                showNotification(data.message || 'Failed to add to comparison', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('An error occurred. Please try again.', 'error');
-        });
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    updateComparisonCount(data.comparison_count);
+                } else {
+                    showNotification(data.message || 'Failed to add to comparison', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+            });
     }
 
     // Update comparison count in header
@@ -1180,7 +1212,7 @@ if ($reviews_result->num_rows > 0) {
             const productId = wishlistBtn.getAttribute('data-product-id');
             checkWishlistStatus(productId);
         }
-        
+
         // Initialize wishlist functionality
         if (wishlistBtn) {
             wishlistBtn.addEventListener('click', function() {
@@ -1195,25 +1227,25 @@ if ($reviews_result->num_rows > 0) {
         const formData = new FormData();
         formData.append('product_id', productId);
         formData.append('action', 'check_status');
-        
+
         fetch('php/wishlist_manager.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.is_in_wishlist) {
-                const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
-                if (wishlistBtn) {
-                    const icon = wishlistBtn.querySelector('i');
-                    icon.className = 'fas fa-heart';
-                    wishlistBtn.classList.add('active');
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.is_in_wishlist) {
+                    const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
+                    if (wishlistBtn) {
+                        const icon = wishlistBtn.querySelector('i');
+                        icon.className = 'fas fa-heart';
+                        wishlistBtn.classList.add('active');
+                    }
                 }
-            }
-        })
-        .catch(error => {
-            console.error('Error checking wishlist status:', error);
-        });
+            })
+            .catch(error => {
+                console.error('Error checking wishlist status:', error);
+            });
     }
 
     // Toggle wishlist
@@ -1221,35 +1253,35 @@ if ($reviews_result->num_rows > 0) {
         const formData = new FormData();
         formData.append('product_id', productId);
         formData.append('action', 'toggle');
-        
+
         fetch('php/wishlist_manager.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const icon = button.querySelector('i');
-                if (data.is_in_wishlist) {
-                    icon.className = 'fas fa-heart';
-                    button.classList.add('active');
-                    showNotification('Added to wishlist!', 'success');
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const icon = button.querySelector('i');
+                    if (data.is_in_wishlist) {
+                        icon.className = 'fas fa-heart';
+                        button.classList.add('active');
+                        showNotification('Added to wishlist!', 'success');
+                    } else {
+                        icon.className = 'far fa-heart';
+                        button.classList.remove('active');
+                        showNotification('Removed from wishlist!', 'success');
+                    }
+
+                    // Update wishlist count
+                    updateWishlistCount(data.wishlist_count);
                 } else {
-                    icon.className = 'far fa-heart';
-                    button.classList.remove('active');
-                    showNotification('Removed from wishlist!', 'success');
+                    showNotification(data.message || 'Please log in to manage wishlist', 'error');
                 }
-                
-                // Update wishlist count
-                updateWishlistCount(data.wishlist_count);
-            } else {
-                showNotification(data.message || 'Please log in to manage wishlist', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('An error occurred. Please try again.', 'error');
-        });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred. Please try again.', 'error');
+            });
     }
 
     // Update wishlist count in header

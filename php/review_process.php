@@ -16,6 +16,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($comment) || empty($rating) || $rating < 1 || $rating > 5) {
         $_SESSION['error'] = "Please provide a valid rating and comment.";
     } else {
+        // Check if reviews table exists, if not create it
+        $check_table = $conn->query("SHOW TABLES LIKE 'reviews'");
+        if ($check_table->num_rows == 0) {
+            // Create reviews table
+            $conn->query("
+                CREATE TABLE `reviews` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `product_id` int(11) NOT NULL,
+                  `user_id` int(11) NOT NULL,
+                  `rating` int(1) NOT NULL,
+                  `comment` text NOT NULL,
+                  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                  PRIMARY KEY (`id`),
+                  KEY `product_id` (`product_id`),
+                  KEY `user_id` (`user_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+            ");
+        }
+
         // Check if user has already reviewed this product
         $stmt_check = $conn->prepare("SELECT id FROM reviews WHERE user_id = ? AND product_id = ?");
         $stmt_check->bind_param("ii", $user_id, $product_id);
@@ -39,4 +58,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../product_details.php?id=" . $product_id);
     exit();
 }
-?>

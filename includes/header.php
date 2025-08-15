@@ -160,22 +160,6 @@ if (isset($_SESSION['cart'])) {
                   <i class="fas fa-user-edit"></i>
                   <span>Edit Profile</span>
                 </a>
-                <a href="my_orders.php" class="profile-menu-item">
-                  <i class="fas fa-shopping-bag"></i>
-                  <span>My Orders</span>
-                </a>
-                <a href="loyalty_program.php" class="profile-menu-item">
-                  <i class="fas fa-crown"></i>
-                  <span>Loyalty Program</span>
-                </a>
-                <a href="quick_reorder.php" class="profile-menu-item">
-                  <i class="fas fa-redo-alt"></i>
-                  <span>Quick Reorder</span>
-                </a>
-                <a href="notifications.php" class="profile-menu-item">
-                  <i class="fas fa-bell"></i>
-                  <span>Notifications</span>
-                </a>
                 <?php if ($_SESSION['user_role'] == 'Seller'): ?>
                   <a href="dashboard.php" class="profile-menu-item">
                     <i class="fas fa-chart-bar"></i>
@@ -799,7 +783,7 @@ if (isset($_SESSION['cart'])) {
 
   <!-- Enhanced Chatbot Script -->
   <script src="js/chatbot_enhanced.js"></script>
-  
+
   <!-- Initialize Enhanced Chatbot -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {

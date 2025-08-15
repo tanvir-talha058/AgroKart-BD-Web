@@ -47,7 +47,7 @@ class AgroKartChatbot {
         // Primary Quick Actions - Main Customer Features
         this.quickActions = [
             { text: "🛍️ Browse Products", action: "products", textBn: "🛍️ পণ্য ব্রাউজ" },
-            { text: "💖 My Wishlist", action: "wishlist", textBn: "💖 উইশলিস্ট" },
+            { text: "� My Orders", action: "orders", textBn: "� আমার অর্ডার" },
             { text: "⚖️ Compare Products", action: "compare", textBn: "⚖️ তুলনা" },
             { text: "🏆 Loyalty Program", action: "loyalty", textBn: "🏆 লয়ালটি" },
             { text: "🎯 Recommendations", action: "recommendations", textBn: "🎯 সুপারিশ" },
@@ -456,7 +456,7 @@ class AgroKartChatbot {
         this.addMessage(
             "💖 **My Wishlist**\n\n" +
             "Access your saved products:\n\n" +
-            "🔗 [View My Wishlist](wishlist.php)\n\n" +
+            "🔗 [View My Orders](my_orders.php)\n\n" +
             "You can also ask me:\n" +
             "• 'Show my wishlist items'\n" +
             "• 'Add [product] to wishlist'\n" +
@@ -483,7 +483,7 @@ class AgroKartChatbot {
         this.addMessage(
             "🏆 **Loyalty Program**\n\n" +
             "Check your points and benefits:\n\n" +
-            "🔗 [View Loyalty Dashboard](loyalty_program.php)\n\n" +
+            "🔗 [View Profile](profile.php)\n\n" +
             "**Current Tiers:**\n" +
             "🥉 Bronze: 1x points\n" +
             "🥈 Silver: 1.2x points + Free shipping\n" +
@@ -510,7 +510,7 @@ class AgroKartChatbot {
         this.addMessage(
             "⚡ **Quick Reorder**\n\n" +
             "Reorder your favorites quickly:\n\n" +
-            "🔗 [Quick Reorder Page](quick_reorder.php)\n\n" +
+            "🔗 [My Orders](my_orders.php)\n\n" +
             "Features:\n" +
             "• Frequently bought items\n" +
             "• Last order replication\n" +
@@ -781,7 +781,7 @@ class AgroKartChatbot {
             
             if (product.can_order) {
                 cards += `🛒 **[Order Now](${product.order_link})** | `;
-                cards += `💖 **[Add to Wishlist](wishlist.php?add=${product.id})**\n`;
+                cards += `� **[Order Now](product_details.php?id=${product.id})**\n`;
                 
                 if (product.stock_status === 'low_stock') {
                     cards += `⚠️ **${product.stock_message}**\n`;
