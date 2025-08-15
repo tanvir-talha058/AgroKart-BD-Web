@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern AgroKart Chatbot Demo</title>
+    <link rel="stylesheet" href="css/modern-chatbot.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demo-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .demo-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            text-shadow: 0 2px 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .instructions h3 {
+            color: white;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .instructions ul {
+            color: white;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>🤖 Modern AgroKart Chatbot</h1>
+        <p>Experience the future of agricultural e-commerce with AI-powered customer support</p>
+    </div>
+
+    <div class="demo-content">
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">AI-Powered Intelligence</h3>
+                <p class="feature-description">
+                    Advanced natural language processing with context-aware responses, 
+                    sentiment analysis, and intelligent product recommendations.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <h3 class="feature-title">Voice Interaction</h3>
+                <p class="feature-description">
+                    Speak naturally in Bengali or English. Voice commands, speech-to-text, 
+                    and text-to-speech capabilities for hands-free interaction.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3 class="feature-title">Image Recognition</h3>
+                <p class="feature-description">
+                    Upload photos of products for instant identification, pricing, 
+                    nutritional information, and recipe suggestions.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="feature-title">Real-time Tracking</h3>
+                <p class="feature-description">
+                    GPS-based order tracking with live updates, delivery time predictions, 
+                    and direct communication with delivery partners.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3 class="feature-title">Smart Negotiations</h3>
+                <p class="feature-description">
+                    Automated bulk pricing calculations, discount negotiations, 
+                    and personalized offers based on purchase history.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3 class="feature-title">Live Agent Handoff</h3>
+                <p class="feature-description">
+                    Seamless escalation to human agents when needed, with complete 
+                    conversation context and customer mood analysis.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3 class="feature-title">Multi-language Support</h3>
+                <p class="feature-description">
+                    Full support for Bengali and English with instant language switching 
+                    and culturally appropriate responses.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Analytics & Learning</h3>
+                <p class="feature-description">
+                    Continuous learning from interactions, performance analytics, 
+                    and personalized user experience improvement.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>🚀 Try These Features</h3>
+        <ul>
+            <li><strong>Voice Commands:</strong> Click the microphone and say "Show me vegetables" or "আমি সবজি দেখতে চাই"</li>
+            <li><strong>Image Upload:</strong> Take a photo of any vegetable to get instant pricing and info</li>
+            <li><strong>Order Tracking:</strong> Ask "Track my order #ORD123" for real-time updates</li>
+            <li><strong>Price Negotiation:</strong> Say "I need bulk discount for 50kg rice"</li>
+            <li><strong>Language Switch:</strong> Click the language toggle or say "Switch to Bengali"</li>
+            <li><strong>Live Agent:</strong> Ask "Connect me to a human agent" for escalation</li>
+        </ul>
+    </div>
+
+    <div class="cta-section">
+        <a href="index.php" class="cta-button">
+            <i class="fas fa-home"></i> Go to AgroKart Store
+        </a>
+    </div>
+
+    <!-- Include the modern chatbot -->
+    <script src="js/modern-chatbot.js"></script>
+    
+    <script>
+        // Initialize chatbot with demo mode
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAgroKartChatbot !== 'undefined') {
+                window.modernChatbot = new ModernAgroKartChatbot();
+                
+                // Auto-open chatbot after 2 seconds for demo
+                setTimeout(() => {
+                    if (window.modernChatbot && !window.modernChatbot.isOpen) {
+                        window.modernChatbot.toggleChatbot();
+                        
+                        // Show demo welcome message
+                        setTimeout(() => {
+                            window.modernChatbot.addMessage(
+                                "🎉 Welcome to the Modern AgroKart Chatbot Demo!\n\n" +
+                                "Try these features:\n" +
+                                "• 🎤 Voice commands\n" +
+                                "• 📷 Image upload\n" +
+                                "• 🌐 Language switching\n" +
+                                "• 📦 Order tracking\n" +
+                                "• 💰 Price negotiations\n\n" +
+                                "What would you like to explore first?", 
+                                'bot'
+                            );
+                        }, 1000);
+                    }
+                }, 2000);
+                
+                console.log('Modern AgroKart Chatbot Demo initialized!');
+            } else {
+                console.error('Failed to load Modern AgroKart Chatbot');
+            }
+        });
+
+        // Add some demo analytics
+        console.log('🤖 AgroKart Modern Chatbot Features:');
+        console.log('✅ AI-Powered Natural Language Processing');
+        console.log('✅ Voice Recognition & Text-to-Speech');
+        console.log('✅ Image Recognition & Product Analysis');
+        console.log('✅ Real-time Order Tracking with GPS');
+        console.log('✅ Smart Price Negotiations');
+        console.log('✅ Live Agent Escalation');
+        console.log('✅ Multi-language Support (Bengali/English)');
+        console.log('✅ Customer Sentiment Analysis');
+        console.log('✅ Personalized Recommendations');
+        console.log('✅ Analytics & Performance Tracking');
+    </script>
+</body>
+</html>

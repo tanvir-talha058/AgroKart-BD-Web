@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Button Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            min-height: 100vh;
+        }
+        
+        /* Force visible chatbot button for testing */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: red; /* Debug background */
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: 3px solid white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 24px;
+            position: relative;
+            margin: 10px;
+        }
+        
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.9);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Button Visibility Test</h1>
+    <p>Look in the bottom-right corner - you should see a green chat button.</p>
+    <p>If you don't see it, there might be a positioning issue.</p>
+    
+    <!-- Manual Chat Button -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" onclick="alert('Chat button clicked!')">
+            <i class="fas fa-comments"></i>
+            <div class="notification-badge">1</div>
+        </button>
+    </div>
+    
+    <script>
+        console.log('Test page loaded');
+        
+        // Check if button is visible
+        setTimeout(() => {
+            const button = document.querySelector('.chatbot-toggle');
+            if (button) {
+                const rect = button.getBoundingClientRect();
+                console.log('Button position:', rect);
+                console.log('Button is visible:', rect.width > 0 && rect.height > 0);
+            }
+        }, 500);
+    </script>
+</body>
+</html>

@@ -45,7 +45,7 @@ include 'includes/header.php';
 
     <div class="hero-visual">
       <div class="video-container">
-        <video src="../images/banner.mp4" autoplay loop muted class="hero-video"></video>
+        <video src="images/banner.mp4" autoplay loop muted class="hero-video"></video>
         <div class="video-overlay"></div>
       </div>
       <div class="carousel-container">

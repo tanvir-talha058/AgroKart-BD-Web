@@ -62,7 +62,8 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
   <link rel="stylesheet" href="css/chatbot.css">
-  <link rel="icon" type="image/x-icon" href="../images/AGrO.png">
+  <link rel="stylesheet" href="css/modern-chatbot.css">
+  <link rel="icon" type="image/x-icon" href="images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -76,7 +77,7 @@ if (isset($_SESSION['cart'])) {
       <div class="nav-logo">
         <a href="index.php" class="logo-link">
           <div class="logo-wrapper">
-            <img src="../images/AGrO.png" alt="AgroKart BD Logo" class="logo-img">
+            <img src="images/AGrO.png" alt="AgroKart BD Logo" class="logo-img">
             <div class="logo-text">
               <span class="logo-title">AgroKart</span>
               <span class="logo-subtitle">BD</span>
@@ -780,5 +781,22 @@ if (isset($_SESSION['cart'])) {
     });
   </script>
 
-  <!-- Chatbot Script -->
-  <script src="js/chatbot.js"></script>
+  <!-- Modern Chatbot Script -->
+  <script src="js/modern-chatbot.js"></script>
+  
+  <!-- Initialize Chatbot -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the modern chatbot
+      if (typeof ModernAgroKartChatbot !== 'undefined') {
+        window.modernChatbot = new ModernAgroKartChatbot();
+        console.log('Modern AgroKart Chatbot initialized successfully!');
+      } else {
+        console.warn('Modern chatbot not loaded, falling back to original');
+        // Fallback to original chatbot if modern one fails
+        if (typeof AgroKartChatbot !== 'undefined') {
+          window.chatbot = new AgroKartChatbot();
+        }
+      }
+    });
+  </script>
