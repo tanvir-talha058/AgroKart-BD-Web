@@ -73,7 +73,7 @@ include 'includes/header.php';
                 </div>
 
                 <div class="social-login">
-                    <a href="php/google_login.php" class="social-btn google">
+                    <a href="#" onclick="showGoogleLoginModal()" class="social-btn google">
                         <i class="fab fa-google"></i>
                         <span>Continue with Google</span>
                     </a>
@@ -91,6 +91,43 @@ include 'includes/header.php';
     </div>
 </div>
 
+<!-- Google Login Modal -->
+<div class="modal fade" id="googleLoginModal" tabindex="-1" aria-labelledby="googleLoginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid #e5e5e5;">
+                <h5 class="modal-title" id="googleLoginModalLabel">
+                    <i class="fab fa-google" style="color: #4285f4;"></i>
+                    Sign in with Google
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Enter your Gmail address to continue as a buyer:</p>
+                <form id="googleMockForm" action="php/google_mock_login.php" method="post">
+                    <div class="mb-3">
+                        <div class="input-icon-wrapper">
+                            <i class="fab fa-google" style="color: #4285f4;"></i>
+                            <input type="email" name="google_email" id="google_email" class="form-control" placeholder="Enter your Gmail address" required pattern=".*@gmail\.com$" title="Please enter a valid Gmail address">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="google_name" id="google_name" class="form-control" placeholder="Your display name" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="googleMockForm" class="btn" style="background-color: #4285f4; color: white;">
+                    <i class="fab fa-google"></i> Continue as Buyer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function togglePassword() {
         const passwordInput = document.getElementById('password');
@@ -106,5 +143,14 @@ include 'includes/header.php';
             toggleIcon.classList.add('fa-eye');
         }
     }
+
+    function showGoogleLoginModal() {
+        const modal = new bootstrap.Modal(document.getElementById('googleLoginModal'));
+        modal.show();
+    }
 </script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <?php include 'includes/footer.php'; ?>
