@@ -143,6 +143,22 @@ if (isset($_SESSION['cart'])) {
 
         <!-- User Profile Section -->
         <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+          <!-- Wishlist Icon -->
+          <a href="wishlist.php" class="nav-link wishlist-link">
+            <div class="nav-icon">
+              <i class="fas fa-heart"></i>
+              <span class="icon-badge" id="wishlist-count">0</span>
+            </div>
+          </a>
+
+          <!-- Comparison Icon -->
+          <a href="product_comparison.php" class="nav-link comparison-link">
+            <div class="nav-icon">
+              <i class="fas fa-balance-scale"></i>
+              <span class="icon-badge" id="comparison-count">0</span>
+            </div>
+          </a>
+
           <div class="nav-profile">
             <div class="profile-dropdown">
               <button class="profile-btn">
@@ -159,6 +175,14 @@ if (isset($_SESSION['cart'])) {
                 <a href="profile.php" class="profile-menu-item">
                   <i class="fas fa-user-edit"></i>
                   <span>Edit Profile</span>
+                </a>
+                <a href="my_orders.php" class="profile-menu-item">
+                  <i class="fas fa-shopping-bag"></i>
+                  <span>My Orders</span>
+                </a>
+                <a href="loyalty_program.php" class="profile-menu-item">
+                  <i class="fas fa-crown"></i>
+                  <span>Loyalty Program</span>
                 </a>
                 <?php if ($_SESSION['user_role'] == 'Seller'): ?>
                   <a href="dashboard.php" class="profile-menu-item">

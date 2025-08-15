@@ -11,6 +11,37 @@ $product_id = $_GET['id'];
 // Include header after initial check
 include 'includes/header.php';
 
+// Track recently viewed product
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    
+    // Remove old entry if exists
+    $deleteStmt = $conn->prepare("DELETE FROM recently_viewed WHERE user_id = ? AND product_id = ?");
+    $deleteStmt->bind_param("ii", $user_id, $product_id);
+    $deleteStmt->execute();
+    
+    // Add new entry
+    $insertStmt = $conn->prepare("INSERT INTO recently_viewed (user_id, product_id) VALUES (?, ?)");
+    $insertStmt->bind_param("ii", $user_id, $product_id);
+    $insertStmt->execute();
+    
+    // Keep only last 20 viewed products
+    $cleanupStmt = $conn->prepare("
+        DELETE FROM recently_viewed 
+        WHERE user_id = ? 
+        AND id NOT IN (
+            SELECT id FROM (
+                SELECT id FROM recently_viewed 
+                WHERE user_id = ? 
+                ORDER BY viewed_at DESC 
+                LIMIT 20
+            ) tmp
+        )
+    ");
+    $cleanupStmt->bind_param("ii", $user_id, $user_id);
+    $cleanupStmt->execute();
+}
+
 // Fetch Product Details
 $stmt_prod = $conn->prepare("SELECT p.*, u.name as seller_name FROM products p JOIN users u ON p.seller_id = u.id WHERE p.id = ?");
 $stmt_prod->bind_param("i", $product_id);
@@ -136,9 +167,21 @@ if ($reviews_result->num_rows > 0) {
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>Add to Cart</span>
                             </button>
-                            <button type="button" class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
+                            <?php if (isset($_SESSION['loggedin'])): ?>
+                                <button type="button" class="wishlist-btn wishlist-toggle-btn" data-product-id="<?php echo $product_id; ?>">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button type="button" class="compare-btn" onclick="addToComparison(<?php echo $product_id; ?>)">
+                                    <i class="fas fa-balance-scale"></i>
+                                </button>
+                            <?php else: ?>
+                                <a href="login.php" class="wishlist-btn" title="Login to add to wishlist">
+                                    <i class="far fa-heart"></i>
+                                </a>
+                                <a href="login.php" class="compare-btn" title="Login to compare products">
+                                    <i class="fas fa-balance-scale"></i>
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
@@ -619,10 +662,38 @@ if ($reviews_result->num_rows > 0) {
         display: flex;
         align-items: center;
         justify-content: center;
+        text-decoration: none;
     }
 
     .wishlist-btn:hover {
         background: #e91e63;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .wishlist-btn.active {
+        background: #e91e63;
+        color: white;
+    }
+
+    .compare-btn {
+        background: white;
+        color: #2196F3;
+        border: 2px solid #2196F3;
+        padding: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .compare-btn:hover {
+        background: #2196F3;
         color: white;
         transform: scale(1.1);
     }
@@ -1066,6 +1137,128 @@ if ($reviews_result->num_rows > 0) {
                 }
             }, 300);
         }, 5000);
+    }
+
+    // Add to comparison function
+    function addToComparison(productId) {
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('action', 'add');
+        
+        fetch('php/comparison_manager.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                updateComparisonCount(data.comparison_count);
+            } else {
+                showNotification(data.message || 'Failed to add to comparison', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred. Please try again.', 'error');
+        });
+    }
+
+    // Update comparison count in header
+    function updateComparisonCount(count) {
+        const comparisonBadge = document.getElementById('comparison-count');
+        if (comparisonBadge) {
+            comparisonBadge.textContent = count;
+            comparisonBadge.style.display = count > 0 ? 'block' : 'none';
+        }
+    }
+
+    // Check wishlist status on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
+        if (wishlistBtn) {
+            const productId = wishlistBtn.getAttribute('data-product-id');
+            checkWishlistStatus(productId);
+        }
+        
+        // Initialize wishlist functionality
+        if (wishlistBtn) {
+            wishlistBtn.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                toggleWishlist(productId, this);
+            });
+        }
+    });
+
+    // Check wishlist status
+    function checkWishlistStatus(productId) {
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('action', 'check_status');
+        
+        fetch('php/wishlist_manager.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.is_in_wishlist) {
+                const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
+                if (wishlistBtn) {
+                    const icon = wishlistBtn.querySelector('i');
+                    icon.className = 'fas fa-heart';
+                    wishlistBtn.classList.add('active');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error checking wishlist status:', error);
+        });
+    }
+
+    // Toggle wishlist
+    function toggleWishlist(productId, button) {
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('action', 'toggle');
+        
+        fetch('php/wishlist_manager.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const icon = button.querySelector('i');
+                if (data.is_in_wishlist) {
+                    icon.className = 'fas fa-heart';
+                    button.classList.add('active');
+                    showNotification('Added to wishlist!', 'success');
+                } else {
+                    icon.className = 'far fa-heart';
+                    button.classList.remove('active');
+                    showNotification('Removed from wishlist!', 'success');
+                }
+                
+                // Update wishlist count
+                updateWishlistCount(data.wishlist_count);
+            } else {
+                showNotification(data.message || 'Please log in to manage wishlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred. Please try again.', 'error');
+        });
+    }
+
+    // Update wishlist count in header
+    function updateWishlistCount(count) {
+        const wishlistBadge = document.getElementById('wishlist-count');
+        if (wishlistBadge) {
+            wishlistBadge.textContent = count;
+            wishlistBadge.style.display = count > 0 ? 'block' : 'none';
+        }
     }
 
     // Add slideOut animation
