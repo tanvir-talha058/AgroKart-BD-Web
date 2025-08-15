@@ -47,15 +47,15 @@
             <div class="contact-info">
                 <div class="contact-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>Dhaka, Bangladesh</span>
+                    <span style="color: black;">Dhaka, Bangladesh</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-phone"></i>
-                    <span>+880 1234-567890</span>
+                    <span style="color: black;">+880 1234-567890</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-envelope"></i>
-                    <span>info@agrokartbd.com</span>
+                    <span style="color: black;">info@agrokartbd.com</span>
                 </div>
             </div>
             <form class="newsletter-form">
@@ -136,13 +136,7 @@
     margin-bottom: 20px;
 }
 
-/* This class was unused in the HTML and has been removed.
-.footer-logo {
-    width: 50px;
-    height: 50px;
-    filter: brightness(0) invert(1);
-}
-*/
+
 
 .footer-brand-title {
     font-size: 1.8rem;
@@ -316,7 +310,7 @@
 .newsletter-input-group input:-webkit-autofill:focus,
 .newsletter-input-group input:-webkit-autofill:active {
     background-image: none !important;
-    -webkit-box-shadow: 0 0 0 30px #3a7a44 inset !important; /* Match inner background */
+    -webkit-box-shadow: 0 0 0 30px #3a7a44 inset !important; 
     -webkit-text-fill-color: white !important;
 }
 /* === FIX ENDS HERE === */
