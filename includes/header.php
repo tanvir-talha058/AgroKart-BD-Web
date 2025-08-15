@@ -192,6 +192,9 @@ if (isset($_SESSION['cart'])) {
     </div>
   </header>
 
+  <!-- Chatbot Container -->
+  <div id="chatbot-container"></div>
+
   <!-- Enhanced Navbar Styles -->
   <style>
     /* Enhanced Navbar */
