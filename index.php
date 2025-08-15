@@ -265,7 +265,7 @@ include 'includes/header.php';
   </div>
 
   <div class="features-grid">
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-leaf"></i>
       </div>
@@ -274,7 +274,7 @@ include 'includes/header.php';
       <div class="feature-highlight"></div>
     </div>
 
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-tags"></i>
       </div>
@@ -283,7 +283,7 @@ include 'includes/header.php';
       <div class="feature-highlight"></div>
     </div>
 
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-truck"></i>
       </div>
@@ -292,7 +292,7 @@ include 'includes/header.php';
       <div class="feature-highlight"></div>
     </div>
 
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-shield-alt"></i>
       </div>
@@ -301,7 +301,7 @@ include 'includes/header.php';
       <div class="feature-highlight"></div>
     </div>
 
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-users"></i>
       </div>
@@ -310,7 +310,7 @@ include 'includes/header.php';
       <div class="feature-highlight"></div>
     </div>
 
-    <div class="feature-card">
+    <div class="feature-card" style="background: linear-gradient(135deg, #2c5f2d, #3a7c40) !important; color: white;">
       <div class="feature-icon">
         <i class="fas fa-mobile-alt"></i>
       </div>
@@ -1210,8 +1210,9 @@ include 'includes/header.php';
   }
 
   .feature-card {
-    background: linear-gradient(135deg, #2c5f2d, #3a7c40);
-    backdrop-filter: blur(10px);
+    background: #2c5f2d !important;
+    /* Force green background */
+    background-image: linear-gradient(135deg, #2c5f2d, #3a7c40) !important;
     padding: 35px 25px;
     border-radius: 20px;
     text-align: center;
@@ -1225,7 +1226,9 @@ include 'includes/header.php';
   .feature-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(44, 95, 45, 0.25);
-    background: linear-gradient(135deg, #3a7c40, #4CAF50);
+    background: #3a7c40 !important;
+    /* Force hover background */
+    background-image: linear-gradient(135deg, #3a7c40, #4CAF50) !important;
   }
 
   .feature-icon {
