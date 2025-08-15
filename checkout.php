@@ -70,343 +70,304 @@ echo " -->";
             </div>
         </div>
 
-       
-    <div class="checkout-container">
-        <div class="checkout-header">
-            <h1><i class="fas fa-shopping-bag"></i> Secure Checkout</h1>
-            <p>Complete your order safely and securely</p>
-        </div>
 
-        <div class="checkout-content">
-            <!-- Order Summary Section -->
-            <div class="order-summary-section">
-                <div class="order-summary">
-                    <div class="summary-header">
-                        <h3><i class="fas fa-receipt"></i> Order Summary</h3>
-                        <span class="item-count"><?php echo count($_SESSION['cart']); ?> items</span>
-                    </div>
-
-                    <div class="summary-items">
-                        <?php foreach ($_SESSION['cart'] as $item): ?>
-                            <div class="summary-item">
-                                <div class="item-info">
-                                    <div class="item-image">
-                                        <img src="<?php echo htmlspecialchars($item['image'] ?? 'images/default-product.png'); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
-                                    </div>
-                                    <div class="item-details">
-                                        <h4><?php echo htmlspecialchars($item['name']); ?></h4>
-                                        <span class="item-quantity">Qty: <?php echo $item['quantity']; ?></span>
-                                    </div>
-                                </div>
-                                <div class="item-price">
-                                    ৳<?php echo number_format($item['price'] * $item['quantity'], 2); ?>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <div class="summary-calculations">
-                        <div class="calc-row">
-                            <span>Subtotal</span>
-                            <span>৳<?php echo number_format($total, 2); ?></span>
-                        </div>
-                        <div class="calc-row">
-                            <span>Delivery Fee</span>
-                            <span class="free">Free</span>
-                        </div>
-                        <div class="calc-row discount">
-                            <span><i class="fas fa-tag"></i> Discount</span>
-                            <span>৳0.00</span>
-                        </div>
-                        <hr>
-                        <div class="summary-total">
-                            <strong>Total Amount</strong>
-                            <strong class="total-price">৳<?php echo number_format($total, 2); ?></strong>
-                        </div>
-                    </div>
-
-                    <div class="security-badge">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Secure SSL Encrypted Payment</span>
-
-                    </div>
-                </div>
+        <div class="checkout-container">
+            <div class="checkout-header">
+                <h1><i class="fas fa-shopping-bag"></i> Secure Checkout</h1>
+                <p>Complete your order safely and securely</p>
             </div>
 
-            <!-- Checkout Form Section -->
-            <div class="checkout-form-section">
-                <div class="checkout-form">
-                    <form action="php/order_process.php" method="POST" id="checkoutForm" onsubmit="console.log('Form onsubmit triggered'); return true;">
-                        <!-- Shipping Information -->
-                        <div class="form-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-truck"></i> Delivery Information</h3>
-                            </div>
+            <div class="checkout-content">
+                <!-- Order Summary Section -->
+                <div class="order-summary-section">
+                    <div class="order-summary">
+                        <div class="summary-header">
+                            <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+                            <span class="item-count"><?php echo count($_SESSION['cart']); ?> items</span>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="location">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    Delivery Address
-                                </label>
-                                <div class="input-wrapper">
-                                    <textarea name="location" id="location" rows="3" required placeholder="Enter your complete delivery address..."><?php echo htmlspecialchars($_SESSION['user_location']); ?></textarea>
-                                    <div class="input-icon">
+                        <div class="summary-items">
+                            <?php foreach ($_SESSION['cart'] as $item): ?>
+                                <div class="summary-item">
+                                    <div class="item-info">
+                                        <div class="item-image">
+                                            <img src="<?php echo htmlspecialchars($item['image'] ?? 'images/default-product.png'); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
+                                        </div>
+                                        <div class="item-details">
+                                            <h4><?php echo htmlspecialchars($item['name']); ?></h4>
+                                            <span class="item-quantity">Qty: <?php echo $item['quantity']; ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="item-price">
+                                        ৳<?php echo number_format($item['price'] * $item['quantity'], 2); ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="summary-calculations">
+                            <div class="calc-row">
+                                <span>Subtotal</span>
+                                <span>৳<?php echo number_format($total, 2); ?></span>
+                            </div>
+                            <div class="calc-row">
+                                <span>Delivery Fee</span>
+                                <span class="free">Free</span>
+                            </div>
+                            <!-- <div class="calc-row discount">
+                                <span><i class="fas fa-tag"></i> Discount</span>
+                                <span>৳0.00</span>
+                            </div> -->
+                            <hr>
+                            <div class="summary-total">
+                                <strong>Total Amount</strong>
+                                <strong class="total-price">৳<?php echo number_format($total, 2); ?></strong>
+                            </div>
+                        </div>
+
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure SSL Encrypted Payment</span>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Form Section -->
+                <div class="checkout-form-section">
+                    <div class="checkout-form">
+                        <form action="php/order_process.php" method="POST" id="checkoutForm" onsubmit="console.log('Form onsubmit triggered'); return true;">
+                            <!-- Shipping Information -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3><i class="fas fa-truck"></i> Delivery Information</h3>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="location">
                                         <i class="fas fa-map-marker-alt"></i>
+                                        Delivery Address
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <textarea name="location" id="location" rows="3" required placeholder="Enter your complete delivery address..."><?php echo htmlspecialchars($_SESSION['user_location']); ?></textarea>
+                                        <div class="input-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="delivery-options">
+                                    <div class="delivery-option selected">
+                                        <div class="option-icon">
+                                            <i class="fas fa-shipping-fast"></i>
+                                        </div>
+                                        <div class="option-details">
+                                            <h4>Standard Delivery</h4>
+                                            <p>2-3 business days • Free</p>
+                                        </div>
+                                        <div class="option-price">৳0</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="delivery-options">
-                                <div class="delivery-option selected">
-                                    <div class="option-icon">
-                                        <i class="fas fa-shipping-fast"></i>
+                            <!-- Payment Method -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                                    <p>Choose your preferred payment option</p>
+                                </div>
+
+                                <div class="payment-methods">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="bKash" id="bkash" required>
+                                        <label for="bkash" class="payment-label">
+                                            <div class="payment-icon bkash">
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <h4>bKash</h4>
+                                                <p>Pay with bKash mobile wallet</p>
+                                            </div>
+                                            <div class="payment-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </label>
                                     </div>
-                                    <div class="option-details">
-                                        <h4>Standard Delivery</h4>
-                                        <p>2-3 business days • Free</p>
+
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="Nagad" id="nagad">
+                                        <label for="nagad" class="payment-label">
+                                            <div class="payment-icon nagad">
+                                                <i class="fas fa-mobile-alt"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <h4>Nagad</h4>
+                                                <p>Pay with Nagad mobile wallet</p>
+                                            </div>
+                                            <div class="payment-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </label>
                                     </div>
-                                    <div class="option-price">৳0</div>
+
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="Card" id="card">
+                                        <label for="card" class="payment-label">
+                                            <div class="payment-icon card">
+                                                <i class="fas fa-credit-card"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <h4>Credit/Debit Card</h4>
+                                                <p>Visa, MasterCard, American Express</p>
+                                            </div>
+                                            <div class="payment-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="COD" id="cod">
+                                        <label for="cod" class="payment-label">
+                                            <div class="payment-icon cod">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <h4>Cash on Delivery</h4>
+                                                <p>Pay when you receive your order</p>
+                                            </div>
+                                            <div class="payment-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Payment Method -->
-                        <div class="form-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
-                                <p>Choose your preferred payment option</p>
+                            <!-- Order Notes -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h3><i class="fas fa-sticky-note"></i> Order Notes (Optional)</h3>
+                                </div>
+
+                                <div class="form-group">
+                                    <textarea name="order_notes" id="order_notes" rows="3" placeholder="Any special instructions for your order..."></textarea>
+                                </div>
                             </div>
 
-                            <div class="payment-methods">
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" value="bKash" id="bkash" required>
-                                    <label for="bkash" class="payment-label">
-                                        <div class="payment-icon bkash">
-                                            <i class="fas fa-mobile-alt"></i>
-                                        </div>
-                                        <div class="payment-info">
-                                            <h4>bKash</h4>
-                                            <p>Pay with bKash mobile wallet</p>
-                                        </div>
-                                        <div class="payment-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                    </label>
-                                </div>
-
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" value="Nagad" id="nagad">
-                                    <label for="nagad" class="payment-label">
-                                        <div class="payment-icon nagad">
-                                            <i class="fas fa-mobile-alt"></i>
-                                        </div>
-                                        <div class="payment-info">
-                                            <h4>Nagad</h4>
-                                            <p>Pay with Nagad mobile wallet</p>
-                                        </div>
-                                        <div class="payment-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                    </label>
-                                </div>
-
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" value="Card" id="card">
-                                    <label for="card" class="payment-label">
-                                        <div class="payment-icon card">
-                                            <i class="fas fa-credit-card"></i>
-                                        </div>
-                                        <div class="payment-info">
-                                            <h4>Credit/Debit Card</h4>
-                                            <p>Visa, MasterCard, American Express</p>
-                                        </div>
-                                        <div class="payment-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                    </label>
-                                </div>
-
-                                <div class="payment-option">
-                                    <input type="radio" name="payment_method" value="COD" id="cod">
-                                    <label for="cod" class="payment-label">
-                                        <div class="payment-icon cod">
-                                            <i class="fas fa-money-bill-wave"></i>
-                                        </div>
-                                        <div class="payment-info">
-                                            <h4>Cash on Delivery</h4>
-                                            <p>Pay when you receive your order</p>
-                                        </div>
-                                        <div class="payment-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
+                            <!-- Terms and Conditions -->
+                            <div class="form-section">
+                                <div class="terms-checkbox">
+                                    <input type="checkbox" id="terms" required>
+                                    <label for="terms">
+                                        I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>
                                     </label>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Order Notes -->
-                        <div class="form-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-sticky-note"></i> Order Notes (Optional)</h3>
+                            <!-- Place Order Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="place-order-btn">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Place Secure Order</span>
+                                    <div class="btn-price">৳<?php echo number_format($total, 2); ?></div>
+                                </button>
+
+                                <div class="security-info">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Your payment information is secure and encrypted</span>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <textarea name="order_notes" id="order_notes" rows="3" placeholder="Any special instructions for your order..."></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Terms and Conditions -->
-                        <div class="form-section">
-                            <div class="terms-checkbox">
-                                <input type="checkbox" id="terms" required>
-                                <label for="terms">
-                                    I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Place Order Button -->
-                        <div class="form-actions">
-                            <button type="submit" class="place-order-btn">
-                                <i class="fas fa-lock"></i>
-                                <span>Place Secure Order</span>
-                                <div class="btn-price">৳<?php echo number_format($total, 2); ?></div>
-                            </button>
-                            
-                            <!-- Debug: Simple test button -->
-                            <button type="button" onclick="testFormSubmission()" style="background: orange; color: white; padding: 10px; margin: 10px; border: none; border-radius: 5px;">
-                                🔧 Debug: Test Form Submission
-                            </button>
-
-                            <div class="security-info">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Your payment information is secure and encrypted</span>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
-<link rel="stylesheet" href="css/checkout-style.css">
+    <link rel="stylesheet" href="css/checkout-style.css">
 
-<script>
-    // Form validation and enhancement
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('checkoutForm');
-        const paymentOptions = document.querySelectorAll('input[name="payment_method"]');
-        const placeOrderBtn = document.querySelector('.place-order-btn');
-
-        // Payment method selection enhancement
-        paymentOptions.forEach(option => {
-            option.addEventListener('change', function() {
-                // Remove active class from all labels
-                document.querySelectorAll('.payment-label').forEach(label => {
-                    label.classList.remove('active');
-                });
-
-                // Add active class to selected label
-                this.nextElementSibling.classList.add('active');
-            });
-        });
-
-        // Form submission with loading state
-        form.addEventListener('submit', function(e) {
-            console.log('Form submit event triggered');
-            
-            const termsCheckbox = document.getElementById('terms');
-            console.log('Terms checkbox checked:', termsCheckbox.checked);
-
-            if (!termsCheckbox.checked) {
-                e.preventDefault();
-                alert('Please accept the Terms & Conditions to proceed.');
-                return;
-            }
-
-            // Log form data
-            const formData = new FormData(form);
-            console.log('Form data being submitted:', Object.fromEntries(formData));
-
-            console.log('Form submitting to:', form.action);
-            
-            // Remove the loading state change that might interfere
-            // placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
-            // placeOrderBtn.disabled = true;
-        });
-
-        // Debug function to test form submission
-        window.testFormSubmission = function() {
-            console.log('Debug: Testing form submission...');
-            
+    <script>
+        // Form validation and enhancement
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('checkoutForm');
-            const formData = new FormData(form);
-            
-            // Check if required fields are filled
-            const location = formData.get('location');
-            const paymentMethod = formData.get('payment_method');
-            const termsChecked = document.getElementById('terms').checked;
-            
-            console.log('Location:', location);
-            console.log('Payment Method:', paymentMethod);
-            console.log('Terms Checked:', termsChecked);
-            
-            if (!location) {
-                alert('Please enter delivery address');
-                return;
-            }
-            
-            if (!paymentMethod) {
-                alert('Please select payment method');
-                return;
-            }
-            
-            if (!termsChecked) {
-                alert('Please accept terms and conditions');
-                return;
-            }
-            
-            // If all checks pass, try to submit
-            alert('All checks passed! Submitting form...');
-            form.submit();
-        };
+            const paymentOptions = document.querySelectorAll('input[name="payment_method"]');
+            const placeOrderBtn = document.querySelector('.place-order-btn');
 
-        // Auto-resize textarea
-        const textareas = document.querySelectorAll('textarea');
-        textareas.forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
+            // Payment method selection enhancement
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    // Remove active class from all labels
+                    document.querySelectorAll('.payment-label').forEach(label => {
+                        label.classList.remove('active');
+                    });
+
+                    // Add active class to selected label
+                    this.nextElementSibling.classList.add('active');
+                });
             });
-        });
 
-        // Smooth scroll to form sections
-        const sectionHeaders = document.querySelectorAll('.section-header h3');
-        sectionHeaders.forEach(header => {
-            header.style.cursor = 'pointer';
-            header.addEventListener('click', function() {
-                this.parentElement.parentElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                console.log('Form submit event triggered');
+
+                const termsCheckbox = document.getElementById('terms');
+                console.log('Terms checkbox checked:', termsCheckbox.checked);
+
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    alert('Please accept the Terms & Conditions to proceed.');
+                    return;
+                }
+
+                // Log form data
+                const formData = new FormData(form);
+                console.log('Form data being submitted:', Object.fromEntries(formData));
+
+                console.log('Form submitting to:', form.action);
+
+                // Remove the loading state change that might interfere
+                // placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
+                // placeOrderBtn.disabled = true;
+            });
+
+            // Form validation code here
+
+            // Auto-resize textarea
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+            });
+
+            // Smooth scroll to form sections
+            const sectionHeaders = document.querySelectorAll('.section-header h3');
+            sectionHeaders.forEach(header => {
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', function() {
+                    this.parentElement.parentElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 });
             });
         });
-    });
 
-    // Add floating animation to security badges
-    function addFloatingAnimation() {
-        const securityBadge = document.querySelector('.security-badge');
-        if (securityBadge) {
-            securityBadge.style.animation = 'float 3s ease-in-out infinite';
+        // Add floating animation to security badges
+        function addFloatingAnimation() {
+            const securityBadge = document.querySelector('.security-badge');
+            if (securityBadge) {
+                securityBadge.style.animation = 'float 3s ease-in-out infinite';
+            }
         }
-    }
 
-    // Add CSS animation
-    const style = document.createElement('style');
-    style.textContent = `
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-5px); }
@@ -417,11 +378,11 @@ echo " -->";
         box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
     }
 `;
-    document.head.appendChild(style);
+        document.head.appendChild(style);
 
-    // Initialize animations
-    addFloatingAnimation();
-</script>
+        // Initialize animations
+        addFloatingAnimation();
+    </script>
 
 
-<?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer.php'; ?>
