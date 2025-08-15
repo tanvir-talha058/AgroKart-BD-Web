@@ -254,7 +254,7 @@ include 'includes/header.php';
 </section>
 
 <!-- Enhanced Why Choose Section -->
-<section class="why-choose-section" id="about">
+<section class="why-choose-section green-gradient" id="about">
   <div class="section-header">
     <div class="section-badge">
       <i class="fas fa-heart"></i>
@@ -1179,7 +1179,23 @@ include 'includes/header.php';
   /* Why Choose Section */
   .why-choose-section {
     padding: 80px 0;
-    background: white;
+    background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 50%, #dcedc8 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-choose-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('images/leaf.png') no-repeat;
+    background-position: -5% 105%;
+    background-size: 300px;
+    opacity: 0.05;
+    z-index: 0;
   }
 
   .features-grid {
@@ -1188,15 +1204,19 @@ include 'includes/header.php';
     gap: 25px;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
     padding: 0 20px;
   }
 
   .feature-card {
-    background: white;
+    background: linear-gradient(135deg, #2c5f2d, #3a7c40);
+    backdrop-filter: blur(10px);
     padding: 35px 25px;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(76, 175, 80, 0.3);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1204,48 +1224,44 @@ include 'includes/header.php';
 
   .feature-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 30px rgba(44, 95, 45, 0.25);
+    background: linear-gradient(135deg, #3a7c40, #4CAF50);
   }
 
   .feature-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
+    background: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 25px;
-    color: white;
+    color: #2c5f2d;
     font-size: 2rem;
-    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border: 3px solid rgba(255, 255, 255, 0.2);
   }
 
   .feature-card h3 {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: white;
     margin-bottom: 15px;
   }
 
   .feature-card p {
-    color: #666;
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
   }
 
   .feature-highlight {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
+    display: none;
+    /* Remove the underline highlight effect */
   }
 
   .feature-card:hover .feature-highlight {
-    transform: scaleX(1);
+    transform: none;
   }
 
   /* Notification Styles */
