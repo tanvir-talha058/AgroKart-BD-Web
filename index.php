@@ -746,7 +746,6 @@ include 'includes/header.php';
     margin-top: auto;
     padding: 0 15px 15px;
     display: flex;
-   
     justify-content: center;
   }
 

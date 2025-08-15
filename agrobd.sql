@@ -12,7 +12,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-<<<<<<< HEAD
+
 DROP TABLE IF EXISTS `reviews`;
 DROP TABLE IF EXISTS `payments`;
 DROP TABLE IF EXISTS `order_items`;
@@ -20,12 +20,12 @@ DROP TABLE IF EXISTS `orders`;
 DROP TABLE IF EXISTS `user_cart`;
 DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `users`;
-=======
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
->>>>>>> 94efe9c72351df2c7c26c9f64b2f78db5645edc5
+
 
 --
 -- Database: `agrobd`
@@ -366,7 +366,6 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `division`, `district`, `ci
 -- Table structure for table `user_cart`
 --
 
-<<<<<<< HEAD
 
 CREATE TABLE `user_cart` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -427,10 +426,6 @@ CREATE TABLE `payments` (
 CREATE TABLE `reviews` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
-=======
-CREATE TABLE `user_cart` (
-  `id` int(11) NOT NULL,
->>>>>>> 94efe9c72351df2c7c26c9f64b2f78db5645edc5
   `user_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
@@ -505,11 +500,11 @@ ALTER TABLE `products`
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
-<<<<<<< HEAD
+
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `user_cart`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-=======
+
   ADD PRIMARY KEY (`id`),
   ADD KEY `product_id` (`product_id`),
   ADD KEY `user_id` (`user_id`);
@@ -526,7 +521,7 @@ ALTER TABLE `seller_hidden_customers`
 --
 -- Indexes for table `users`
 --
->>>>>>> 94efe9c72351df2c7c26c9f64b2f78db5645edc5
+
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
