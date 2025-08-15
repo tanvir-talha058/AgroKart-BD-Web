@@ -9,6 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Chart.js configuration
     initializeCharts();
+    // Load fresh data initially
+    if (typeof fetchFreshSalesData === 'function') {
+        fetchFreshSalesData();
+    }
+
+    // Add last updated badge
+    ensureLastUpdatedBadge();
+    
+    // Add refresh button for charts
+    addRefreshButton();
     
     // Chart tabs functionality
     const chartTabs = document.querySelectorAll('.chart-tab');
@@ -111,7 +121,221 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Initialize charts
+// Function to add refresh button to chart container
+function addRefreshButton() {
+    const chartContainer = document.querySelector('.chart-container');
+    if (chartContainer) {
+        // Create refresh button
+        const refreshButton = document.createElement('button');
+        refreshButton.id = 'refresh-charts';
+        refreshButton.className = 'refresh-btn';
+        refreshButton.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        refreshButton.style.position = 'absolute';
+        refreshButton.style.top = '10px';
+        refreshButton.style.right = '10px';
+        refreshButton.style.zIndex = '10';
+        refreshButton.style.padding = '5px 10px';
+        refreshButton.style.background = '#fff';
+        refreshButton.style.border = '1px solid #ddd';
+        refreshButton.style.borderRadius = '4px';
+        refreshButton.style.cursor = 'pointer';
+        refreshButton.style.display = 'flex';
+        refreshButton.style.alignItems = 'center';
+        refreshButton.style.gap = '5px';
+        refreshButton.style.fontSize = '14px';
+        refreshButton.style.color = '#333';
+        
+        // Add loading spinner (hidden by default)
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.id = 'chart-loading';
+        loadingSpinner.className = 'spinner';
+        loadingSpinner.style.display = 'none';
+        loadingSpinner.style.width = '16px';
+        loadingSpinner.style.height = '16px';
+        loadingSpinner.style.border = '2px solid rgba(0, 0, 0, 0.1)';
+        loadingSpinner.style.borderLeft = '2px solid #333';
+        loadingSpinner.style.borderRadius = '50%';
+        loadingSpinner.style.animation = 'spin 1s linear infinite';
+        
+        // Add keyframes animation for spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Add click event
+        refreshButton.addEventListener('click', function() {
+            fetchFreshSalesData();
+        });
+        
+        // Add button and spinner to container
+        chartContainer.style.position = 'relative';
+        refreshButton.appendChild(loadingSpinner);
+        chartContainer.appendChild(refreshButton);
+    }
+}
+
+// Function to fetch fresh data with cache busting
+function fetchFreshSalesData() {
+    // Show loading indicator
+    const loadingSpinner = document.getElementById('chart-loading');
+    if (loadingSpinner) loadingSpinner.style.display = 'inline-block';
+    
+    // Add timestamp to URL to prevent caching
+    const timestamp = new Date().getTime();
+    fetch('php/load_chart_data.php?t=' + timestamp)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Fresh chart data received:', data);
+            // Update the global sales data
+            if (data.weekly) {
+                console.log('Weekly data:', data.weekly);
+                window.salesData.weekly = data.weekly;
+            }
+            if (data.monthly) {
+                console.log('Monthly data:', data.monthly);
+                window.salesData.monthly = data.monthly;
+            }
+            if (data.yearly) {
+                console.log('Yearly data:', data.yearly);
+                window.salesData.yearly = data.yearly;
+            }
+            
+            // Update category chart if it exists
+            if (data.categories && window.categoryChart) {
+                window.categoryChart.data.labels = data.categories.labels;
+                window.categoryChart.data.datasets[0].data = data.categories.data;
+                window.categoryChart.update();
+            }
+            
+            // Update top products chart if it exists
+            if (data.topProducts && window.topProductsChart) {
+                window.topProductsChart.data.labels = data.topProducts.labels;
+                window.topProductsChart.data.datasets[0].data = data.topProducts.data;
+                window.topProductsChart.update();
+            }
+            
+            // Update current sales chart with fresh data
+            const activePeriodTab = document.querySelector('.chart-tab.active');
+            const currentPeriod = activePeriodTab ? activePeriodTab.getAttribute('data-period') : 'weekly';
+            updateChartData(currentPeriod);
+            
+            // Hide loading indicator
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+            
+            // Show success message
+            showToast('Charts updated with latest data', 'success');
+
+            // Update last updated badge
+            updateLastUpdatedBadge();
+        })
+        .catch(error => {
+            console.error('Error fetching fresh sales data:', error);
+            // Hide loading indicator
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+            
+            // Show error message
+            showToast('Failed to update charts', 'error');
+        });
+}
+
+// Initial fetch of sales data from server
+function fetchSalesData() {
+    fetch('php/load_chart_data.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Initial chart data received:', data);
+            // Update the sales data with real data from server
+            if (data.weekly) {
+                console.log('Initial weekly data:', data.weekly);
+                window.salesData.weekly = data.weekly;
+            }
+            if (data.monthly) {
+                console.log('Initial monthly data:', data.monthly);
+                window.salesData.monthly = data.monthly;
+            }
+            if (data.yearly) {
+                console.log('Initial yearly data:', data.yearly);
+                window.salesData.yearly = data.yearly;
+            }
+            
+            // Update category chart if it exists
+            if (data.categories && window.categoryChart) {
+                window.categoryChart.data.labels = data.categories.labels;
+                window.categoryChart.data.datasets[0].data = data.categories.data;
+                window.categoryChart.update();
+            }
+            
+            // Update top products chart if it exists
+            if (data.topProducts && window.topProductsChart) {
+                window.topProductsChart.data.labels = data.topProducts.labels;
+                window.topProductsChart.data.datasets[0].data = data.topProducts.data;
+                window.topProductsChart.update();
+            }
+            
+            // Get active period and update chart
+            const activePeriodTab = document.querySelector('.chart-tab.active');
+            const currentPeriod = activePeriodTab ? activePeriodTab.getAttribute('data-period') : 'weekly';
+            updateChartData(currentPeriod);
+
+            // Update last updated badge
+            updateLastUpdatedBadge();
+        })
+        .catch(error => {
+            console.error('Error fetching sales data:', error);
+        });
+}
+
+// Simple toast notification function
+function showToast(message, type = 'info') {
+    // Check if toastContainer exists, create if not
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.top = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.style.minWidth = '250px';
+    toast.style.margin = '10px';
+    toast.style.padding = '15px';
+    toast.style.borderRadius = '4px';
+    toast.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+    toast.style.backgroundColor = type === 'success' ? '#4CAF50' : 
+                                 type === 'error' ? '#F44336' : '#2196F3';
+    toast.style.color = 'white';
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    
+    toast.textContent = message;
+    
+    // Add to container
+    toastContainer.appendChild(toast);
+    
+    // Show the toast
+    setTimeout(() => {
+        toast.style.opacity = '1';
+    }, 10);
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toastContainer.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
 function initializeCharts() {
     // Sales chart
     const salesChartEl = document.getElementById('salesChart');
@@ -271,6 +495,13 @@ function initializeCharts() {
         window.updateChartData = function(period) {
             // Get the corresponding data for the selected period
             const newData = window.salesData[period];
+            
+            // Adjust y-axis scale based on data values
+            const maxSales = Math.max(...newData.datasets[0].data);
+            const suggestedMax = maxSales > 0 ? Math.ceil(maxSales * 1.2) : 50;
+            
+            // Update scale options to better fit the data
+            window.salesChart.options.scales.y.suggestedMax = suggestedMax;
             
             // Update the chart with this period's data
             window.salesChart.data = newData;
@@ -458,4 +689,37 @@ function initializeCharts() {
             }
         });
     }
+}
+
+// Ensure a last-updated badge exists on the chart card
+function ensureLastUpdatedBadge() {
+    const chartContainer = document.querySelector('.chart-container');
+    if (!chartContainer) return;
+    let badge = document.getElementById('chart-last-updated');
+    if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'chart-last-updated';
+        badge.style.position = 'absolute';
+        badge.style.bottom = '10px';
+        badge.style.right = '10px';
+        badge.style.background = 'rgba(0,0,0,0.6)';
+        badge.style.color = '#fff';
+        badge.style.padding = '4px 8px';
+        badge.style.borderRadius = '12px';
+        badge.style.fontSize = '12px';
+        badge.style.pointerEvents = 'none';
+        badge.textContent = 'Last updated: —';
+        chartContainer.style.position = 'relative';
+        chartContainer.appendChild(badge);
+    }
+}
+
+function updateLastUpdatedBadge() {
+    const badge = document.getElementById('chart-last-updated');
+    if (!badge) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    badge.textContent = `Last updated: ${hh}:${mm}:${ss}`;
 }

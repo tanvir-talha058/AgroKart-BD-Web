@@ -18,15 +18,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_check->store_result();
 
     if ($stmt_check->num_rows > 0) {
-        $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
+        // Ensure delivered_at column exists (safe no-op if already present)
+        @$conn->query("ALTER TABLE orders ADD COLUMN delivered_at TIMESTAMP NULL AFTER status");
+
+        if ($new_status === 'Delivered') {
+            // When delivered, stamp delivered_at to now
+            $stmt = $conn->prepare("UPDATE orders SET status = ?, delivered_at = NOW() WHERE id = ?");
+        } else {
+            // For other statuses, keep delivered_at as is (or nullify if needed)
+            $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
+        }
         $stmt->bind_param("si", $new_status, $order_id);
         if ($stmt->execute()) {
+            // Set flag to refresh dashboard data
+            $_SESSION['refresh_dashboard'] = true;
+            // Clear any cached chart data
+            if (isset($_SESSION['dashboard_chart_data'])) {
+                unset($_SESSION['dashboard_chart_data']);
+            }
             $_SESSION['message'] = "Order #$order_id status updated to '$new_status'.";
+
+            // Add a JavaScript function to refresh charts on dashboard when redirected
+            $_SESSION['refresh_charts'] = true;
         } else {
             $_SESSION['error'] = "Failed to update status.";
         }
         $stmt->close();
     } else {
+        $_SESSION['error'] = "You don't have permission to update this order.";
     }
     $stmt_check->close();
 }

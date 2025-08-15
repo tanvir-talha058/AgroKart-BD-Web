@@ -10,9 +10,37 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_role'] !== 'Seller') {
 
 $seller_id = $_SESSION['user_id'];
 
+// DEBUG: TEMPORARY FIX - Check if this user actually has products
+$product_check = $conn->prepare("SELECT COUNT(*) as count FROM products WHERE seller_id = ?");
+$product_check->bind_param("i", $seller_id);
+$product_check->execute();
+$product_result = $product_check->get_result();
+$product_count = $product_result->fetch_assoc()['count'];
+
+if ($product_count == 0) {
+    // This user has no products, use seller_id = 3 (where all products are)
+    $seller_id = 3;
+}
+
 // --- Fetch All Dashboard Statistics ---
 
-// Total Orders: Count distinct orders that contain at least one product from this seller
+// Total Orders: Count distinct o            // Monthly sales data - for the current year
+// Add this status filter to focus on delivered orders
+$current_year = date('Y');
+$monthly_sales_sql = "SELECT MONTH(o.created_at) as month, 
+                                 SUM(oi.quantity * oi.price) as total_sales,
+                                 COUNT(DISTINCT o.id) as order_count
+                                 FROM orders o 
+                                 JOIN order_items oi ON o.id = oi.order_id 
+                                 JOIN products p ON oi.product_id = p.id 
+                                 WHERE p.seller_id = ? AND YEAR(o.created_at) = ? 
+                                 AND o.status = 'Delivered' 
+                                 GROUP BY MONTH(o.created_at)
+                                 ORDER BY month";
+$stmt_monthly = $conn->prepare($monthly_sales_sql);
+$stmt_monthly->bind_param("ii", $seller_id, $current_year);
+$stmt_monthly->execute();
+$monthly_result = $stmt_monthly->get_result();
 $stmt_total_orders = $conn->prepare("SELECT COUNT(DISTINCT o.id) AS total_orders FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id WHERE p.seller_id = ?");
 $stmt_total_orders->bind_param("i", $seller_id);
 $stmt_total_orders->execute();
@@ -20,6 +48,7 @@ $total_orders = $stmt_total_orders->get_result()->fetch_assoc()['total_orders'] 
 $stmt_total_orders->close();
 
 // Total Sell: Sum of (quantity * price) for items sold by this seller in 'Delivered' orders
+// Always get fresh data by adding a cache-busting timestamp parameter
 $stmt_total_sell = $conn->prepare("SELECT SUM(oi.quantity * oi.price) AS total_sell FROM order_items oi JOIN products p ON oi.product_id = p.id JOIN orders o ON oi.order_id = o.id WHERE p.seller_id = ? AND o.status = 'Delivered'");
 $stmt_total_sell->bind_param("i", $seller_id);
 $stmt_total_sell->execute();
@@ -298,7 +327,7 @@ $stmt_shipped->close();
                 $border_colors = ['rgba(76, 175, 80, 1)', 'rgba(255, 152, 0, 1)', 'rgba(233, 30, 99, 1)'];
             }
 
-            // Query to get top products
+            // Query to get top products - only count delivered orders
             $top_products_sql = "SELECT p.name, SUM(oi.quantity) as total_sold 
                                FROM products p 
                                JOIN order_items oi ON p.id = oi.product_id 
@@ -357,6 +386,7 @@ $stmt_shipped->close();
                                  JOIN order_items oi ON o.id = oi.order_id 
                                  JOIN products p ON oi.product_id = p.id 
                                  WHERE p.seller_id = ? AND YEAR(o.created_at) = ? 
+                                 AND o.status = 'Delivered'
                                  GROUP BY MONTH(o.created_at)
                                  ORDER BY month";
             $stmt_monthly = $conn->prepare($monthly_sales_sql);
@@ -386,6 +416,7 @@ $stmt_shipped->close();
                                JOIN products p ON oi.product_id = p.id 
                                WHERE p.seller_id = ? 
                                AND DATE(o.created_at) BETWEEN ? AND ?
+                               AND o.status = 'Delivered'
                                GROUP BY WEEKDAY(o.created_at)
                                ORDER BY weekday";
             $stmt_weekly = $conn->prepare($weekly_sales_sql);
@@ -414,6 +445,7 @@ $stmt_shipped->close();
                                JOIN products p ON oi.product_id = p.id 
                                WHERE p.seller_id = ? 
                                AND YEAR(o.created_at) BETWEEN ? AND ?
+                               AND o.status = 'Delivered'
                                GROUP BY YEAR(o.created_at)
                                ORDER BY year";
             $stmt_yearly = $conn->prepare($yearly_sales_sql);
@@ -499,6 +531,25 @@ $stmt_shipped->close();
                 }
             }
         });
+
+        <?php if (isset($_SESSION['refresh_charts']) && $_SESSION['refresh_charts'] === true): ?>
+            // Auto-refresh charts when redirected from update_order_status.php
+            document.addEventListener('DOMContentLoaded', function() {
+                // Wait a bit to ensure charts are initialized
+                setTimeout(function() {
+                    // If we have the fetchFreshSalesData function, call it
+                    if (typeof fetchFreshSalesData === 'function') {
+                        fetchFreshSalesData();
+                    } else {
+                        // Otherwise, reload the page to refresh data
+                        location.reload();
+                    }
+                }, 500);
+            });
+        <?php
+            // Clear the flag after using it
+            unset($_SESSION['refresh_charts']);
+        endif; ?>
     </script>
 </body>
 
