@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Debug Test</title>
+    <link rel="stylesheet" href="css/chatbot_enhanced.css">
+</head>
+<body>
+    <h1>Chatbot Debug Test Page</h1>
+    <p>Check if the chatbot button appears on this page...</p>
+
+    <script>
+        console.log('Page loaded, initializing chatbot...');
+    </script>
+    
+    <script src="js/chatbot_enhanced.js"></script>
+    
+    <script>
+        // Additional debugging
+        setTimeout(() => {
+            console.log('Checking if chatbot was created...');
+            const toggle = document.getElementById('chatbotToggle');
+            const container = document.getElementById('chatbotContainer');
+            
+            console.log('Chatbot toggle element:', toggle);
+            console.log('Chatbot container element:', container);
+            
+            if (window.agroKartChatbot) {
+                console.log('Chatbot instance created:', window.agroKartChatbot);
+            } else {
+                console.log('Chatbot instance NOT created');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

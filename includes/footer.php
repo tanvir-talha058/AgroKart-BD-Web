@@ -423,6 +423,9 @@
 }
 </style>
 
+<!-- Enhanced Chatbot Styles -->
+<link rel="stylesheet" href="css/chatbot_enhanced.css">
+
 </body>
 
 </html>

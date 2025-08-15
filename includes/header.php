@@ -184,6 +184,14 @@ if (isset($_SESSION['cart'])) {
                   <i class="fas fa-crown"></i>
                   <span>Loyalty Program</span>
                 </a>
+                <a href="quick_reorder.php" class="profile-menu-item">
+                  <i class="fas fa-redo-alt"></i>
+                  <span>Quick Reorder</span>
+                </a>
+                <a href="notifications.php" class="profile-menu-item">
+                  <i class="fas fa-bell"></i>
+                  <span>Notifications</span>
+                </a>
                 <?php if ($_SESSION['user_role'] == 'Seller'): ?>
                   <a href="dashboard.php" class="profile-menu-item">
                     <i class="fas fa-chart-bar"></i>
@@ -805,22 +813,18 @@ if (isset($_SESSION['cart'])) {
     });
   </script>
 
-  <!-- Modern Chatbot Script -->
-  <script src="js/modern-chatbot.js"></script>
+  <!-- Enhanced Chatbot Script -->
+  <script src="js/chatbot_enhanced.js"></script>
   
-  <!-- Initialize Chatbot -->
+  <!-- Initialize Enhanced Chatbot -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize the modern chatbot
-      if (typeof ModernAgroKartChatbot !== 'undefined') {
-        window.modernChatbot = new ModernAgroKartChatbot();
-        console.log('Modern AgroKart Chatbot initialized successfully!');
+      // Initialize the enhanced chatbot
+      if (typeof AgroKartChatbot !== 'undefined') {
+        window.agroKartChatbot = new AgroKartChatbot();
+        console.log('Enhanced AgroKart Chatbot initialized successfully!');
       } else {
-        console.warn('Modern chatbot not loaded, falling back to original');
-        // Fallback to original chatbot if modern one fails
-        if (typeof AgroKartChatbot !== 'undefined') {
-          window.chatbot = new AgroKartChatbot();
-        }
+        console.warn('Enhanced chatbot not loaded');
       }
     });
   </script>
