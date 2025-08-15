@@ -143,22 +143,6 @@ if (isset($_SESSION['cart'])) {
 
         <!-- User Profile Section -->
         <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-          <!-- Wishlist Icon -->
-          <a href="wishlist.php" class="nav-link wishlist-link">
-            <div class="nav-icon">
-              <i class="fas fa-heart"></i>
-              <span class="icon-badge" id="wishlist-count">0</span>
-            </div>
-          </a>
-
-          <!-- Comparison Icon -->
-          <a href="product_comparison.php" class="nav-link comparison-link">
-            <div class="nav-icon">
-              <i class="fas fa-balance-scale"></i>
-              <span class="icon-badge" id="comparison-count">0</span>
-            </div>
-          </a>
-
           <div class="nav-profile">
             <div class="profile-dropdown">
               <button class="profile-btn">
