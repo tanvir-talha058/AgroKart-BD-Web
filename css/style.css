@@ -656,3 +656,12 @@ body {
     object-fit: contain;
     vertical-align: middle;
 }
+
+/* Price unit styling */
+.price-unit {
+    font-size: 0.85em;
+    color: #666;
+    font-weight: normal;
+    margin-left: 2px;
+    display: inline-block;
+}

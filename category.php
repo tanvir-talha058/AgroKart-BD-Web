@@ -41,7 +41,7 @@ switch ($category) {
         <div class="product-row">
             <?php
             // Fetch products by category
-            $sql = "SELECT id, name, price, image_path, stock, description FROM products WHERE category = ? AND stock > 0 ORDER BY created_at DESC";
+            $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, description FROM products WHERE category = ? AND stock > 0 ORDER BY created_at DESC";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $category);
             $stmt->execute();
@@ -49,12 +49,15 @@ switch ($category) {
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
+                    // Use display_unit from the database, or format it if not set
+                    $price_unit = ' for ' . (isset($row["display_unit"]) ? $row["display_unit"] : (isset($row["quantity"]) ? $row["quantity"] . ' ' . $row["unit"] : $row["unit"]));
+
                     echo '<div class="product-card">';
                     echo '<a href="product_details.php?id=' . $row["id"] . '">';
                     echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '">';
                     echo '<h4>' . htmlspecialchars($row["name"]) . '</h4>';
                     echo '</a>';
-                    echo '<p><span class="price">৳' . htmlspecialchars($row["price"]) . '</span></p>';
+                    echo '<p><span class="price">৳' . htmlspecialchars($row["price"]) . '<span class="price-unit">' . $price_unit . '</span></span></p>';
                     echo '<form action="php/cart_manager.php" method="POST">';
                     echo '<input type="hidden" name="product_id" value="' . $row["id"] . '">';
                     echo '<input type="hidden" name="action" value="add">';

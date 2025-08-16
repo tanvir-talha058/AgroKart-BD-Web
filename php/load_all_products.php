@@ -3,12 +3,15 @@
 require_once '../includes/db_connect.php';
 
 // Fetch all products (no limit)
-$sql = "SELECT id, name, price, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC";
+$sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $category_class = strtolower($row["category"]);
+
+        // Use display_unit from the database, or format it if not set
+        $price_unit = ' for ' . (isset($row["display_unit"]) ? $row["display_unit"] : (isset($row["quantity"]) ? $row["quantity"] . ' ' . $row["unit"] : $row["unit"]));
         echo '<div class="product-card" data-category="' . $category_class . '">';
         echo '<div class="product-image-container">';
         echo '<img src="' . htmlspecialchars($row["image_path"]) . '" alt="' . htmlspecialchars($row["name"]) . '" class="product-image">';
@@ -25,7 +28,7 @@ if ($result->num_rows > 0) {
         echo '<div class="product-info">';
         echo '<h4 class="product-title">' . htmlspecialchars($row["name"]) . '</h4>';
         echo '<div class="product-meta">';
-        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '</span>';
+        echo '<span class="price">৳' . htmlspecialchars($row["price"]) . '<span class="price-unit">' . $price_unit . '</span></span>';
         echo '</div>';
         echo '</div>';
         echo '<form action="php/cart_manager.php" method="POST" class="product-form">';

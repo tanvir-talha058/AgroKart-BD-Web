@@ -188,14 +188,14 @@ include 'includes/header.php';
 
   <div class="product-grid" id="productContainer">
     <?php
-    $sql = "SELECT id, name, price, unit, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
+    $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         $category_class = strtolower($row["category"]);
 
-        // Use the unit from the database
-        $price_unit = '/' . $row["unit"];
+        // Use display_unit from the database, or format it if not set
+        $price_unit = ' for ' . (isset($row["display_unit"]) ? $row["display_unit"] : (isset($row["quantity"]) ? $row["quantity"] . ' ' . $row["unit"] : $row["unit"]));
 
         echo '<div class="product-card" data-category="' . $category_class . '">';
         echo '<div class="product-image-container">';

@@ -195,7 +195,16 @@ foreach ($products as $product) {
                                         <?php else: ?>
                                             ৳<?php echo number_format($product['price'], 2); ?>
                                         <?php endif; ?>
-                                        / <?php echo htmlspecialchars($product['unit']); ?>
+                                        <?php
+                                        // Display quantity and unit
+                                        if (isset($product['display_unit'])) {
+                                            echo " for {$product['display_unit']}";
+                                        } else {
+                                            $quantity = isset($product['quantity']) ? $product['quantity'] : 1;
+                                            $unitDisplay = $product['unit'];
+                                            echo " for {$quantity} {$unitDisplay}";
+                                        }
+                                        ?>
                                     </div>
                                     <div class="product-stock"><i class="fas fa-cubes"></i> Stock: <?php echo $product['stock']; ?></div>
                                     <div class="product-date"><i class="fas fa-calendar-alt"></i> Added: <?php echo date('M d, Y', strtotime($product['created_at'])); ?></div>
@@ -240,11 +249,18 @@ foreach ($products as $product) {
                         <label>Price (৳)</label>
                         <div class="price-unit-group">
                             <input type="number" name="price" placeholder="Enter price" min="0" step="0.01" required />
+                        </div>
+
+                        <label>Package Details</label>
+                        <div class="package-details-group">
+                            <input type="number" name="quantity" placeholder="Quantity" min="0.1" step="0.1" value="1" required />
                             <select name="unit" required>
-                                <option value="kg">per kg</option>
-                                <option value="gm">per gm</option>
-                                <option value="pc">per pc</option>
-                                <option value="pack">per pack</option>
+                                <option value="kg">kg</option>
+                                <option value="gm">gm</option>
+                                <option value="pc">pc</option>
+                                <option value="pack">pack</option>
+                                <option value="dozen">dozen</option>
+                                <option value="liter">liter</option>
                             </select>
                         </div>
                         <label>Stock Quantity</label>
@@ -277,11 +293,18 @@ foreach ($products as $product) {
                         <label>Price (৳)</label>
                         <div class="price-unit-group">
                             <input type="number" id="edit_price" name="price" placeholder="Enter price" min="0" step="0.01" required />
+                        </div>
+
+                        <label>Package Details</label>
+                        <div class="package-details-group">
+                            <input type="number" id="edit_quantity" name="quantity" placeholder="Quantity" min="0.1" step="0.1" value="1" required />
                             <select id="edit_unit" name="unit" required>
-                                <option value="kg">per kg</option>
-                                <option value="gm">per gm</option>
-                                <option value="pc">per pc</option>
-                                <option value="pack">per pack</option>
+                                <option value="kg">kg</option>
+                                <option value="gm">gm</option>
+                                <option value="pc">pc</option>
+                                <option value="pack">pack</option>
+                                <option value="dozen">dozen</option>
+                                <option value="liter">liter</option>
                             </select>
                         </div>
                         <label>Stock Quantity</label>
@@ -417,6 +440,8 @@ foreach ($products as $product) {
                     document.getElementById('edit_category').value = product.category;
                     document.getElementById('edit_price').value = product.price;
                     document.getElementById('edit_unit').value = product.unit;
+                    // Set quantity if it exists, otherwise default to 1
+                    document.getElementById('edit_quantity').value = product.quantity || 1;
                     document.getElementById('edit_stock').value = product.stock;
                     document.getElementById('edit_description').value = product.description;
                     document.getElementById('current_image').src = product.image_path;

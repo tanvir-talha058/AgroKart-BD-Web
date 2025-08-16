@@ -114,9 +114,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Get quantity from POST data and create display_unit
+    $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : 1;
+    $display_unit = $quantity . ' ' . $unit;
+
     // Update the product
-    $stmt = $conn->prepare("UPDATE products SET name = ?, category = ?, price = ?, unit = ?, stock = ?, description = ?, image_path = ? WHERE id = ? AND seller_id = ?");
-    $stmt->bind_param("ssssissii", $product_name, $category, $price, $unit, $stock, $description, $image_path, $product_id, $seller_id);
+    $stmt = $conn->prepare("UPDATE products SET name = ?, category = ?, price = ?, unit = ?, quantity = ?, display_unit = ?, stock = ?, description = ?, image_path = ? WHERE id = ? AND seller_id = ?");
+    $stmt->bind_param("ssssssissii", $product_name, $category, $price, $unit, $quantity, $display_unit, $stock, $description, $image_path, $product_id, $seller_id);
 
     if ($stmt->execute()) {
         $_SESSION['message'] = "Product updated successfully!";
