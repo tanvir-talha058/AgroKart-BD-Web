@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2025 at 07:19 AM
+-- Generation Time: Aug 16, 2025 at 09:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,13 +45,16 @@ CREATE TABLE `hot_deals` (
 --
 
 INSERT INTO `hot_deals` (`id`, `product_id`, `original_price`, `discount_price`, `discount_percentage`, `start_date`, `end_date`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 1, 45.00, 36.00, 20, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(2, 3, 1233.00, 986.40, 20, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(3, 6, 23.00, 18.40, 20, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(4, 2, 123.00, 92.25, 25, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(5, 8, 211.00, 158.25, 25, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(7, 1, 45.00, 31.50, 30, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35'),
-(8, 2, 123.00, 86.10, 30, '2025-08-13 20:15:35', NULL, 1, '2025-08-13 14:15:35', '2025-08-13 14:15:35');
+(13, 51, 150.00, 135.00, 10, '2025-08-16 21:24:56', '2025-08-18 21:24:00', 1, '2025-08-16 15:24:56', '2025-08-16 15:24:56'),
+(14, 45, 300.00, 255.00, 15, '2025-08-16 21:25:15', '2025-08-19 21:25:00', 1, '2025-08-16 15:25:15', '2025-08-16 15:25:15'),
+(15, 40, 40.00, 38.40, 4, '2025-08-16 21:25:33', '2025-08-18 21:25:00', 1, '2025-08-16 15:25:33', '2025-08-16 15:25:33'),
+(16, 36, 1000.00, 890.00, 11, '2025-08-16 21:25:49', '2025-08-19 21:25:00', 1, '2025-08-16 15:25:49', '2025-08-16 15:25:49'),
+(17, 31, 80.00, 74.40, 7, '2025-08-16 21:26:06', '2025-08-20 21:26:00', 1, '2025-08-16 15:26:06', '2025-08-16 15:26:06'),
+(18, 27, 100.00, 97.00, 3, '2025-08-16 21:26:21', '2025-08-19 21:26:00', 1, '2025-08-16 15:26:21', '2025-08-16 15:26:21'),
+(19, 25, 75.00, 73.50, 2, '2025-08-16 21:26:40', '2025-08-21 21:26:00', 1, '2025-08-16 15:26:40', '2025-08-16 15:26:40'),
+(20, 53, 100.00, 98.00, 2, '2025-08-16 21:44:20', '2025-08-18 21:44:00', 0, '2025-08-16 15:44:20', '2025-08-16 15:44:35'),
+(21, 53, 100.00, 99.00, 1, '2025-08-16 21:54:57', '2025-08-17 21:54:00', 0, '2025-08-16 15:54:57', '2025-08-16 15:55:00'),
+(22, 52, 65.00, 63.05, 3, '2025-08-17 00:26:03', '2025-08-19 00:25:00', 1, '2025-08-16 18:26:03', '2025-08-16 18:26:03');
 
 -- --------------------------------------------------------
 
@@ -65,7 +68,10 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `delivery_location` text NOT NULL,
   `notes` text DEFAULT NULL,
+  `delivery_option` varchar(20) DEFAULT 'standard',
+  `delivery_fee` decimal(10,2) DEFAULT 0.00,
   `status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `delivered_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -73,36 +79,16 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `buyer_id`, `total_amount`, `delivery_location`, `notes`, `status`, `created_at`) VALUES
-(1, 4, 45.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Delivered', '2025-08-01 09:59:23'),
-(2, 4, 2132434.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Delivered', '2025-08-01 10:11:59'),
-(3, 4, 89.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Pending', '2025-08-03 14:14:01'),
-(4, 4, 267.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Pending', '2025-08-03 22:19:47'),
-(5, 4, 66.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-03 22:20:55'),
-(6, 4, 33.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-04 13:16:51'),
-(7, 4, 45.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Pending', '2025-08-04 21:24:00'),
-(8, 4, 1233.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-04 21:24:27'),
-(9, 4, 23423.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-04 21:42:27'),
-(10, 4, 54.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Pending', '2025-08-04 21:43:14'),
-(11, 4, 225.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-04 21:49:32'),
-(12, 4, 21.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Cancelled', '2025-08-04 22:06:07'),
-(13, 4, 33.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Processing', '2025-08-04 22:23:12'),
-(14, 4, 23881.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Delivered', '2025-08-05 17:14:45'),
-(15, 4, 87.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Shipped', '2025-08-06 15:52:58'),
-(16, 4, 23971.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Delivered', '2025-08-06 16:56:54'),
-(17, 4, 55.00, 'Bogura Sadar, Bogura, Rajshahi', NULL, 'Shipped', '2025-08-06 22:23:56'),
-(18, 4, 570.00, 'Bogura Sadar, Bogura, Rajshahi', 'ff', 'Delivered', '2025-08-09 21:08:59'),
-(19, 4, 22.00, 'Bogura Sadar, Bogura, Rajshahi', 'talha', 'Delivered', '2025-08-12 13:21:45'),
-(20, 2, 2571.00, 'Test Location 1', NULL, 'Delivered', '2025-08-11 04:00:00'),
-(21, 2, 234230.00, 'Test Location 2', NULL, 'Delivered', '2025-08-12 04:00:00'),
-(22, 2, 369.00, 'Test Location 2', NULL, 'Delivered', '2025-08-12 04:00:00'),
-(23, 2, 189.00, 'Test Location 2', NULL, 'Delivered', '2025-08-12 04:00:00'),
-(24, 4, 46.00, 'Bogura Sadar, Bogura, Rajshahi', '', 'Delivered', '2025-08-12 22:02:39'),
-(25, 4, 67.00, 'Bogura Sadar, Bogura, Rajshahi', '', 'Delivered', '2025-08-13 10:11:53'),
-(26, 4, 965.00, 'Bogura Sadar, Bogura, Rajshahi', 'Hi there', 'Delivered', '2025-08-13 10:39:51'),
-(27, 4, 921.00, 'Bogura Sadar, Bogura, Rajshahi', '', 'Delivered', '2025-08-13 15:33:22'),
-(28, 4, 603.00, 'Bogura Sadar, Bogura, Rajshahi', '', 'Pending', '2025-08-14 15:58:07'),
-(29, 4, 33.00, 'Bogura Sadar, Bogura, Rajshahi', '', 'Delivered', '2025-08-15 04:10:01');
+INSERT INTO `orders` (`id`, `buyer_id`, `total_amount`, `delivery_location`, `notes`, `delivery_option`, `delivery_fee`, `status`, `delivered_at`, `created_at`) VALUES
+(35, 10, 214.40, 'Savar, Dhaka, Dhaka', 'Make sure they are fresh.', 'fast', 40.00, 'Processing', NULL, '2025-08-16 15:56:20'),
+(36, 10, 90.00, 'Savar, Dhaka, Dhaka', 'Best', 'standard', 0.00, 'Pending', NULL, '2025-08-16 16:11:00'),
+(37, 10, 65.00, 'Savar, Dhaka, Dhaka', 'Best', 'standard', 0.00, 'Delivered', '2025-08-16 16:45:48', '2025-08-16 16:27:16'),
+(38, 10, 80.00, 'Savar, Dhaka, Dhaka', 'Good', 'standard', 0.00, 'Shipped', NULL, '2025-08-16 16:28:52'),
+(39, 13, 30.00, 'Dhaka', 'better', 'standard', 0.00, 'Pending', NULL, '2025-08-16 17:04:57'),
+(40, 13, 30.00, 'DhaKA', 'Good', 'standard', 0.00, 'Pending', NULL, '2025-08-16 17:06:23'),
+(41, 13, 90.00, 'Dhaka', 'Good', 'standard', 0.00, 'Pending', NULL, '2025-08-16 17:15:39'),
+(42, 13, 80.00, 'Dhaka', 'Best', 'standard', 0.00, 'Delivered', '2025-08-16 18:27:44', '2025-08-16 17:27:29'),
+(43, 13, 220.00, 'Dhaka', 'Fast', 'fast', 40.00, 'Delivered', '2025-08-16 18:26:47', '2025-08-16 18:24:32');
 
 -- --------------------------------------------------------
 
@@ -123,72 +109,16 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) VALUES
-(1, 1, 1, 1, 45.00),
-(2, 2, 10, 1, 2132434.00),
-(3, 3, 15, 2, 22.00),
-(4, 3, 11, 1, 12.00),
-(5, 3, 12, 1, 33.00),
-(6, 4, 15, 1, 22.00),
-(7, 4, 14, 1, 33.00),
-(8, 4, 7, 1, 212.00),
-(9, 5, 13, 1, 33.00),
-(10, 5, 12, 1, 33.00),
-(11, 6, 14, 1, 33.00),
-(12, 7, 14, 1, 33.00),
-(13, 7, 11, 1, 12.00),
-(14, 8, 3, 1, 1233.00),
-(15, 9, 4, 1, 23423.00),
-(16, 10, 5, 1, 21.00),
-(17, 10, 12, 1, 33.00),
-(18, 11, 15, 5, 22.00),
-(19, 11, 9, 5, 23.00),
-(20, 12, 5, 1, 21.00),
-(21, 13, 12, 1, 33.00),
-(22, 14, 9, 3, 23.00),
-(23, 14, 12, 1, 33.00),
-(24, 14, 8, 1, 211.00),
-(25, 14, 4, 1, 23423.00),
-(26, 14, 2, 1, 123.00),
-(27, 14, 15, 1, 22.00),
-(28, 15, 13, 1, 33.00),
-(29, 15, 12, 1, 33.00),
-(30, 15, 5, 1, 21.00),
-(31, 16, 1, 2, 45.00),
-(32, 16, 9, 3, 23.00),
-(33, 16, 12, 1, 33.00),
-(34, 16, 8, 1, 211.00),
-(35, 16, 4, 1, 23423.00),
-(36, 16, 2, 1, 123.00),
-(37, 16, 15, 1, 22.00),
-(38, 17, 15, 1, 22.00),
-(39, 17, 13, 1, 33.00),
-(40, 18, 15, 6, 22.00),
-(41, 18, 16, 3, 123.00),
-(42, 18, 6, 3, 23.00),
-(43, 19, 15, 1, 22.00),
-(44, 20, 5, 1, 21.00),
-(45, 20, 3, 2, 1233.00),
-(46, 20, 5, 4, 21.00),
-(47, 21, 4, 5, 23423.00),
-(48, 21, 4, 5, 23423.00),
-(49, 22, 2, 3, 123.00),
-(50, 23, 5, 4, 21.00),
-(51, 23, 5, 5, 21.00),
-(52, 24, 6, 2, 23.00),
-(53, 25, 6, 1, 23.00),
-(54, 25, 15, 2, 22.00),
-(55, 26, 17, 2, 111.00),
-(56, 26, 15, 2, 22.00),
-(57, 26, 12, 2, 33.00),
-(58, 26, 8, 3, 211.00),
-(59, 27, 17, 2, 111.00),
-(60, 27, 12, 2, 33.00),
-(61, 27, 8, 3, 211.00),
-(62, 28, 1, 1, 45.00),
-(63, 28, 2, 3, 92.25),
-(64, 28, 8, 1, 158.25),
-(65, 28, 16, 1, 123.00),
-(66, 29, 13, 1, 33.00);
+(76, 35, 31, 1, 74.40),
+(77, 35, 53, 1, 100.00),
+(78, 36, 49, 1, 90.00),
+(79, 37, 24, 1, 65.00),
+(80, 38, 43, 1, 80.00),
+(81, 39, 50, 1, 30.00),
+(82, 40, 50, 1, 30.00),
+(83, 41, 49, 1, 90.00),
+(84, 42, 43, 1, 80.00),
+(85, 43, 49, 2, 90.00);
 
 -- --------------------------------------------------------
 
@@ -224,31 +154,15 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `transaction_id`, `method`, `status`, `created_at`) VALUES
-(1, 1, 'AGRO-NAGAD-1754042363', 'Nagad', 'Completed', '2025-08-01 09:59:23'),
-(2, 2, 'AGRO-CARD-1754043119', 'Card', 'Completed', '2025-08-01 10:11:59'),
-(3, 3, 'AGRO-BKASH-1754230441', 'bKash', 'Completed', '2025-08-03 14:14:01'),
-(4, 4, 'AGRO-NAGAD-1754259587', 'Nagad', 'Completed', '2025-08-03 22:19:47'),
-(5, 5, 'AGRO-CARD-1754259655', 'Card', 'Completed', '2025-08-03 22:20:55'),
-(6, 6, 'AGRO-COD-1754313411', 'COD', 'Completed', '2025-08-04 13:16:51'),
-(7, 7, 'AGRO-COD-1754342640', 'COD', 'Completed', '2025-08-04 21:24:00'),
-(8, 8, 'AGRO-CARD-1754342667', 'Card', 'Completed', '2025-08-04 21:24:27'),
-(9, 9, 'AGRO-BKASH-1754343747', 'bKash', 'Completed', '2025-08-04 21:42:27'),
-(10, 10, 'AGRO-COD-1754343794', 'COD', 'Completed', '2025-08-04 21:43:14'),
-(11, 11, 'AGRO-COD-1754344172', 'COD', 'Completed', '2025-08-04 21:49:32'),
-(12, 12, 'AGRO-NAGAD-1754345167', 'Nagad', 'Completed', '2025-08-04 22:06:07'),
-(13, 13, 'AGRO-CARD-1754346193', 'Card', 'Completed', '2025-08-04 22:23:13'),
-(14, 14, 'AGRO-NAGAD-1754414085', 'Nagad', 'Completed', '2025-08-05 17:14:45'),
-(15, 15, 'AGRO-CARD-1754495578', 'Card', 'Completed', '2025-08-06 15:52:58'),
-(16, 16, 'AGRO-COD-1754499414', 'COD', 'Completed', '2025-08-06 16:56:54'),
-(17, 17, 'AGRO-COD-1754519036', 'COD', 'Completed', '2025-08-06 22:23:56'),
-(18, 18, 'AGRO-NAGAD-1754773739', 'Nagad', 'Completed', '2025-08-09 21:08:59'),
-(19, 19, 'AGRO-COD-1755004905', 'COD', 'Completed', '2025-08-12 13:21:45'),
-(20, 24, 'AGRO-BKASH-1755036159', 'bKash', 'Completed', '2025-08-12 22:02:39'),
-(21, 25, 'AGRO-COD-1755079913', 'COD', 'Completed', '2025-08-13 10:11:53'),
-(22, 26, 'AGRO-NAGAD-1755081591', 'Nagad', 'Completed', '2025-08-13 10:39:51'),
-(23, 27, 'AGRO-BKASH-1755099202', 'bKash', 'Completed', '2025-08-13 15:33:22'),
-(24, 28, 'AGRO-COD-1755187087', 'COD', 'Completed', '2025-08-14 15:58:07'),
-(25, 29, 'AGRO-COD-1755231001', 'COD', 'Completed', '2025-08-15 04:10:01');
+(31, 35, 'AGRO-BKASH-1755359780', 'bKash', 'Completed', '2025-08-16 15:56:20'),
+(32, 36, 'AGRO-COD-1755360660', 'COD', 'Completed', '2025-08-16 16:11:00'),
+(33, 37, 'AGRO-COD-1755361636', 'COD', 'Completed', '2025-08-16 16:27:16'),
+(34, 38, 'AGRO-NAGAD-1755361732', 'Nagad', 'Completed', '2025-08-16 16:28:52'),
+(35, 39, 'AGRO-COD-1755363897', 'COD', 'Completed', '2025-08-16 17:04:57'),
+(36, 40, 'AGRO-COD-1755363983', 'COD', 'Completed', '2025-08-16 17:06:23'),
+(37, 41, 'AGRO-BKASH-1755364539', 'bKash', 'Completed', '2025-08-16 17:15:39'),
+(38, 42, 'AGRO-CARD-1755365249', 'Card', 'Completed', '2025-08-16 17:27:29'),
+(39, 43, 'AGRO-NAGAD-1755368672', 'Nagad', 'Completed', '2025-08-16 18:24:32');
 
 -- --------------------------------------------------------
 
@@ -263,6 +177,8 @@ CREATE TABLE `products` (
   `description` text NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `unit` varchar(10) NOT NULL DEFAULT 'kg',
+  `quantity` decimal(10,2) NOT NULL DEFAULT 1.00,
+  `display_unit` varchar(20) DEFAULT NULL,
   `stock` int(11) NOT NULL DEFAULT 0,
   `category` varchar(100) NOT NULL,
   `image_path` varchar(255) NOT NULL,
@@ -273,24 +189,68 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `seller_id`, `name`, `description`, `price`, `unit`, `stock`, `category`, `image_path`, `created_at`) VALUES
-(1, 3, 'Potato', 'dasdwe', 45.00, 'kg', 2341, 'Vegetable', 'images/uploads/Patates.jpg', '2025-08-01 09:57:32'),
-(2, 3, 'Potato', 'weqwrrtqwerr', 123.00, 'kg', 118, 'Fruit', 'images/uploads/Patates(1).jpg', '2025-08-01 10:08:05'),
-(3, 3, 'Potato1', 'wel;kduihqwaiudhqw', 1233.00, 'kg', 0, 'Vegetable', 'images/uploads/Patates(2).jpg', '2025-08-01 10:08:26'),
-(4, 3, 'Potato', 'dfwer', 23423.00, 'kg', 0, 'Spice', 'images/uploads/Patates(3).jpg', '2025-08-01 10:08:48'),
-(5, 3, 'Potatoooo', 'das', 21.00, 'kg', 0, 'Spice', 'images/uploads/Patates(4).jpg', '2025-08-01 10:09:11'),
-(6, 3, 'GG', 'dswqd', 23.00, 'kg', 15, 'Vegetable', 'images/uploads/Patates(5).jpg', '2025-08-01 10:09:30'),
-(7, 3, 'Jinger', 'dasda', 212.00, 'kg', 0, 'Vegetable', 'images/uploads/Patates(6).jpg', '2025-08-01 10:09:48'),
-(8, 3, 'GG', 'fsdf', 211.00, 'kg', 13, 'Fruit', 'images/uploads/Patates(7).jpg', '2025-08-01 10:10:05'),
-(9, 3, 'ee', 'fdff', 23.00, 'kg', 1, 'Vegetable', 'images/uploads/Patates(8).jpg', '2025-08-01 10:10:28'),
-(10, 3, 'only one', 'ttt', 2132434.00, 'kg', 0, 'Vegetable', 'images/uploads/talha.jpg', '2025-08-01 10:11:44'),
-(11, 3, 'Potato', 'ff', 12.00, 'kg', 0, 'Vegetable', 'images/uploads/Patates(9).jpg', '2025-08-01 10:13:00'),
-(12, 3, 'Potato', 'dfd', 33.00, 'kg', 22, 'Vegetable', 'images/uploads/talha(1).jpg', '2025-08-01 10:13:11'),
-(13, 3, 'Potatoooo', 'fgfg', 33.00, 'kg', 29, 'Fruit', 'images/uploads/talha(2).jpg', '2025-08-01 10:13:36'),
-(14, 3, 'GG', 'fdf', 33.00, 'kg', 0, 'Spice', 'images/uploads/talha(3).jpg', '2025-08-01 10:13:49'),
-(15, 3, 'Jinger', 'dd', 22.00, 'kg', 0, 'Vegetable', 'images/uploads/talha(4).jpg', '2025-08-01 10:14:40'),
-(16, 3, 'GG', 'de', 123.00, 'kg', 222207, 'Spice', 'images/uploads/Screenshot 2025-07-07 223653.png', '2025-08-06 15:45:30'),
-(17, 3, 'Potato', 'aaaaaaaaaaaA,DSBAKDGQAKUJDGAUJKDGAGDKJAGDGAJKDGAGDKJGAJKGDJKAGDGAJKGDJAGDAGJDGAGDAGDGAKJDGAGJDKGAKJDGKAGDKAJGDJGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG', 111.00, 'kg', 107, 'Spice', 'images/uploads/Screenshot 2025-06-20 001202.png', '2025-08-06 17:42:37');
+INSERT INTO `products` (`id`, `seller_id`, `name`, `description`, `price`, `unit`, `quantity`, `display_unit`, `stock`, `category`, `image_path`, `created_at`) VALUES
+(19, 12, 'Banana', 'Fresh Banana from the Meherpur.', 10.00, 'pc', 1.00, '1.00 pc', 300, 'Fruit', 'images/uploads/Banana.jpg', '2025-08-16 13:08:24'),
+(20, 12, 'Amla', 'Fresh Amla', 100.00, 'kg', 1.00, '1.00 kg', 100, 'Fruit', 'images/uploads/Amla.png', '2025-08-16 13:09:48'),
+(21, 12, 'Tomato', 'Fresh Vegetables from Farmers.', 60.00, 'kg', 1.00, '1.00 kg', 50, 'Vegetable', 'images/uploads/Tomato.jpg', '2025-08-16 13:12:32'),
+(22, 12, 'TeaselGroud', 'Fresh Vegetables', 40.00, 'kg', 1.00, '1.00 kg', 20, 'Vegetable', 'images/uploads/TeaselGroud.jpg', '2025-08-16 13:13:51'),
+(23, 12, 'Spinach', 'Fresh Vegetables from farmers.', 10.00, 'kg', 1.00, '1.00 kg', 37, 'Vegetable', 'images/uploads/Spinach.jpg', '2025-08-16 13:15:22'),
+(24, 12, 'Pumpkin', 'Fresh Pumpkin', 65.00, 'kg', 1.00, '1.00 kg', 9, 'Vegetable', 'images/uploads/Pumpkin.jpg', '2025-08-16 13:17:35'),
+(25, 12, 'Prawn', 'Fresh From Farmers.', 75.00, 'kg', 1.00, '1.00 kg', 60, 'Vegetable', 'images/uploads/Prawn.jpg', '2025-08-16 13:18:46'),
+(26, 12, 'Potato', 'Fresh from farmers land.', 25.00, 'kg', 1.00, '1.00 kg', 500, 'Vegetable', 'images/uploads/Potato.jpg', '2025-08-16 13:19:33'),
+(27, 12, 'Turmeric', 'Fresh', 100.00, 'gm', 150.00, '150 gm', 100, 'Spice', 'images/uploads/Turmeric.jpg', '2025-08-16 13:48:14'),
+(28, 12, 'Black Seed', 'Good Quality', 150.00, 'gm', 100.00, '100 gm', 260, 'Spice', 'images/uploads/Black Seed.jpg', '2025-08-16 14:04:35'),
+(29, 12, 'Onion', 'Special Fresh Onion', 75.00, 'kg', 1.00, '1 kg', 200, 'Spice', 'images/uploads/Onion.jpg', '2025-08-16 14:11:33'),
+(30, 12, 'Garlic', 'Good', 90.00, 'gm', 50.00, '50 gm', 30, 'Spice', 'images/uploads/Garlic.jpg', '2025-08-16 14:12:18'),
+(31, 12, 'Chili', 'Red Hot Chili', 80.00, 'gm', 200.00, '200 gm', 44, 'Spice', 'images/uploads/Chili.jpg', '2025-08-16 14:58:25'),
+(32, 12, 'Black Pepper', 'Good Quality', 200.00, 'gm', 250.00, '250 gm', 200, 'Spice', 'images/uploads/Black Pepper.jpg', '2025-08-16 15:00:11'),
+(33, 12, 'Cardamom', 'Best Quality', 500.00, 'gm', 500.00, '500 gm', 5, 'Spice', 'images/uploads/cardamom.jpg', '2025-08-16 15:01:03'),
+(34, 12, 'Ginger', 'Fresh', 120.00, 'gm', 75.00, '75 gm', 10, 'Spice', 'images/uploads/Ginger.jpg', '2025-08-16 15:01:49'),
+(35, 12, 'Cumin', 'Better', 350.00, 'gm', 150.00, '150 gm', 6, 'Spice', 'images/uploads/Cumin.jpg', '2025-08-16 15:03:54'),
+(36, 12, 'Cinnamon', 'Best in the Quality', 1000.00, 'gm', 750.00, '750 gm', 5, 'Spice', 'images/uploads/Cinnamon.jpg', '2025-08-16 15:05:05'),
+(37, 12, 'Clove', 'Best', 250.00, 'gm', 50.00, '50 gm', 7, 'Spice', 'images/uploads/Clove.jpg', '2025-08-16 15:05:53'),
+(38, 12, 'Sesame Seed', 'Good Quality', 176.00, 'gm', 250.00, '250 gm', 400, 'Spice', 'images/uploads/Sesame Seed.jpg', '2025-08-16 15:07:11'),
+(39, 12, 'Watermelon', 'Best', 120.00, 'kg', 1.00, '1 kg', 100, 'Fruit', 'images/uploads/Watermelon.jpg', '2025-08-16 15:08:30'),
+(40, 12, 'Papaya', 'Good', 40.00, 'kg', 1.00, '1 kg', 20, 'Fruit', 'images/uploads/Papaya.jpg', '2025-08-16 15:09:01'),
+(41, 12, 'Pineapple', 'Best', 60.00, 'kg', 1.00, '1 kg', 20, 'Fruit', 'images/uploads/Pineapple.jpg', '2025-08-16 15:09:44'),
+(42, 12, 'Mango', 'Best in Quality', 75.00, 'kg', 1.00, '1 kg', 3, 'Fruit', 'images/uploads/Mango.jpg', '2025-08-16 15:10:22'),
+(43, 12, 'Jackfruit', 'Good', 80.00, 'pc', 1.00, '1 pc', 298, 'Fruit', 'images/uploads/Jackfruit.jpg', '2025-08-16 15:11:25'),
+(44, 12, 'Wood Apple', 'Good in the Quality', 90.00, 'pc', 1.00, '1 pc', 10, 'Fruit', 'images/uploads/Wood Apple.jpg', '2025-08-16 15:12:10'),
+(45, 12, 'Dragon Fruit', 'Best in the Market', 300.00, 'kg', 1.00, '1 kg', 5, 'Fruit', 'images/uploads/Dragon Fruit.jpg', '2025-08-16 15:13:02'),
+(46, 12, 'Beetroot', 'Best', 70.00, 'kg', 1.00, '1 kg', 5, 'Vegetable', 'images/uploads/Beetroot.jpg', '2025-08-16 15:14:30'),
+(47, 12, 'Cabbage', 'Nice', 35.00, 'pc', 1.00, '1 pc', 100, 'Vegetable', 'images/uploads/cabbage.jpg', '2025-08-16 15:15:19'),
+(48, 12, 'Cauliflower', 'Nice', 45.00, 'pc', 1.00, '1 pc', 20, 'Vegetable', 'images/uploads/Cauliflower.jpg', '2025-08-16 15:16:30'),
+(49, 12, 'Carrot', 'Best', 90.00, 'kg', 1.00, '1 kg', 3, 'Vegetable', 'images/uploads/Carrot.jpg', '2025-08-16 15:17:21'),
+(50, 12, 'Cucumber', 'Good', 30.00, 'kg', 1.00, '1 kg', 21, 'Vegetable', 'images/uploads/Cucumber.jpg', '2025-08-16 15:18:09'),
+(51, 12, 'কাটিমন-আম', 'Best in the Market', 150.00, 'kg', 1.00, '1 kg', 4, 'Fruit', 'images/uploads/কাটিমন-আম.png', '2025-08-16 15:22:02'),
+(52, 12, 'ব্যানানা-আম(Mango)', 'Best', 65.00, 'kg', 1.00, '1 kg', 200, 'Fruit', 'images/uploads/ব্যানানা-আম.png', '2025-08-16 15:23:03'),
+(53, 12, 'গোপালভোগ-আম', 'Nice', 100.00, 'kg', 1.00, '1 kg', 77, 'Fruit', 'images/uploads/গোপালভোগ-আম.png', '2025-08-16 15:23:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `recently_viewed`
+--
+
+CREATE TABLE `recently_viewed` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `viewed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `recently_viewed`
+--
+
+INSERT INTO `recently_viewed` (`id`, `user_id`, `product_id`, `viewed_at`) VALUES
+(12, 10, 30, '2025-08-16 14:56:40'),
+(13, 10, 31, '2025-08-16 14:58:31'),
+(15, 10, 36, '2025-08-16 15:27:35'),
+(16, 10, 51, '2025-08-16 15:55:11'),
+(17, 13, 50, '2025-08-16 17:23:20'),
+(20, 13, 45, '2025-08-16 17:23:54'),
+(21, 13, 44, '2025-08-16 18:23:36');
 
 -- --------------------------------------------------------
 
@@ -312,8 +272,7 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`id`, `product_id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
-(1, 12, 4, 4, 'goood', '2025-08-03 13:50:51'),
-(2, 15, 4, 3, 'nice', '2025-08-06 17:13:34');
+(4, 45, 13, 5, 'Very good Products.', '2025-08-16 17:23:54');
 
 -- --------------------------------------------------------
 
@@ -338,6 +297,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
   `phone` varchar(20) NOT NULL,
   `division` varchar(255) DEFAULT NULL,
   `district` varchar(255) DEFAULT NULL,
@@ -352,13 +312,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `phone`, `division`, `district`, `city`, `role`, `profile_image_path`, `password`, `created_at`) VALUES
-(1, 'Fahim Faisal Talha', 'talha@gmail.com', '01776199963', NULL, NULL, NULL, 'Seller', NULL, '$2y$10$x8YHVIPGRffeFHLvIBrBK.tzbtecWjQn6gwQECdBADA0ufa2VVdSq', '2025-07-10 17:42:54'),
-(2, 'Fahim Faisal', 'talha1@gmail.com', '01776199964', NULL, NULL, NULL, 'Buyer', 'images/profiles/user_2_1752171000.jpg', '$2y$10$QikQTfdWUHZHL8n8Ju/JAekg.ShXHPyZvx131Q0.SYZKJp4uQXNMO', '2025-07-10 17:46:33'),
-(3, 'Fahim Faisal Talha', 'talha2@gmail.com', '01776199963', 'Dhaka', 'Faridpur', 'Faridpur Sadar', 'Seller', NULL, '$2y$10$mbKteklzh4wXYJ/mPfNH4uobCss1zWK0q.9TlRjD8sG9hayN56Vc.', '2025-08-01 09:52:57'),
-(4, 'Lamborghini', 'talhafahimfaisal@gmail.com', '01776199964', 'Rajshahi', 'Bogura', 'Bogura Sadar', 'Buyer', 'images/profiles/user_4_1754317762.jpg', '$2y$10$aGSfVUQ8a7gRsmOyp412v.oA0c7gYHBHMTExlWFEngnYOlfBnzquy', '2025-08-01 09:58:41'),
-(5, 'BDFootballHub', 'talha3@gmail.com', '01776199963', 'Rajshahi', 'Pabna', 'Pabna Sadar', 'Buyer', NULL, '$2y$10$IoCTqllRU2To9wqR5bUKVuQ4xBsGvL7IwlGnnxibbko0vRwc8yWAa', '2025-08-06 19:28:43'),
-(6, 'Fahim Faisal Talha', 'xebowib401@dfesc.com', '01776199964', 'Dhaka', 'Dhaka', 'Savar', 'Buyer', 'images/profiles/user_1755160038_user_1755013606_5_6163548807318476071-01.jpeg', '$2y$10$lWky05z6FaMpVLXmxrLXceDhd1ZtlB6qvbhye51b0ShiqIIDDhzmi', '2025-08-14 08:27:18');
+INSERT INTO `users` (`id`, `name`, `email`, `google_id`, `phone`, `division`, `district`, `city`, `role`, `profile_image_path`, `password`, `created_at`) VALUES
+(10, 'Fahim Khan', 'talha@gmail.com', NULL, '01776199963', 'Dhaka', 'Dhaka', 'Savar', 'Buyer', 'images/profiles/user_1755348580_talha.jpg', '$2y$10$HTor2wyT3hEN50TaXqPleefWt8YD6tgnKhECl6CcUbgEYKD78D0Ce', '2025-08-16 12:49:40'),
+(11, 'Abul Mia', 'talha1@gmail.com', NULL, '01776199964', 'Barishal', 'Bhola', 'Bhola Sadar', 'Buyer', 'images/profiles/user_1755348787_professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg', '$2y$10$PewtimMWhW410lS9aCf2Huw6yG/NGYQFLp0U8dNhsoloxfMdFT0SS', '2025-08-16 12:53:07'),
+(12, 'AgrokartBD', 'agrokart@gmail.com', NULL, '01776199967', 'Dhaka', 'Dhaka', 'Savar', 'Seller', NULL, '$2y$10$ZqAk/NsPqSH0Vs.cMkV2B.lcLehIKZwEHEYOS5TYaL4heMldPQrRe', '2025-08-16 12:55:07'),
+(13, 'Talha Khan', 'fahimtalha9@gmail.com', '104522100124813673638', '01776199963', NULL, NULL, NULL, 'Buyer', 'images/profiles/user_13_google_1755363087.jpg', '$2y$10$8YM2d9JlKR0WjYvzoI2LvuQYtaWNezA4oBvxYicSZQYmGzB6RE3k2', '2025-08-16 16:51:26');
 
 -- --------------------------------------------------------
 
@@ -381,15 +339,8 @@ CREATE TABLE `user_cart` (
 --
 
 INSERT INTO `user_cart` (`id`, `user_id`, `product_id`, `quantity`, `price`, `created_at`, `updated_at`) VALUES
-(6, 5, 1, 2, 0.00, '2025-08-06 19:29:02', '2025-08-06 19:44:15'),
-(8, 5, 16, 2, 0.00, '2025-08-06 19:44:10', '2025-08-06 19:44:16'),
-(9, 5, 9, 1, 0.00, '2025-08-06 19:44:13', '2025-08-06 19:44:13'),
-(10, 5, 8, 1, 0.00, '2025-08-06 19:44:13', '2025-08-06 19:44:13'),
-(11, 5, 6, 1, 0.00, '2025-08-06 19:44:14', '2025-08-06 19:44:14'),
-(12, 5, 2, 1, 0.00, '2025-08-06 19:44:14', '2025-08-06 19:44:14'),
-(13, 5, 15, 1, 0.00, '2025-08-06 19:44:16', '2025-08-06 19:44:16'),
-(14, 5, 17, 1, 0.00, '2025-08-06 19:44:17', '2025-08-06 19:44:17'),
-(51, 4, 2, 1, 86.10, '2025-08-15 04:20:36', '2025-08-15 04:20:36');
+(66, 10, 49, 1, 90.00, '2025-08-16 18:31:20', '2025-08-16 18:31:20'),
+(67, 13, 49, 1, 90.00, '2025-08-16 19:01:57', '2025-08-16 19:01:57');
 
 --
 -- Indexes for dumped tables
@@ -441,6 +392,14 @@ ALTER TABLE `products`
   ADD KEY `seller_id` (`seller_id`);
 
 --
+-- Indexes for table `recently_viewed`
+--
+ALTER TABLE `recently_viewed`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -462,7 +421,8 @@ ALTER TABLE `seller_hidden_customers`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `google_id` (`google_id`);
 
 --
 -- Indexes for table `user_cart`
@@ -481,43 +441,49 @@ ALTER TABLE `user_cart`
 -- AUTO_INCREMENT for table `hot_deals`
 --
 ALTER TABLE `hot_deals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `recently_viewed`
+--
+ALTER TABLE `recently_viewed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `seller_hidden_customers`
@@ -529,13 +495,13 @@ ALTER TABLE `seller_hidden_customers`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `user_cart`
 --
 ALTER TABLE `user_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- Constraints for dumped tables
