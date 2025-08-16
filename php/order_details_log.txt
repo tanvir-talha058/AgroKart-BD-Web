@@ -7,3 +7,21 @@ Fetching order items
 Found 1 items
 Sending response
 --------------------------------
+
+
+2025-08-16 20:24:01 - New request received
+Processing request for order ID: 42, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-16 20:33:29 - New request received
+Processing request for order ID: 37, user ID: 10
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------

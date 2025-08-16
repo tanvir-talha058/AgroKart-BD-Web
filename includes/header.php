@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 require_once 'db_connect.php';
-require_once 'notification.php';
+
 
 // Check if user is logging in and needs to load their saved cart from the database
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
@@ -63,7 +63,6 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
   <link rel="stylesheet" href="css/chatbot.css">
-  <link rel="stylesheet" href="css/modern-chatbot.css">
   <link rel="icon" type="image/x-icon" href="images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->
@@ -71,8 +70,7 @@ if (isset($_SESSION['cart'])) {
 </head>
 
 <body>
-  <?php showNotifications(); // Display any notifications 
-  ?>
+
   <!-- Enhanced Navigation Bar -->
   <header class="navbar-enhanced">
     <div class="nav-container">
