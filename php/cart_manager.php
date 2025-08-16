@@ -39,6 +39,15 @@ if (isset($_POST['action'])) {
     $is_logged_in = isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
     $user_id = $is_logged_in ? $_SESSION['user_id'] : 0;
 
+    // Make sure we have a valid user_id if logged in
+    if ($is_logged_in && (empty($user_id) || !is_numeric($user_id))) {
+        // Log the issue
+        error_log("Cart Error: Invalid user_id in session: " . print_r($_SESSION, true));
+        $response = ['success' => false, 'message' => 'Session error. Please log in again.', 'cart_count' => 0];
+        echo json_encode($response);
+        exit;
+    }
+
     $response = ['success' => false, 'message' => '', 'cart_count' => 0];
 
     // If logged in, ensure DB table exists up front

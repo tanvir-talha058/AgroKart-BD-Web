@@ -123,7 +123,7 @@ try {
 
         // Set session variables
         $_SESSION['loggedin'] = true;
-        $_SESSION['user_id'] = $user['id']; // Changed from user_id to id
+        $_SESSION['user_id'] = $user['user_id']; // Using correct 'user_id' alias from query
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['profile_image_path'] = $user['profile_image_path'];
@@ -177,6 +177,9 @@ try {
     }
 
     $check_stmt->close();
+
+    // Debug log for user_id
+    error_log("Google login successful - User ID: " . $_SESSION['user_id'] . ", Name: " . $_SESSION['user_name']);
 
     // Redirect to homepage
     header('Location: ../index.php');
