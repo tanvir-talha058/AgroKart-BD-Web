@@ -497,21 +497,34 @@ foreach ($products as $product) {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: `action=remove&product_id=${productId}`
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        // Check if response is JSON
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            // If not JSON, the page is probably redirecting
+                            location.reload();
+                            return {
+                                success: true
+                            };
+                        }
+                    })
                     .then(data => {
                         if (data.success) {
                             alert('Hot deal removed successfully!');
                             location.reload();
                         } else {
-                            alert('Error: ' + data.message);
+                            alert('Error: ' + (data.message || 'Unknown error'));
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Failed to remove hot deal');
+                        alert('Failed to remove hot deal. Please try again.');
                     });
             }
         }

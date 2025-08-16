@@ -133,6 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'remove') {
         $product_id = (int)$_POST['product_id'];
 
+        // Check if this is an AJAX request
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
         // Verify the product belongs to this seller
         $verify_sql = "SELECT id FROM products WHERE id = ? AND seller_id = ?";
         $verify_stmt = $conn->prepare($verify_sql);
@@ -141,9 +145,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verify_result = $verify_stmt->get_result();
 
         if ($verify_result->num_rows === 0) {
-            setNotification('error', 'Product not found or unauthorized');
-            $verify_stmt->close();
-            redirectBack();
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Product not found or unauthorized']);
+                exit;
+            } else {
+                setNotification('error', 'Product not found or unauthorized');
+                $verify_stmt->close();
+                redirectBack();
+            }
         }
         $verify_stmt->close();
 
@@ -153,12 +163,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remove_stmt->bind_param("i", $product_id);
 
         if ($remove_stmt->execute() && $remove_stmt->affected_rows > 0) {
-            setNotification('success', 'Hot deal removed successfully');
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'message' => 'Hot deal removed successfully']);
+                exit;
+            } else {
+                setNotification('success', 'Hot deal removed successfully');
+            }
         } else {
-            setNotification('warning', 'No active hot deal found for this product');
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'No active hot deal found for this product']);
+                exit;
+            } else {
+                setNotification('warning', 'No active hot deal found for this product');
+            }
         }
         $remove_stmt->close();
-        redirectBack();
+
+        if (!$isAjax) {
+            redirectBack();
+        }
     } else {
         setNotification('error', 'Invalid action');
         redirectBack();
