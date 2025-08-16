@@ -40,8 +40,26 @@ switch ($category) {
     <div class="container">
         <div class="product-row">
             <?php
-            // Fetch products by category
-            $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, description FROM products WHERE category = ? AND stock > 0 ORDER BY created_at DESC";
+            // First, check if hot_deals table exists
+            $hot_deals_exists = false;
+            $table_check = $conn->query("SHOW TABLES LIKE 'hot_deals'");
+            if ($table_check && $table_check->num_rows > 0) {
+                $hot_deals_exists = true;
+            }
+
+            // Fetch products by category, excluding those in hot deals
+            if ($hot_deals_exists) {
+                $sql = "SELECT p.id, p.name, p.price, p.unit, p.quantity, p.display_unit, p.image_path, p.stock, p.description 
+                        FROM products p 
+                        LEFT JOIN hot_deals hd ON p.id = hd.product_id AND hd.is_active = 1 
+                        WHERE p.category = ? AND p.stock > 0 AND hd.product_id IS NULL 
+                        ORDER BY p.created_at DESC";
+            } else {
+                // If hot_deals table doesn't exist, use the original query
+                $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, description 
+                        FROM products WHERE category = ? AND stock > 0 ORDER BY created_at DESC";
+            }
+
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $category);
             $stmt->execute();

@@ -188,7 +188,26 @@ include 'includes/header.php';
 
   <div class="product-grid" id="productContainer">
     <?php
-    $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, category FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
+    // First, check if hot_deals table exists
+    $hot_deals_exists = false;
+    $table_check = $conn->query("SHOW TABLES LIKE 'hot_deals'");
+    if ($table_check && $table_check->num_rows > 0) {
+      $hot_deals_exists = true;
+    }
+
+    // Modify the SQL query to exclude products that are in hot deals
+    if ($hot_deals_exists) {
+      $sql = "SELECT p.id, p.name, p.price, p.unit, p.quantity, p.display_unit, p.image_path, p.stock, p.category 
+              FROM products p 
+              LEFT JOIN hot_deals hd ON p.id = hd.product_id AND hd.is_active = 1 
+              WHERE p.stock > 0 AND hd.product_id IS NULL 
+              ORDER BY p.created_at DESC LIMIT 10";
+    } else {
+      // If hot_deals table doesn't exist, use the original query
+      $sql = "SELECT id, name, price, unit, quantity, display_unit, image_path, stock, category 
+              FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 10";
+    }
+
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
