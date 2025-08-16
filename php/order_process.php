@@ -12,6 +12,13 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once '../includes/db_connect.php';
 require_once 'invoice_utils.php';
 
+//--------------------------------------------------------//
+require_once '../vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+//------------------------------------------------------//
+
+
 // Check if user is logged in and is a buyer
 if (!isset($_SESSION['loggedin']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Buyer') {
     $_SESSION['error'] = "Please log in as a buyer to place orders.";
