@@ -18,8 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_check->store_result();
 
     if ($stmt_check->num_rows > 0) {
-        // Ensure delivered_at column exists (safe no-op if already present)
-        @$conn->query("ALTER TABLE orders ADD COLUMN delivered_at TIMESTAMP NULL AFTER status");
+        // No need to check for column existence - use ensure_order_columns.php for table structure
 
         if ($new_status === 'Delivered') {
             // When delivered, stamp delivered_at to now
