@@ -6,9 +6,13 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Load OAuth configuration securely
+$oauth_config = require_once '../config/oauth_config_local.php';
+$google_config = $oauth_config['google'];
+
 // Google OAuth Configuration
-$client_id = '225851143467-q7o34s8abcia2kn9o4at3il1s6khuege.apps.googleusercontent.com'; // Replace with your actual Client ID
-$redirect_uri = 'http://localhost:3000/php/google_callback.php'; // Fixed with port 3000
+$client_id = $google_config['client_id'];
+$redirect_uri = $google_config['redirect_uri'];
 $scope = 'openid email profile';
 
 // Build Google OAuth URL

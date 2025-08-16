@@ -1,2 +1,55 @@
+# AgroKart BD - Git Ignore File
+
 # Exclude vendor directory (managed by Composer)
 /vendor/
+
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.production
+
+# Configuration files with sensitive data
+config/oauth_config.php
+config/oauth_config_local.php
+
+# Database backups
+*.sql
+*.db
+
+# Log files
+*.log
+logs/
+error.log
+access.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Image uploads (optional)
+# images/uploads/
+# images/profiles/
+
+# Backup files
+*.bak
+*.backup
+
+# PHP specific
+*.cache
+opcache/

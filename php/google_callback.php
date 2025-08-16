@@ -4,10 +4,14 @@
 session_start();
 require_once '../includes/db_connect.php';
 
+// Load OAuth configuration securely
+$oauth_config = require_once '../config/oauth_config_local.php';
+$google_config = $oauth_config['google'];
+
 // Google OAuth Configuration
-$client_id = '225851143467-q7o34s8abcia2kn9o4at3il1s6khuege.apps.googleusercontent.com'; // Replace with your actual Client ID
-$client_secret = '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'; // Replace with your actual Client Secret
-$redirect_uri = 'http://localhost:3000/php/google_callback.php'; // Fixed with port 3000
+$client_id = $google_config['client_id'];
+$client_secret = $google_config['client_secret'];
+$redirect_uri = $google_config['redirect_uri'];
 
 // Check if we have an authorization code
 if (!isset($_GET['code'])) {
