@@ -19,6 +19,8 @@ $actual_redirect_uri = 'http://' . $current_host . '/php/google_callback.php';
 if (strpos($redirect_uri, ':3000') && strpos($actual_redirect_uri, ':3000') === false) {
     $actual_redirect_uri = str_replace('localhost', 'localhost:3000', $actual_redirect_uri);
 }
+error_log("Configured redirect URI: " . $redirect_uri);
+error_log("Actual request URI: " . $actual_redirect_uri);
 
 // Check if we have an authorization code
 if (!isset($_GET['code'])) {
@@ -42,6 +44,10 @@ $token_data = [
     'grant_type' => 'authorization_code',
     'redirect_uri' => $redirect_uri
 ];
+
+// Debug: Log the redirect URI for troubleshooting
+error_log("Google OAuth redirect URI: " . $redirect_uri);
+
 $context = stream_context_create([
     'http' => [
         'method' => 'POST',
@@ -59,9 +65,13 @@ if ($response === false) {
 }
 
 $token_info = json_decode($response, true);
+
+// Debug: Log token response for troubleshooting (with sensitive data removed)
 $debug_token = $token_info;
 if (isset($debug_token['access_token'])) $debug_token['access_token'] = 'REMOVED_FOR_SECURITY';
 if (isset($debug_token['refresh_token'])) $debug_token['refresh_token'] = 'REMOVED_FOR_SECURITY';
+error_log("Google OAuth token response: " . json_encode($debug_token));
+
 if (!isset($token_info['access_token'])) {
     $error_msg = isset($token_info['error_description']) ? $token_info['error_description'] : (isset($token_info['error']) ? $token_info['error'] : 'Failed to get access token from Google');
     $_SESSION['error'] = 'Google authentication failed: ' . $error_msg;
@@ -99,11 +109,14 @@ try {
     $idColumnCheck = $conn->query("SHOW COLUMNS FROM users LIKE 'user_id'");
     if ($idColumnCheck->num_rows > 0) {
         $idColumnName = 'user_id'; // Use 'user_id' if it exists
+        error_log("Using 'user_id' as the primary key column");
     } else {
+        error_log("Using 'id' as the primary key column");
     }
 
     // Check if user already exists - dynamically use the correct ID field
     $query = "SELECT $idColumnName as user_id, name, role, profile_image_path, google_id FROM users WHERE email = ? OR google_id = ?";
+    error_log("Executing query: " . $query);
     $check_stmt = $conn->prepare($query);
     $check_stmt->bind_param("ss", $email, $google_id);
     $check_stmt->execute();
@@ -182,7 +195,8 @@ try {
     header('Location: ../index.php');
     exit;
 } catch (Exception $e) {
-
+    error_log("Google OAuth Error: " . $e->getMessage());
+    error_log("Error details: " . $e->getTraceAsString());
     $_SESSION['error'] = 'An error occurred during Google login. Please try again. Error details: ' . $e->getMessage();
     header('Location: ../login.php');
     exit;
@@ -214,6 +228,7 @@ function saveGoogleProfileImage($image_url, $user_id)
             return 'images/profiles/' . $filename;
         }
     } catch (Exception $e) {
+        error_log("Profile image save error: " . $e->getMessage());
     }
 
     return '';
