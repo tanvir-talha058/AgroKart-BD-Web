@@ -18,7 +18,7 @@ $conn->query("CREATE DATABASE IF NOT EXISTS agrobd");
 $conn->select_db("agrobd");
 echo "✓ Database 'agrobd' created/selected\n";
 
-// Drop existing tables in correct order
+
 $tables_to_drop = ['user_cart', 'order_items', 'orders', 'reviews', 'payments', 'products', 'users'];
 foreach ($tables_to_drop as $table) {
     $conn->query("DROP TABLE IF EXISTS $table");
