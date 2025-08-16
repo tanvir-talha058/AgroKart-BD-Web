@@ -10,6 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 require_once '../includes/db_connect.php';
+require_once 'invoice_utils.php';
 
 // Check if user is logged in and is a buyer
 if (!isset($_SESSION['loggedin']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Buyer') {
@@ -105,6 +106,70 @@ try {
     $_SESSION['last_order_id'] = $order_id;
     $_SESSION['success'] = "Order placed successfully!";
 
+    // Generate and send invoice email
+    try {
+        // Create invoices directory if it doesn't exist
+        $invoice_dir = __DIR__ . '/../invoices';
+        if (!file_exists($invoice_dir)) {
+            mkdir($invoice_dir, 0755, true);
+        }
+
+        // For debugging, store some data in the session
+        $_SESSION['order_debug'] = [
+            'order_id' => $order_id,
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
+
+        // Generate PDF invoice
+        $pdf_path = generatePDFInvoice($order_id);
+
+        if ($pdf_path && file_exists($pdf_path)) {
+            // Send invoice email
+            $email_sent = sendInvoiceEmail($order_id, $pdf_path);
+
+            if ($email_sent) {
+                $_SESSION['email_sent'] = true;
+            } else {
+                // Log the error but continue with order confirmation
+                error_log("Failed to send invoice email for order ID: $order_id");
+                $_SESSION['email_sent'] = false;
+            }
+        } else {
+            // Fallback to sending email without PDF attachment
+            error_log("Failed to generate PDF invoice for order ID: $order_id. Path: " . ($pdf_path ?? 'null'));
+
+            // Try to send a basic email notification without PDF
+            $order_data = getOrderDetails($order_id);
+            if ($order_data && isset($order_data['customer_email'])) {
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'fahimtalha79@gmail.com';
+                    $mail->Password = 'hswjveecysxdnesl';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                    $mail->setFrom('noreply@agrokartbd.com', 'AgroKart BD');
+                    $mail->addAddress($order_data['customer_email']);
+                    $mail->isHTML(true);
+                    $mail->Subject = 'AgroKart BD - Order #AGR-' . $order_id . ' Confirmation';
+                    $mail->Body = "Thank you for your order! Your order #AGR-$order_id has been received and is being processed.";
+                    $mail->send();
+                    $_SESSION['email_sent'] = true;
+                } catch (Exception $e) {
+                    error_log("Fallback email failed: " . $e->getMessage());
+                    $_SESSION['email_sent'] = false;
+                }
+            } else {
+                $_SESSION['email_sent'] = false;
+            }
+        }
+    } catch (Exception $e) {
+        // Log the error but continue with order confirmation
+        error_log("Error in invoice process: " . $e->getMessage());
+        $_SESSION['email_sent'] = false;
+    }
     header('Location: ../payment_success.php');
     exit();
 } catch (mysqli_sql_exception $exception) {

@@ -1,0 +1,14 @@
+# Ensure PHP has write access to this directory
+
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Allow from all
+</IfModule>
+
+# Allow PHP to write files
+
+php_flag safe_mode off
