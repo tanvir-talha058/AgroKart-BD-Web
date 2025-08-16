@@ -29,6 +29,13 @@ include 'includes/header.php';
             <?php
             if (isset($_SESSION['error'])) {
                 echo '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ' . $_SESSION['error'] . '</div>';
+                // Add a small debug link in development mode when there's a Google login error
+                if (strpos($_SESSION['error'], 'Google login') !== false) {
+                    echo '<div style="text-align: center; font-size: 12px; margin-top: -10px; margin-bottom: 10px;">
+                        <a href="php/debug_google_oauth.php" target="_blank">Debug OAuth</a> | 
+                        <a href="php/check_db_structure.php" target="_blank">Check DB Structure</a>
+                    </div>';
+                }
                 unset($_SESSION['error']);
             }
             if (isset($_SESSION['message'])) {

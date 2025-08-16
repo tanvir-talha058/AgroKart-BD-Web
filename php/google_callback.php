@@ -13,6 +13,15 @@ $client_id = $google_config['client_id'];
 $client_secret = $google_config['client_secret'];
 $redirect_uri = $google_config['redirect_uri'];
 
+// Fix possible port mismatch issues with the redirect URI
+$current_host = $_SERVER['HTTP_HOST'] ?? 'localhost:3000';
+$actual_redirect_uri = 'http://' . $current_host . '/php/google_callback.php';
+if (strpos($redirect_uri, ':3000') && strpos($actual_redirect_uri, ':3000') === false) {
+    $actual_redirect_uri = str_replace('localhost', 'localhost:3000', $actual_redirect_uri);
+}
+error_log("Configured redirect URI: " . $redirect_uri);
+error_log("Actual request URI: " . $actual_redirect_uri);
+
 // Check if we have an authorization code
 if (!isset($_GET['code'])) {
     if (isset($_GET['error'])) {
@@ -36,6 +45,9 @@ $token_data = [
     'redirect_uri' => $redirect_uri
 ];
 
+// Debug: Log the redirect URI for troubleshooting
+error_log("Google OAuth redirect URI: " . $redirect_uri);
+
 $context = stream_context_create([
     'http' => [
         'method' => 'POST',
@@ -47,15 +59,21 @@ $context = stream_context_create([
 
 $response = @file_get_contents($token_url, false, $context);
 if ($response === false) {
-    $_SESSION['error'] = 'Failed to connect to Google OAuth service';
+    $_SESSION['error'] = 'Failed to connect to Google OAuth service. Please check your internet connection.';
     header('Location: ../login.php');
     exit;
 }
 
 $token_info = json_decode($response, true);
 
+// Debug: Log token response for troubleshooting (with sensitive data removed)
+$debug_token = $token_info;
+if (isset($debug_token['access_token'])) $debug_token['access_token'] = 'REMOVED_FOR_SECURITY';
+if (isset($debug_token['refresh_token'])) $debug_token['refresh_token'] = 'REMOVED_FOR_SECURITY';
+error_log("Google OAuth token response: " . json_encode($debug_token));
+
 if (!isset($token_info['access_token'])) {
-    $error_msg = isset($token_info['error_description']) ? $token_info['error_description'] : 'Failed to get access token from Google';
+    $error_msg = isset($token_info['error_description']) ? $token_info['error_description'] : (isset($token_info['error']) ? $token_info['error'] : 'Failed to get access token from Google');
     $_SESSION['error'] = 'Google authentication failed: ' . $error_msg;
     header('Location: ../login.php');
     exit;
@@ -86,8 +104,20 @@ $name = $user_info['name'] ?? 'Google User';
 $profile_picture = $user_info['picture'] ?? '';
 
 try {
-    // Check if user already exists
-    $check_stmt = $conn->prepare("SELECT user_id, name, role, profile_image_path FROM users WHERE email = ? OR google_id = ?");
+    // First check which ID field exists in the users table
+    $idColumnName = 'id'; // Default to 'id'
+    $idColumnCheck = $conn->query("SHOW COLUMNS FROM users LIKE 'user_id'");
+    if ($idColumnCheck->num_rows > 0) {
+        $idColumnName = 'user_id'; // Use 'user_id' if it exists
+        error_log("Using 'user_id' as the primary key column");
+    } else {
+        error_log("Using 'id' as the primary key column");
+    }
+
+    // Check if user already exists - dynamically use the correct ID field
+    $query = "SELECT $idColumnName as user_id, name, role, profile_image_path, google_id FROM users WHERE email = ? OR google_id = ?";
+    error_log("Executing query: " . $query);
+    $check_stmt = $conn->prepare($query);
     $check_stmt->bind_param("ss", $email, $google_id);
     $check_stmt->execute();
     $result = $check_stmt->get_result();
@@ -98,15 +128,15 @@ try {
 
         // Update Google ID if not set
         if (empty($user['google_id'])) {
-            $update_stmt = $conn->prepare("UPDATE users SET google_id = ? WHERE user_id = ?");
-            $update_stmt->bind_param("si", $google_id, $user['user_id']);
+            $update_stmt = $conn->prepare("UPDATE users SET google_id = ? WHERE $idColumnName = ?");
+            $update_stmt->bind_param("si", $google_id, $user['user_id']); // We've aliased the ID column as user_id
             $update_stmt->execute();
             $update_stmt->close();
         }
 
         // Set session variables
         $_SESSION['loggedin'] = true;
-        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['user_id'] = $user['id']; // Changed from user_id to id
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['profile_image_path'] = $user['profile_image_path'];
@@ -121,8 +151,9 @@ try {
         $first_name = $name_parts[0];
         $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
 
-        $insert_stmt = $conn->prepare("INSERT INTO users (first_name, last_name, name, email, password, role, google_id, created_at) VALUES (?, ?, ?, ?, ?, 'Buyer', ?, NOW())");
-        $insert_stmt->bind_param("ssssss", $first_name, $last_name, $name, $email, $default_password, $google_id);
+        // Based on the registration_process.php structure, adjust columns to match the actual table structure
+        $insert_stmt = $conn->prepare("INSERT INTO users (name, email, password, role, google_id, created_at) VALUES (?, ?, ?, 'Buyer', ?, NOW())");
+        $insert_stmt->bind_param("ssss", $name, $email, $default_password, $google_id);
 
         if ($insert_stmt->execute()) {
             $new_user_id = $conn->insert_id;
@@ -135,7 +166,7 @@ try {
 
             // Update profile image path if we saved one
             if ($saved_image_path) {
-                $img_update_stmt = $conn->prepare("UPDATE users SET profile_image_path = ? WHERE user_id = ?");
+                $img_update_stmt = $conn->prepare("UPDATE users SET profile_image_path = ? WHERE $idColumnName = ?");
                 $img_update_stmt->bind_param("si", $saved_image_path, $new_user_id);
                 $img_update_stmt->execute();
                 $img_update_stmt->close();
@@ -143,7 +174,7 @@ try {
 
             // Set session variables for new user
             $_SESSION['loggedin'] = true;
-            $_SESSION['user_id'] = $new_user_id;
+            $_SESSION['user_id'] = $new_user_id; // This is already correct as we're using insert_id
             $_SESSION['user_name'] = $name;
             $_SESSION['user_role'] = 'Buyer';
             $_SESSION['profile_image_path'] = $saved_image_path;
@@ -165,7 +196,8 @@ try {
     exit;
 } catch (Exception $e) {
     error_log("Google OAuth Error: " . $e->getMessage());
-    $_SESSION['error'] = 'An error occurred during Google login. Please try again.';
+    error_log("Error details: " . $e->getTraceAsString());
+    $_SESSION['error'] = 'An error occurred during Google login. Please try again. Error details: ' . $e->getMessage();
     header('Location: ../login.php');
     exit;
 }
