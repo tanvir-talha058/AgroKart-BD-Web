@@ -103,20 +103,14 @@ if (isset($_SESSION['cart'])) {
       </div>
 
       <!-- Category Dropdown -->
-      <div class="nav-category">
-        <div class="category-wrapper">
-          <div class="category-icon">
-            <i class="fas fa-filter"></i>
-          </div>
-          <select id="categorySelect" class="category-select" onchange="filterByCategory()">
-            <option value="">All Categories</option>
-            <option value="Vegetable">🥬 Vegetables</option>
-            <option value="Fruit">🍎 Fruits</option>
-            <option value="Spice">🌶️ Spices</option>
-          </select>
-          <div class="category-arrow">
-            <i class="fas fa-chevron-down"></i>
-          </div>
+      <div class="dropdown category-dropdown">
+        <button class="btn dropdown-toggle" type="button" id="categoryDropdown">
+          <i class="fas fa-filter"></i> All Categories
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="category.php?category=Vegetable">🥬 Vegetables</a>
+          <a class="dropdown-item" href="category.php?category=Fruit">🍎 Fruits</a>
+          <a class="dropdown-item" href="category.php?category=Spice">🌶️ Spices</a>
         </div>
       </div>
 

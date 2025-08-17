@@ -271,7 +271,6 @@ include 'includes/header.php';
   }
   ?>
 </section>
-
 <!-- Enhanced Why Choose Section -->
 <section class="why-choose-section green-gradient" id="about">
   <div class="section-header">
@@ -1466,6 +1465,32 @@ include 'includes/header.php';
         }
       });
     });
+
+    // Get the dropdown element
+    const categoryDropdown = document.querySelector('.category-dropdown');
+
+    if (categoryDropdown) {
+      // For mobile devices, we still want click functionality
+      const dropdownToggle = categoryDropdown.querySelector('.dropdown-toggle');
+      const dropdownMenu = categoryDropdown.querySelector('.dropdown-menu');
+
+      // Check if it's a touch device
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      if (isTouchDevice) {
+        dropdownToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          dropdownMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!categoryDropdown.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+          }
+        });
+      }
+    }
   });
 
   // Hot Deals Carousel functionality

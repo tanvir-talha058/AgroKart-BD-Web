@@ -665,3 +665,30 @@ body {
     margin-left: 2px;
     display: inline-block;
 }
+
+/* CSS for hover dropdown */
+.category-dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+.category-dropdown .dropdown-menu {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+}
+
+.category-dropdown .dropdown-toggle::after {
+  transition: transform 0.2s ease;
+}
+
+.category-dropdown:hover .dropdown-toggle::after {
+  transform: rotate(180deg);
+}
+
+/* Add hover effect to dropdown items */
+.category-dropdown .dropdown-item:hover {
+  background-color: #4CAF50;
+  color: white;
+}
