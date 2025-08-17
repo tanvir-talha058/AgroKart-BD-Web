@@ -692,3 +692,23 @@ body {
   background-color: #4CAF50;
   color: white;
 }
+
+/* Update the dropdown button styling */
+.category-dropdown .dropdown-toggle {
+    color: white !important;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+}
+
+/* Ensure the caret icon is also white */
+.category-dropdown .dropdown-toggle::after {
+    color: white;
+}
+
+/* Make sure hover state maintains white text */
+.category-dropdown:hover .dropdown-toggle {
+    color: white !important;
+}
