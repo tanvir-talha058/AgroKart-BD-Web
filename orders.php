@@ -341,6 +341,9 @@ $stats = [
                 // Set initial border color to match status
                 updateSelectBorderColor(select);
 
+                // Update card colors on initial load
+                updateCardStatusColor(select);
+
                 select.addEventListener('change', function() {
                     const selectedStatus = this.value.toLowerCase();
 
@@ -357,6 +360,9 @@ $stats = [
 
                     // Update border color to match the new status
                     updateSelectBorderColor(this);
+
+                    // Update card colors dynamically
+                    updateCardStatusColor(this);
                 });
             });
 
@@ -367,24 +373,93 @@ $stats = [
 
                 switch (status) {
                     case 'pending':
-                        borderColor = '#f5bc42';
+                        borderColor = '#f59e0b';
                         break;
                     case 'processing':
-                        borderColor = '#3498db';
+                        borderColor = '#3b82f6';
                         break;
                     case 'shipped':
-                        borderColor = '#9b59b6';
+                        borderColor = '#8b5cf6';
                         break;
                     case 'delivered':
-                        borderColor = '#2ecc71';
+                        borderColor = '#22c55e';
                         break;
                     case 'cancelled':
-                        borderColor = '#e74c3c';
+                        borderColor = '#ef4444';
                         break;
                 }
 
                 selectElement.style.borderColor = borderColor;
                 selectElement.style.color = borderColor;
+            }
+
+            // Function to update card status colors dynamically
+            function updateCardStatusColor(selectElement) {
+                const status = selectElement.value.toLowerCase();
+                const card = selectElement.closest('.product-order-card');
+                const statusBadge = card.querySelector('.order-status-badge');
+
+                // Remove all existing status classes from card
+                card.classList.remove('status-pending', 'status-processing', 'status-shipped', 'status-delivered', 'status-cancelled');
+
+                // Add new status class to card
+                card.classList.add('status-' + status);
+
+                // Update status badge
+                if (statusBadge) {
+                    statusBadge.textContent = selectElement.value;
+                    statusBadge.className = 'order-status-badge ' + status;
+                }
+
+                // Update CSS custom properties for this card
+                const statusColors = {
+                    pending: {
+                        color: '#f59e0b',
+                        light: '#eab308'
+                    },
+                    processing: {
+                        color: '#3b82f6',
+                        light: '#2563eb'
+                    },
+                    shipped: {
+                        color: '#8b5cf6',
+                        light: '#7c3aed'
+                    },
+                    delivered: {
+                        color: '#22c55e',
+                        light: '#16a34a'
+                    },
+                    cancelled: {
+                        color: '#ef4444',
+                        light: '#dc2626'
+                    }
+                };
+
+                if (statusColors[status]) {
+                    card.style.setProperty('--status-color', statusColors[status].color);
+                    card.style.setProperty('--status-color-light', statusColors[status].light);
+                }
+
+                // Update all elements within the card that use status colors
+                const infoItems = card.querySelectorAll('.info-item');
+                const buyerInfo = card.querySelector('.buyer-info');
+                const updateBtn = card.querySelector('.update-btn');
+
+                infoItems.forEach(item => {
+                    item.style.borderLeftColor = statusColors[status].color;
+                });
+
+                // Update buyer info icons
+                const buyerIcons = card.querySelectorAll('.buyer-details p i');
+                buyerIcons.forEach(icon => {
+                    icon.style.color = statusColors[status].color;
+                });
+
+                // Update update button colors
+                if (updateBtn) {
+                    updateBtn.style.background = `linear-gradient(135deg, ${statusColors[status].color}, ${statusColors[status].light})`;
+                    updateBtn.style.boxShadow = `0 2px 8px ${statusColors[status].color}40`;
+                }
             }
 
             // Prevent form from submitting automatically - require explicit button click
