@@ -79,3 +79,12 @@ Fetching order items
 Found 1 items
 Sending response
 --------------------------------
+
+
+2025-08-18 23:49:27 - New request received
+Processing request for order ID: 44, user ID: 12
+Executing order query
+Fetching order items
+Found 2 items
+Sending response
+--------------------------------

@@ -192,29 +192,19 @@ foreach ($products as $product) {
                                             <span class="deal-price">৳<?php echo number_format($hot_deal['discount_price'], 2); ?></span>
                                             <span class="original-price">৳<?php echo number_format($product['price'], 2); ?></span>
                                             <span class="hot-deal-badge">HOT DEAL!</span>
-                                            <?php
-                                            // Display quantity and unit for hot deals
-                                            if (isset($product['display_unit'])) {
-                                                echo " <span class=\"unit-text\">for {$product['display_unit']}</span>";
-                                            } else {
-                                                $quantity = isset($product['quantity']) ? $product['quantity'] : 1;
-                                                $unitDisplay = $product['unit'];
-                                                echo " <span class=\"unit-text\">for {$quantity} {$unitDisplay}</span>";
-                                            }
-                                            ?>
                                         <?php else: ?>
                                             ৳<?php echo number_format($product['price'], 2); ?>
-                                            <?php
-                                            // Display quantity and unit for regular prices
-                                            if (isset($product['display_unit'])) {
-                                                echo " <span class=\"unit-text\">for {$product['display_unit']}</span>";
-                                            } else {
-                                                $quantity = isset($product['quantity']) ? $product['quantity'] : 1;
-                                                $unitDisplay = $product['unit'];
-                                                echo " <span class=\"unit-text\">for {$quantity} {$unitDisplay}</span>";
-                                            }
-                                            ?>
                                         <?php endif; ?>
+                                        <?php
+                                        // Display quantity and unit
+                                        if (isset($product['display_unit'])) {
+                                            echo " for {$product['display_unit']}";
+                                        } else {
+                                            $quantity = isset($product['quantity']) ? $product['quantity'] : 1;
+                                            $unitDisplay = $product['unit'];
+                                            echo " for {$quantity} {$unitDisplay}";
+                                        }
+                                        ?>
                                     </div>
                                     <div class="product-stock"><i class="fas fa-cubes"></i> Stock: <?php echo $product['stock']; ?></div>
                                     <div class="product-date"><i class="fas fa-calendar-alt"></i> Added: <?php echo date('M d, Y', strtotime($product['created_at'])); ?></div>
