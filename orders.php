@@ -132,7 +132,6 @@ $stats = [
                 <li><a href="products.php"><span class="icon"><i class="fas fa-box"></i></span>Products</a></li>
                 <li class="active"><a href="#"><span class="icon"><i class="fas fa-shopping-cart"></i></span>Orders</a></li>
                 <li><a href="customers.php"><span class="icon"><i class="fas fa-users"></i></span>Customers</a></li>
-                <li><a href="php/ensure_order_columns.php" title="Fix Database Structure"><span class="icon"><i class="fas fa-database"></i></span>Fix DB Structure</a></li>
                 <li><a href="php/logout.php"><span class="icon"><i class="fas fa-sign-out-alt"></i></span>Logout</a></li>
             </ul>
         </nav>
