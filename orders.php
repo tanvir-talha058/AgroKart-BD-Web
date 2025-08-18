@@ -462,14 +462,28 @@ $stats = [
                 }
             }
 
-            // Prevent form from submitting automatically - require explicit button click
+            // Auto-submit status form when selection changes so updates persist
             const statusForms = document.querySelectorAll('.status-update-form');
             statusForms.forEach(form => {
                 const selectElement = form.querySelector('.status-select');
+                const updateBtn = form.querySelector('.update-btn');
 
-                selectElement.addEventListener('change', function(e) {
-                    // Only show visual change, don't submit
-                    e.preventDefault();
+                // When status changes, submit the form to persist the change
+                selectElement.addEventListener('change', function() {
+                    if (updateBtn) {
+                        updateBtn.disabled = true;
+                        updateBtn.textContent = 'Updating...';
+                    }
+                    // Small delay lets the UI reflect the visual status color update
+                    setTimeout(() => form.submit(), 100);
+                });
+
+                // Also guard against double-submit if user clicks the button quickly
+                form.addEventListener('submit', function() {
+                    if (updateBtn) {
+                        updateBtn.disabled = true;
+                        updateBtn.textContent = 'Updating...';
+                    }
                 });
             });
 
