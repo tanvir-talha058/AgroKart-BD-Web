@@ -305,18 +305,6 @@ $stats = [
                                                 <button type="submit" class="update-btn">Update</button>
                                             </form>
                                         </div>
-
-                                        <?php if (!empty($item['notes'])): ?>
-                                            <div class="order-notes-section">
-                                                <div class="notes-header">
-                                                    <i class="fas fa-sticky-note"></i>
-                                                    <h4>Notes</h4>
-                                                </div>
-                                                <div class="notes-content">
-                                                    <p><?php echo htmlspecialchars($item['notes']); ?></p>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
