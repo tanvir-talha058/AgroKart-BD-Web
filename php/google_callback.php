@@ -103,7 +103,7 @@ try {
     }
 
     // Check if user already exists - dynamically use the correct ID field
-    $query = "SELECT $idColumnName as user_id, name, role, profile_image_path, google_id FROM users WHERE email = ? OR google_id = ?";
+    $query = "SELECT $idColumnName as user_id, name, role, profile_image_path, google_id, division, district, city FROM users WHERE email = ? OR google_id = ?";
     $check_stmt = $conn->prepare($query);
     $check_stmt->bind_param("ss", $email, $google_id);
     $check_stmt->execute();
@@ -127,7 +127,14 @@ try {
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['profile_image_path'] = $user['profile_image_path'];
-        $_SESSION['user_location'] = '';
+        // Populate location from stored address if available
+        $division = $user['division'] ?? '';
+        $district = $user['district'] ?? '';
+        $city = $user['city'] ?? '';
+        $_SESSION['division'] = $division;
+        $_SESSION['district'] = $district;
+        $_SESSION['city'] = $city;
+        $_SESSION['user_location'] = implode(', ', array_filter([$city, $district, $division]));
         $_SESSION['message'] = 'Welcome back, ' . $user['name'] . '!';
     } else {
         // New user - create account as Buyer
@@ -165,6 +172,10 @@ try {
             $_SESSION['user_name'] = $name;
             $_SESSION['user_role'] = 'Buyer';
             $_SESSION['profile_image_path'] = $saved_image_path;
+            // New Google user starts with empty address
+            $_SESSION['division'] = '';
+            $_SESSION['district'] = '';
+            $_SESSION['city'] = '';
             $_SESSION['user_location'] = '';
             $_SESSION['message'] = 'Welcome to AgroKart BD, ' . $name . '! Your account has been created successfully.';
         } else {

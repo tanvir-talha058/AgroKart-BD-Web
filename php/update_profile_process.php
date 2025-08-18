@@ -10,24 +10,35 @@ if (!isset($_SESSION['loggedin'])) {
 $user_id = $_SESSION['user_id'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Update basic info
-    $name = trim($_POST['name']);
-    $phone = trim($_POST['phone']);
+    // Update basic info + address details
+    $name = trim($_POST['name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $division = trim($_POST['division'] ?? '');
+    $district = trim($_POST['district'] ?? '');
+    $city = trim($_POST['city'] ?? '');
 
-    $stmt = $conn->prepare("UPDATE users SET name = ?, phone = ? WHERE id = ?");
-    $stmt->bind_param("ssi", $name, $phone, $user_id);
+    $stmt = $conn->prepare("UPDATE users SET name = ?, phone = ?, division = ?, district = ?, city = ? WHERE id = ?");
+    $stmt->bind_param("sssssi", $name, $phone, $division, $district, $city, $user_id);
     $stmt->execute();
     $stmt->close();
-    $_SESSION['user_name'] = $name; // Update session
+
+    // Update session values
+    $_SESSION['user_name'] = $name;
+    $_SESSION['division'] = $division;
+    $_SESSION['district'] = $district;
+    $_SESSION['city'] = $city;
+    $_SESSION['user_location'] = implode(', ', array_filter([$city, $district, $division]));
 
     // Handle profile photo upload
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == 0) {
         $target_dir = "../images/profiles/";
-        if (!is_dir($target_dir)) { mkdir($target_dir, 0755, true); }
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0755, true);
+        }
 
         $image_name = "user_" . $user_id . "_" . time() . "." . strtolower(pathinfo($_FILES["profile_photo"]["name"], PATHINFO_EXTENSION));
         $target_file = $target_dir . $image_name;
-        
+
         if (move_uploaded_file($_FILES["profile_photo"]["tmp_name"], $target_file)) {
             $image_path = "images/profiles/" . $image_name;
             $stmt_img = $conn->prepare("UPDATE users SET profile_image_path = ? WHERE id = ?");
@@ -73,4 +84,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 header("Location: ../profile.php");
 exit();
-?>
