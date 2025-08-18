@@ -292,6 +292,36 @@
     color: #2e7d32;
     font-size: 1rem;
     margin: 10px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    min-height: 24px;
+    overflow: hidden;
+}
+
+.product-price .hot-deal-badge {
+    margin-left: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.product-price .unit-text {
+    white-space: nowrap;
+    margin-left: 4px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.product-price .deal-price {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.product-price .original-price {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* No products state */
@@ -591,6 +621,8 @@ input:focus, select:focus, textarea:focus {
     color: #4CAF50;
     font-weight: 700;
     font-size: 1.1em;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .original-price {
@@ -599,6 +631,8 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.9em;
     font-weight: 400;
     margin-left: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .hot-deal-badge {
@@ -613,6 +647,8 @@ input:focus, select:focus, textarea:focus {
     margin-left: 8px;
     animation: pulse 2s infinite;
     display: inline-block;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 @keyframes pulse {
