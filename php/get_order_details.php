@@ -97,6 +97,34 @@ $items_stmt->close();
 
 fwrite($log_file, "Found " . count($items) . " items\n");
 
+// Fetch payment details for this order
+$payment_method = null;
+$payment_status = null;
+try {
+    $pay_sql = "SELECT method, status FROM payments WHERE order_id = ? ORDER BY id DESC LIMIT 1";
+    $pay_stmt = $conn->prepare($pay_sql);
+    $pay_stmt->bind_param("i", $order_id);
+    $pay_stmt->execute();
+    $pay_res = $pay_stmt->get_result();
+    if ($pay_row = $pay_res->fetch_assoc()) {
+        $payment_method = $pay_row['method'] ?? null;
+        $payment_status = $pay_row['status'] ?? null;
+    }
+    $pay_stmt->close();
+} catch (Exception $e) {
+    fwrite($log_file, "Payment fetch error: " . $e->getMessage() . "\n");
+}
+
+// Enforce display rule: bKash/Nagad/Card => Paid, COD => Pending
+if ($payment_method) {
+    if (strtoupper($payment_method) === 'COD') {
+        $payment_status = 'Pending';
+    } else {
+        // For any non-COD online methods (bKash, Nagad, Card), show Paid
+        $payment_status = 'Paid';
+    }
+}
+
 // Prepare the response
 // Build shipping details per requirement
 $user_city = trim($order['city'] ?? '');
@@ -107,8 +135,9 @@ $shipping_address = $user_city !== ''
     : (!empty($order['delivery_location']) ? $order['delivery_location'] : 'No address');
 
 // Provide safe defaults for payment info to avoid undefined in UI
-$payment_method = $order['payment_method'] ?? 'Cash on Delivery';
-$payment_status = $order['payment_status'] ?? 'Pending';
+// Provide safe defaults for payment info to avoid undefined in UI
+$payment_method = $payment_method ?? 'COD';
+$payment_status = $payment_status ?? 'Pending';
 
 $response = [
     'success' => true,
