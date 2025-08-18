@@ -98,6 +98,18 @@ $items_stmt->close();
 fwrite($log_file, "Found " . count($items) . " items\n");
 
 // Prepare the response
+// Build shipping details per requirement
+$user_city = trim($order['city'] ?? '');
+$shipping_name = 'AgroKart';
+$shipping_phone = '01700000000';
+$shipping_address = $user_city !== ''
+    ? ($user_city . ' Bus Stand, AgroKart Shop')
+    : (!empty($order['delivery_location']) ? $order['delivery_location'] : 'No address');
+
+// Provide safe defaults for payment info to avoid undefined in UI
+$payment_method = $order['payment_method'] ?? 'Cash on Delivery';
+$payment_status = $order['payment_status'] ?? 'Pending';
+
 $response = [
     'success' => true,
     'order' => [
@@ -108,9 +120,17 @@ $response = [
         'total_amount' => $total_amount,
         'delivery_fee' => $order['delivery_fee'] ?? 0,
         'delivery_option' => $order['delivery_option'] ?? 'standard',
+        // Names used by UI
+        'full_name' => $shipping_name,
+        'phone' => $shipping_phone,
+        'delivery_location' => $shipping_address,
+        // Keep original buyer info for reference
         'buyer_name' => $order['buyer_name'] ?? 'Unknown',
         'buyer_phone' => $order['buyer_phone'] ?? 'No phone',
         'location' => !empty($order['city']) ? implode(', ', array_filter([$order['city'], $order['district'], $order['division']])) : 'No address',
+        // Payment fields expected by UI
+        'payment_method' => $payment_method,
+        'payment_status' => $payment_status,
         'items' => $items
     ]
 ];

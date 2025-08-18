@@ -142,3 +142,84 @@ Fetching order items
 Found 2 items
 Sending response
 --------------------------------
+
+
+2025-08-19 00:13:28 - New request received
+Processing request for order ID: 44, user ID: 13
+Executing order query
+Fetching order items
+Found 2 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:21:31 - New request received
+Processing request for order ID: 44, user ID: 13
+Executing order query
+Fetching order items
+Found 2 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:14 - New request received
+Processing request for order ID: 42, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:17 - New request received
+Processing request for order ID: 43, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:20 - New request received
+Processing request for order ID: 44, user ID: 13
+Executing order query
+Fetching order items
+Found 2 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:22 - New request received
+Processing request for order ID: 41, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:25 - New request received
+Processing request for order ID: 40, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:27 - New request received
+Processing request for order ID: 39, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 00:22:48 - New request received
+Processing request for order ID: 44, user ID: 13
+Executing order query
+Fetching order items
+Found 2 items
+Sending response
+--------------------------------
