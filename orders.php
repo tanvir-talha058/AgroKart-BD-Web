@@ -116,7 +116,6 @@ $stats = [
     <title>Orders Management - AgroKartBD</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/orders.css">
-    <link rel="stylesheet" href="css/order-card-fixes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -233,6 +232,7 @@ $stats = [
                     <div class="product-orders-grid">
                         <?php foreach ($order_items as $item): ?>
                             <div class="product-order-card status-<?php echo strtolower($item['status']); ?>">
+                                <!-- Left Image Section -->
                                 <div class="product-image">
                                     <img src="<?php echo !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : 'images/AGrO.png'; ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" onerror="this.src='images/AGrO.png'">
                                     <div class="order-status-badge <?php echo strtolower($item['status']); ?>">
@@ -240,12 +240,11 @@ $stats = [
                                     </div>
                                 </div>
 
-                                <div class="product-details">
-                                    <div class="order-header-grid">
-                                        <div class="order-code-section">
-                                            <div class="order-code"><?php echo strtoupper(substr($item['product_name'], 0, 2)); ?></div>
-                                        </div>
-                                        <div class="order-info-section">
+                                <!-- Right Content Section -->
+                                <div class="card-content">
+                                    <!-- Header Section -->
+                                    <div class="order-header-section">
+                                        <div class="order-info-compact">
                                             <div class="order-id">Order #<?php echo $item['order_id']; ?></div>
                                             <div class="order-date">
                                                 <i class="fas fa-calendar"></i>
@@ -254,58 +253,46 @@ $stats = [
                                         </div>
                                     </div>
 
-                                    <h3 class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></h3>
+                                    <!-- Product Details Grid (2x3 layout) -->
+                                    <div class="product-details">
+                                        <h3 class="product-name"><?php echo htmlspecialchars($item['product_name']); ?></h3>
 
-                                    <div class="order-details-grid">
-                                        <table class="order-details-table">
-                                            <tr>
-                                                <td class="order-detail-label">Quantity:</td>
-                                                <td class="order-detail-value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="order-detail-label">Unit Price:</td>
-                                                <td class="order-detail-value">৳<?php echo number_format($item['price'], 2); ?></td>
-                                            </tr>
-                                            <tr class="total-row">
-                                                <td class="order-detail-label">Total:</td>
-                                                <td class="order-detail-value total-value">৳<?php echo number_format($item['item_total'], 2); ?></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="buyer-info">
-                                    <div class="buyer-header">
-                                        <i class="fas fa-user-circle"></i>
-                                        <h4>Buyer Information</h4>
-                                    </div>
-                                    <div class="buyer-details">
-                                        <p><i class="fas fa-user"></i> <?php echo htmlspecialchars($item['buyer_name']); ?></p>
-                                        <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($item['buyer_phone']); ?></p>
-                                        <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['location']); ?></p>
-                                    </div>
+                                        <!-- Row 1 -->
+                                        <div class="info-item">
+                                            <span class="label">Quantity</span>
+                                            <span class="value"><?php echo $item['quantity']; ?> <?php echo htmlspecialchars($item['unit']); ?></span>
+                                        </div>
 
-                                    <?php if (!empty($item['notes'])): ?>
-                                        <div class="order-notes-section">
-                                            <div class="notes-header">
-                                                <i class="fas fa-sticky-note"></i>
-                                                <h4>Special Notes</h4>
+                                        <div class="info-item">
+                                            <span class="label">Unit Price</span>
+                                            <span class="value">৳<?php echo number_format($item['price'], 2); ?></span>
+                                        </div>
+
+                                        <div class="info-item total">
+                                            <span class="label">Total</span>
+                                            <span class="value">৳<?php echo number_format($item['item_total'], 2); ?></span>
+                                        </div>
+
+                                        <!-- Row 2 -->
+                                        <div class="buyer-info">
+                                            <div class="buyer-header">
+                                                <i class="fas fa-user-circle"></i>
+                                                <h4>Buyer Info</h4>
                                             </div>
-                                            <div class="notes-content">
-                                                <p><?php echo htmlspecialchars($item['notes']); ?></p>
+                                            <div class="buyer-details">
+                                                <p><i class="fas fa-user"></i> <?php echo htmlspecialchars($item['buyer_name']); ?></p>
+                                                <p><i class="fas fa-phone"></i> <?php echo htmlspecialchars($item['buyer_phone']); ?></p>
                                             </div>
                                         </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="order-actions">
-                                    <div class="order-actions-row">
-                                        <button type="button" class="view-details-btn" onclick="viewOrderDetails(<?php echo $item['order_id']; ?>)">
-                                            <i class="fas fa-eye"></i> View Details
-                                        </button>
 
-                                        <form action="php/update_order_status.php" method="POST" class="status-update-form">
-                                            <input type="hidden" name="order_id" value="<?php echo $item['order_id']; ?>">
-                                            <input type="hidden" name="redirect_to" value="orders">
-                                            <div class="status-dropdown-wrapper">
+                                        <div class="order-actions">
+                                            <button type="button" class="view-details-btn" onclick="viewOrderDetails(<?php echo $item['order_id']; ?>)">
+                                                <i class="fas fa-eye"></i> Details
+                                            </button>
+
+                                            <form action="php/update_order_status.php" method="POST" class="status-update-form">
+                                                <input type="hidden" name="order_id" value="<?php echo $item['order_id']; ?>">
+                                                <input type="hidden" name="redirect_to" value="orders">
                                                 <select name="status" class="status-select status-select-<?php echo strtolower($item['status']); ?>">
                                                     <?php
                                                     $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
@@ -315,9 +302,21 @@ $stats = [
                                                     }
                                                     ?>
                                                 </select>
+                                                <button type="submit" class="update-btn">Update</button>
+                                            </form>
+                                        </div>
+
+                                        <?php if (!empty($item['notes'])): ?>
+                                            <div class="order-notes-section">
+                                                <div class="notes-header">
+                                                    <i class="fas fa-sticky-note"></i>
+                                                    <h4>Notes</h4>
+                                                </div>
+                                                <div class="notes-content">
+                                                    <p><?php echo htmlspecialchars($item['notes']); ?></p>
+                                                </div>
                                             </div>
-                                            <button type="submit" class="update-btn">UPDATE STATUS</button>
-                                        </form>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
