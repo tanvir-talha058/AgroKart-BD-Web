@@ -23,12 +23,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($new_status === 'Delivered') {
             // When delivered, stamp delivered_at to now
             $stmt = $conn->prepare("UPDATE orders SET status = ?, delivered_at = NOW() WHERE id = ?");
+        } elseif ($new_status === 'Payment Received') {
+            // For COD payment collected: keep order as Delivered but update payments to Completed
+            // 1) Ensure order marked delivered_at if not already
+            $stmt = $conn->prepare("UPDATE orders SET status = 'Delivered', delivered_at = COALESCE(delivered_at, NOW()) WHERE id = ?");
+            $stmt->bind_param("i", $order_id);
+            $ok1 = $stmt->execute();
+            $stmt->close();
+
+            // 2) Update latest payment row to Completed
+            $stmt_pay = $conn->prepare("UPDATE payments p
+                                        JOIN (SELECT id FROM payments WHERE order_id = ? ORDER BY id DESC LIMIT 1) latest
+                                        ON p.id = latest.id
+                                        SET p.status = 'Completed'");
+            $stmt_pay->bind_param("i", $order_id);
+            $ok2 = $stmt_pay->execute();
+            $stmt_pay->close();
+
+            if ($ok1) {
+                $_SESSION['message'] = "Order #$order_id marked as Delivered and payment received.";
+                $_SESSION['refresh_dashboard'] = true;
+                if (isset($_SESSION['dashboard_chart_data'])) {
+                    unset($_SESSION['dashboard_chart_data']);
+                }
+                $_SESSION['refresh_charts'] = true;
+            } else {
+                $_SESSION['error'] = "Failed to update order/payment status.";
+            }
+            // Redirect handled later
+            $stmt_check->close();
+            $redirect_to = isset($_POST['redirect_to']) ? $_POST['redirect_to'] : 'dashboard';
+            $redirect_page = ($redirect_to === 'orders') ? '../orders.php' : '../dashboard.php';
+            header("Location: $redirect_page");
+            exit;
         } else {
             // For other statuses, keep delivered_at as is (or nullify if needed)
             $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
         }
-        $stmt->bind_param("si", $new_status, $order_id);
-        if ($stmt->execute()) {
+        if (isset($stmt)) {
+            // Bind only if statement expects both params
+            if ($new_status === 'Delivered') {
+                $stmt->bind_param("si", $new_status, $order_id);
+            } else {
+                $stmt->bind_param("si", $new_status, $order_id);
+            }
+        }
+        if (isset($stmt) && $stmt->execute()) {
             // Set flag to refresh dashboard data
             $_SESSION['refresh_dashboard'] = true;
             // Clear any cached chart data
@@ -42,7 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $_SESSION['error'] = "Failed to update status.";
         }
-        $stmt->close();
+        if (isset($stmt)) {
+            $stmt->close();
+        }
     } else {
         $_SESSION['error'] = "You don't have permission to update this order.";
     }

@@ -343,7 +343,11 @@ $buyer_id = $_SESSION['user_id'];
                         <span class="label">Payment Status:</span>
                         <span class="value">${order.payment_status === 'Paid' ? 
                           '<span style="color: #4CAF50;"><i class="fas fa-check-circle"></i> Paid</span>' : 
-                          '<span style="color: #ffc107;"><i class="fas fa-clock"></i> Pending</span>'}</span>
+                          (order.payment_method && order.payment_method.toUpperCase().includes('COD') ? 
+                            (order.status === 'Delivered' ? 
+                              '<span style="color: #ffc107;"><i class="fas fa-clock"></i> Payment Due</span>' : 
+                              '<span style="color: #ffc107;"><i class="fas fa-clock"></i> Pay on Delivery</span>') : 
+                            '<span style="color: #ffc107;"><i class="fas fa-clock"></i> Pending</span>')}</span>
                     </div>
                 </div>
                 

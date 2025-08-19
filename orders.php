@@ -559,11 +559,75 @@ $stats = [
             window.closeOrderModal = function(element) {
                 const modal = element.closest('.order-details-modal') || element;
                 modal.classList.remove('show');
-                setTimeout(() => modal.remove(), 300);
+                setTimeout(() => {
+                    modal.remove();
+                    window.currentModalOrder = null; // Clean up reference
+                }, 300);
+            }
+
+            // Initialize status select dropdown in modal
+            document.addEventListener('click', function(e) {
+                // Look for newly added status selects in modal after details are loaded
+                if (e.target && e.target.classList.contains('view-details-btn')) {
+                    setTimeout(() => {
+                        const modalStatusSelect = document.querySelector('.modal-status-form .status-select');
+                        if (modalStatusSelect) {
+                            const currentStatus = modalStatusSelect.value.toLowerCase();
+                            modalStatusSelect.classList.add('status-select-' + currentStatus);
+
+                            // Apply status colors
+                            updateSelectBorderColor(modalStatusSelect);
+
+                            // Add change listener
+                            modalStatusSelect.addEventListener('change', function() {
+                                const selectedStatus = this.value.toLowerCase();
+                                // Visual update (similar to main page dropdowns)
+                                const classes = this.className.split(' ');
+                                classes.forEach(className => {
+                                    if (className.startsWith('status-select-')) {
+                                        this.classList.remove(className);
+                                    }
+                                });
+                                this.classList.add('status-select-' + selectedStatus);
+                                updateSelectBorderColor(this);
+                            });
+                        }
+                    }, 500); // Wait for modal content to load
+                }
+            });
+
+            // Helper function to get status options for the dropdown
+            function getStatusOptions() {
+                const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+
+                // Get current order from the order detail modal context
+                const currentOrder = window.currentModalOrder;
+                if (!currentOrder) return statuses.map(s => `<option value="${s}">${s}</option>`).join('');
+
+                // Check if this is a COD order that needs "Payment Received" option
+                const method = (currentOrder.payment_method || '').toUpperCase();
+                const is_cod = method === 'COD' || method.includes('COD') || method.includes('CASH');
+                const is_paid = (currentOrder.payment_status || '').toLowerCase() === 'completed' ||
+                    (currentOrder.payment_status || '').toLowerCase() === 'paid';
+
+                // Add "Payment Received" for unpaid COD orders that are delivered
+                if ((is_cod && !is_paid) ||
+                    (!currentOrder.payment_method && !is_paid && currentOrder.status === 'Delivered')) {
+                    statuses.push('Payment Received');
+                }
+
+                // Create options with current status selected
+                return statuses.map(status => {
+                    const selected = currentOrder.status === status ? 'selected' : '';
+                    return `<option value="${status}" ${selected}>${status}</option>`;
+                }).join('');
             }
 
             // Helper function to create order details HTML
             function createOrderDetailsHTML(order) {
+                // Store current order for status dropdown
+                window.currentModalOrder = order;
+
                 // Format date
                 const orderDate = new Date(order.created_at);
                 const formattedDate = orderDate.toLocaleDateString('en-US', {
@@ -609,10 +673,23 @@ $stats = [
                             <div class="info-row">
                                 <span class="label">Status:</span>
                                 <span class="value">
-                                    <span class="status-badge ${statusClass}">
-                                        ${order.status}
-                                    </span>
+                                    <form action="php/update_order_status.php" method="POST" class="status-update-form modal-status-form">
+                                        <input type="hidden" name="order_id" value="${order.order_id}">
+                                        <input type="hidden" name="redirect_to" value="orders">
+                                        <select name="status" class="status-select status-select-${order.status.toLowerCase()}">
+                                            ${getStatusOptions()}
+                                        </select>
+                                        <button type="submit" class="update-btn">Update</button>
+                                    </form>
                                 </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Payment Method:</span>
+                                <span class="value">${order.payment_method || 'Cash on Delivery'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Payment Status:</span>
+                                <span class="value">${order.payment_status || 'Pending'}</span>
                             </div>
                             <div class="info-row">
                                 <span class="label">Total Amount:</span>
@@ -668,6 +745,38 @@ $stats = [
     </script>
 
     <link rel="stylesheet" href="css/orders-style.css">
+    <style>
+        /* Additional styles for modal status dropdown */
+        .modal-status-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-status-form select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-status-form .update-btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            background: var(--primary-color, #4CAF50);
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal-status-form .update-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Make sure Payment Received works visually like Delivered */
+        .status-select option[value="Payment Received"] {
+            color: #22c55e;
+        }
+    </style>
 </body>
 
 </html>

@@ -115,10 +115,18 @@ try {
     fwrite($log_file, "Payment fetch error: " . $e->getMessage() . "\n");
 }
 
-// Enforce display rule: bKash/Nagad/Card => Paid, COD => Pending
+// Enforce display rule: bKash/Nagad/Card => Paid, COD => Pending/Paid depending on status
 if ($payment_method) {
-    if (strtoupper($payment_method) === 'COD') {
-        $payment_status = 'Pending';
+    // First check if we have a payment status from the database
+    $has_db_status = !empty($payment_status);
+
+    if (strtoupper($payment_method) === 'COD' || strpos(strtoupper($payment_method), 'CASH') !== false) {
+        // For COD: Show as Paid if payment record shows Completed, otherwise Pending
+        if ($has_db_status && strtolower($payment_status) === 'completed') {
+            $payment_status = 'Paid';
+        } else {
+            $payment_status = 'Pending';
+        }
     } else {
         // For any non-COD online methods (bKash, Nagad, Card), show Paid
         $payment_status = 'Paid';
