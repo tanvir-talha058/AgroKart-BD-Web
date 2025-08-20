@@ -403,3 +403,30 @@ Fetching order items
 Found 1 items
 Sending response
 --------------------------------
+
+
+2025-08-19 06:47:27 - New request received
+Processing request for order ID: 45, user ID: 13
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 06:48:03 - New request received
+Processing request for order ID: 45, user ID: 12
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------
+
+
+2025-08-19 06:49:42 - New request received
+Processing request for order ID: 45, user ID: 12
+Executing order query
+Fetching order items
+Found 1 items
+Sending response
+--------------------------------

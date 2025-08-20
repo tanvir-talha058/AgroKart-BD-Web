@@ -172,7 +172,7 @@ include 'includes/header.php';
 const locations = {
     "Dhaka": { "Dhaka": ["Savar", "Gazipur", "Narayanganj"], "Faridpur": ["Faridpur Sadar", "Bhanga"], "Tangail": ["Tangail Sadar"] },
     "Chattogram": { "Chattogram": ["Chattogram Sadar", "Cox's Bazar", "Sitakunda"], "Cumilla": ["Cumilla Sadar"], "Noakhali": ["Noakhali Sadar"] },
-    "Rajshahi": { "Rajshahi": ["Rajshahi Sadar", "Natore"], "Bogura": ["Bogura Sadar"], "Pabna": ["Pabna Sadar"] },
+    "Rajshahi": { "Rajshahi": ["Rajshahi Sadar", "Natore"], "Bogura": ["Bogura Sadar","Sherpur"], "Pabna": ["Pabna Sadar"] },
     "Khulna": { "Khulna": ["Khulna Sadar", "Jashore", "Satkhira"], "Kushtia": ["Kushtia Sadar"] },
     "Sylhet": { "Sylhet": ["Sylhet Sadar", "Moulvibazar"], "Habiganj": ["Habiganj Sadar"] },
     "Barishal": { "Barishal": ["Barishal Sadar", "Patuakhali"], "Bhola": ["Bhola Sadar"] },

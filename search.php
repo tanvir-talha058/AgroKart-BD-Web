@@ -1,5 +1,4 @@
 <?php
-// FILE: search.php
 
 // Get the search query from URL parameter
 $search_query = isset($_GET['q']) ? trim($_GET['q']) : '';
