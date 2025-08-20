@@ -1,6 +1,6 @@
 
 .customers.css {
-    display: none; /* This is just a marker class */
+    display: none; 
 }
 
 
@@ -52,7 +52,7 @@
     color: #2e7d32;
 }
 
-/* Customer List Container */
+
 .customer-list-container {
     background-color: #fff;
     border-radius: 10px;
