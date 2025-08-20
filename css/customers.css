@@ -1,9 +1,9 @@
-/* Customers Page Specific Styling */
+
 .customers.css {
     display: none; /* This is just a marker class */
 }
 
-/* Customer Statistics */
+
 .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

@@ -5,7 +5,7 @@
     font-style: italic;
 }
 
-/* Adjust for empty data visualization */
+
 .empty-data-notice {
     display: flex;
     flex-direction: column;
