@@ -1,5 +1,5 @@
 <?php
-// Simple test callback to debug the issue
+
 echo "<!DOCTYPE html><html><head><title>Google Callback Test</title></head><body>";
 echo "<h1>Google OAuth Callback Reached!</h1>";
 echo "<p>Current URL: " . $_SERVER['REQUEST_URI'] . "</p>";
@@ -13,7 +13,7 @@ if (isset($_GET['error'])) {
 } elseif (isset($_GET['code'])) {
     echo "<p style='color: green;'>Authorization code received! Length: " . strlen($_GET['code']) . " chars</p>";
 
-    // Now let's do the actual login process
+   
     session_start();
     require_once 'includes/db_connect.php';
 
