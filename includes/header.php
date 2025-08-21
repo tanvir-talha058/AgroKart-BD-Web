@@ -3,7 +3,14 @@
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-require_once 'db_connect.php';
+// Use absolute path so it resolves no matter where this file is included from
+require_once __DIR__ . '/db_connect.php';
+
+// Prevent direct access to this include; redirect to the site index instead
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
+  header('Location: ../index.php');
+  exit;
+}
 
 
 // Check if user is logging in and needs to load their saved cart from the database
