@@ -70,8 +70,6 @@ if (isset($_SESSION['cart'])) {
   <link rel="stylesheet" href="css/form-style.css">
   <link rel="stylesheet" href="css/cart-style.css">
   <link rel="stylesheet" href="css/chatbot.css">
-  <!-- Dark mode overrides (scoped to body.dark-theme) -->
-  <link rel="stylesheet" href="css/dark-mode.css">
   <link rel="icon" type="image/x-icon" href="images/AGrO.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Bootstrap CSS -->
@@ -145,10 +143,7 @@ if (isset($_SESSION['cart'])) {
           </div>
         </a>
 
-        <!-- Theme Toggle -->
-        <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-          <i class="fas fa-moon"></i>
-        </button>
+
 
         <!-- User Profile Section -->
         <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
@@ -666,25 +661,7 @@ if (isset($_SESSION['cart'])) {
       cursor: pointer;
     }
 
-    /* Theme Toggle Button */
-    .theme-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
 
-    .theme-toggle:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
 
     .hamburger {
       width: 24px;
@@ -785,9 +762,7 @@ if (isset($_SESSION['cart'])) {
         display: block;
       }
 
-      .theme-toggle {
-        align-self: center;
-      }
+
     }
   </style>
 
@@ -805,46 +780,10 @@ if (isset($_SESSION['cart'])) {
     document.addEventListener('DOMContentLoaded', function() {
       const mobileToggle = document.querySelector('.nav-mobile-toggle');
       const navLinks = document.querySelector('.nav-links');
-      const themeBtn = document.querySelector('.theme-toggle');
 
       if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', function() {
           navLinks.classList.toggle('active');
-        });
-      }
-
-      // Theme management
-      const THEME_KEY = 'theme';
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const savedTheme = localStorage.getItem(THEME_KEY);
-
-      function setToggleIcon(theme) {
-        const icon = themeBtn ? themeBtn.querySelector('i') : null;
-        if (!icon) return;
-        icon.classList.remove('fa-moon', 'fa-sun');
-        icon.classList.add(theme === 'dark' ? 'fa-sun' : 'fa-moon');
-      }
-
-      function applyTheme(theme) {
-        if (theme === 'dark') {
-          document.body.classList.add('dark-theme');
-        } else {
-          document.body.classList.remove('dark-theme');
-        }
-        setToggleIcon(theme);
-      }
-
-      const initialTheme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
-      applyTheme(initialTheme);
-
-      if (themeBtn) {
-        themeBtn.addEventListener('click', function() {
-          const nowDark = !document.body.classList.contains('dark-theme');
-          const next = nowDark ? 'dark' : 'light';
-          applyTheme(next);
-          try {
-            localStorage.setItem(THEME_KEY, next);
-          } catch (e) {}
         });
       }
     });

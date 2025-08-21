@@ -1,23 +1,4 @@
-/* Dark mode overrides activated when body has .dark-theme */
-
-/* Base */
-body.dark-theme {
-  background-color: #0f1216;
-  color: #e6e6e6;
-}
-
-/* Navbar gradient to darker tones */
-body.dark-theme .navbar-enhanced {
-  background: linear-gradient(135deg, #0e2a12 0%, #1f4d23 50%, #256029 100%);
-  border-bottom-color: rgba(255,255,255,0.08);
-}
-
-/* Search */
-body.dark-theme .search-wrapper {
-  background: rgba(22, 26, 31, 0.95);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.4);
-}
-body.dark-theme .search-wrapper:hover,
+/* Dark mode removed: file intentionally left empty */
 body.dark-theme .search-wrapper:focus-within {
   background: #1a1f25;
   box-shadow: 0 6px 22px rgba(0,0,0,0.5);
