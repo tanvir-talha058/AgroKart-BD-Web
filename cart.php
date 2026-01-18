@@ -13,6 +13,7 @@ if (!isset($_SESSION['cart'])) {
 $cart_items = $_SESSION['cart'];
 $total = 0;
 
+
 // Remove incorrect cart item addition code
 // This should only be in your add-to-cart handler
 /*
