@@ -9,7 +9,6 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 }
 
-
 // Initialize total
 $cart_items = $_SESSION['cart'];
 $total = 0;
