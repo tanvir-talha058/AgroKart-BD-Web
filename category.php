@@ -12,6 +12,7 @@ if (!in_array($category, $valid_categories)) {
     exit;
 }
 
+
 // Include header after checking for redirect
 include 'includes/header.php';
 
